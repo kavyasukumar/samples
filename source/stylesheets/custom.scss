@@ -1,0 +1,25 @@
+@import 'framework';
+
+/* CSS for SPECIAL (not standard) chorus snippets, as copy-pasted from here:
+ * http://product.voxmedia.com/a/multipage-app-docs
+ */
+// @import 'modules/snippets';
+
+/* CSS for 'partial/modules/nav'. set :theme to 'light' or 'dark' in config.rb
+ * If you uncomment the light nav scss below, change the theme setting in your config.
+ */
+// @import 'modules/nav-light';
+@import 'modules/nav-dark';
+
+/* CSS for ads, cover, quotes, credits, other little things */
+@import 'modules/base';
+
+/* Try to avoid creating your own sass variables. Use existing variables in:
+ *   shared/source/stylesheets/_settings
+ *   shared/source/stylesheets/<your-brand>/_settings
+ * If these settings are not appropriate or correct, please file a ticket
+ */
+
+/* If you are copy-pasting scss between projects, consider filing a ticket
+ * to add that css to shared, or to create generic css to solve your problem
+ */
