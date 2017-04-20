@@ -100,6 +100,7 @@ end
 
 desc 'Shard presidential election results'
 task :shard_election_results do
+  puts 'Reading CSV...'
   results = CSV.read('./original_data/us_atlas/2016_results.csv',
                       :headers => true)
                 .drop(1)
@@ -109,10 +110,16 @@ task :shard_election_results do
                             'trump' => r['Donald J. Trump']
                           ***REMOVED***
                       ***REMOVED***
+
+  require 'fileutils'
+  FileUtils::mkdir_p './processed_data/election_results'
   results.chunk ***REMOVED***|x| x['fips'][0, x['fips'].length-3].rjust(2,"0")***REMOVED***
          .map  do |f, rows|
-           File.open("./processed_data/#***REMOVED***fips_state[f]***REMOVED***_results.json", 'w') do |file|
+           File.open("./processed_data/election_results/#***REMOVED***fips_state[f]***REMOVED***_results.json", 'w') do |file|
+             print "\rWriting #***REMOVED***fips_state[f]***REMOVED*** file..."
              file.write rows.to_json
            end
          end
+  print "\n"
+  puts "Done!"
 end
