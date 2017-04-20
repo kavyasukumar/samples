@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'bundler'
 require 'pry'
+require 'csv'
 Bundler.setup
 
 # Add reusable tasks to this file:
@@ -8,19 +9,28 @@ import 'shared/Rakefile'
 
 # Add project specifc tasks or overrides below
 
+def excel_to_hash(excel_file)
+  excel = read_excel(excel_file)
+  keys = excel.row(1)
+  output = excel.map ***REMOVED***|k| Hash[keys.zip(k.to_a)]***REMOVED***
+  output.shift # drop header row
+  output
+end
+
 def excel_to_csv(excel_file, csv_file = nil)
   excel = read_excel(excel_file)
 
-  # Row indexing starts from 1
-  # Iterating through each row  because there is no enumerable object.
   file_content = ''
   total_records = excel.last_row
-  [*1..total_records].each do |row_num|
+
+  # Iterating through each row because there is no enumerable object.
+  # Row indexing starts from 1. Not 0
+  excel.each do |row|
     print "\rparsing #***REMOVED***row_num***REMOVED*** of #***REMOVED***total_records***REMOVED***..."
-    file_content += excel.row(row_num).to_csv
+    file_content += row.to_a.to_csv
   end
-  puts ""
-  return CSV.parse(file_content) if csv_file.nil?
+  puts '' # Moving cursor to next line
+  return CSV.parse(file_content, :headers => true) if csv_file.nil?
 
   puts "Writing to CSV file #***REMOVED***csv_file***REMOVED***"
   File.open(csv_file, 'w') do |file|
@@ -39,19 +49,35 @@ def read_excel(excel_file)
   Roo::Excelx.new(excel_file)
 end
 
-def csv_to_hash(csv_obj)
-  require 'active_support/inflector'
-  keys = csv_obj.shift.map ***REMOVED***|k| k.parameterize ***REMOVED***
-  csv_obj.map ***REMOVED***|x| Hash[ keys.zip(x) ] ***REMOVED***
+def state_fips
+  csv = CSV.read('./original_data/fips.csv', :headers => true)
+  st_fips = ***REMOVED******REMOVED***
+  csv.each ***REMOVED***|v| st_fips[v['state']] = v['stfips']***REMOVED***
+  st_fips
 end
+
+def fips_state
+  csv = CSV.read('./original_data/fips.csv', :headers => true)
+  st_fips = ***REMOVED******REMOVED***
+  csv.each do |v|
+    key = v['stfips'].rjust(2,"0")
+    st_fips[key] = v['state']
+  end
+  st_fips
+end
+
+def states
+  state_fips.keys
+end
+
 
 
 desc 'Update 2017 coverage data'
 task :update_2017_coverage do
   cont = yes?('This will delete all existing records for 2017. Continue?')
   exit unless cont
-  excel_file =  './original-data/RWJF/carriersbycounty2017.xlsx'
-  insurance_hash = excel_to_arr_hash excel_file
+  excel_file =  './original_data/RWJF/carriersbycounty2017.xlsx'
+  insurance_hash = excel_to_hash excel_file
 
   bucket = kinto_bucket(datastore_config['bucket'])
   coverage_2017 = bucket.collection('coverage-2017')
@@ -70,4 +96,23 @@ task :update_2017_coverage do
     uploaded += row_group.count
     print "\rUploaded #***REMOVED***uploaded***REMOVED*** of #***REMOVED***insurance_hash.count***REMOVED*** records"
   end
+end
+
+desc 'Shard presidential election results'
+task :shard_election_results do
+  results = CSV.read('./original_data/us_atlas/2016_results.csv',
+                      :headers => true)
+                .drop(1)
+                .map ***REMOVED***|r| ***REMOVED***'fips' => r['FIPS'],
+                            'total_vote' => r['Total Vote'],
+                            'clinton' => r['Hillary Clinton'],
+                            'trump' => r['Donald J. Trump']
+                          ***REMOVED***
+                      ***REMOVED***
+  results.chunk ***REMOVED***|x| x['fips'][0, x['fips'].length-3].rjust(2,"0")***REMOVED***
+         .map  do |f, rows|
+           File.open("./processed_data/#***REMOVED***fips_state[f]***REMOVED***_results.json", 'w') do |file|
+             file.write rows.to_json
+           end
+         end
 end
