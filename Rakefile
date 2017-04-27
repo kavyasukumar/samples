@@ -7,6 +7,19 @@ Bundler.setup
 # Add reusable tasks to this file:
 import 'shared/Rakefile'
 
+require 's3deploy/tasks'
+
+S3deploy.configure do
+  bucket 'apps.voxmedia.com'
+  app_path 'vox-election-results-2016'
+  dist_dir 'processed_data/election_results'
+  gzip [/\.js$/, /\.css$/, /\.json$/, /\.html$/, /\.csv$/,
+        /\.eot$/, /\.svg$/, /\.ttf$/, /\.woff$/, /\.woff2$/]
+
+  access_key_id ENV['AWS_ACCESS_KEY_ID']
+  secret_access_key ENV['AWS_SECRET_ACCESS_KEY']
+end
+
 # Add project specifc tasks or overrides below
 
 def excel_to_hash(excel_file)
@@ -121,5 +134,7 @@ task :shard_election_results do
            end
          end
   print "\n"
+  puts 'Uploading to S3...'
+  Rake::Task['s3:deploy'].invoke
   puts "Done!"
 end
