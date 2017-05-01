@@ -143,14 +143,13 @@ task :import_providers do
   excel_file =  './original_data/RWJF/carriersbycounty2017.xlsx'
   insurance_hash = excel_to_hash excel_file
 
-  index = 0
-  providers = insurance_hash.map ***REMOVED*** |x| ***REMOVED*** 'provider_id' => x['issuer_id'],
-                                         'name' => x['carrier'],
-                                         'group_name' => x['carrier']
-                                       ***REMOVED***
-                                 ***REMOVED***.uniq
-                                  .each ***REMOVED*** |x| x['group_id'] = index += 1 ***REMOVED***
-
+ providers = insurance_hash.collect ***REMOVED*** |x| ***REMOVED*** 'provider_id' => x['issuer_id'],
+                                            'provider_name' => x['carrier'],
+                                            'group_name' => x['carrier'],
+                                            'group_id' => x['issuer_id'],
+                                            'state' => x['state']
+                                          ***REMOVED***
+                                    ***REMOVED***.uniq
   bucket = kinto_bucket(datastore_config['bucket'])
   collection = bucket.collection('provider-groups')
 
