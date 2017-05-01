@@ -83,10 +83,9 @@ def states
   state_fips.keys
 end
 
-
-
-desc 'Update 2017 coverage data'
-task :update_2017_coverage do
+# Rake tasks
+desc 'import 2017 coverage data'
+task :import_2017_coverage do
   cont = yes?('This will delete all existing records for 2017. Continue?')
   exit unless cont
   excel_file =  './original_data/RWJF/carriersbycounty2017.xlsx'
@@ -137,4 +136,37 @@ task :shard_election_results do
   puts 'Uploading to S3...'
   Rake::Task['s3:deploy'].invoke
   puts "Done!"
+end
+
+desc 'Import provider colection'
+task :import_providers do
+  excel_file =  './original_data/RWJF/carriersbycounty2017.xlsx'
+  insurance_hash = excel_to_hash excel_file
+
+  index = 0
+  providers = insurance_hash.map ***REMOVED*** |x| ***REMOVED*** 'provider_id' => x['issuer_id'],
+                                         'name' => x['carrier'],
+                                         'group_name' => x['carrier']
+                                       ***REMOVED***
+                                 ***REMOVED***.uniq
+                                  .each ***REMOVED*** |x| x['group_id'] = index += 1 ***REMOVED***
+
+  bucket = kinto_bucket(datastore_config['bucket'])
+  collection = bucket.collection('provider-groups')
+
+  puts 'Deleting existing records...'
+  # need a while loop because only a 1000 records get deleted at a time
+  collection.delete_records while !collection.count_records.zero?
+
+  uploaded = 0
+  providers.each_slice(100) do |row_group|
+    batch_req = kinto_client.create_batch_request
+    row_group.each do |row|
+      batch_req.add_request(collection.create_record_request row)
+    end
+    batch_req.send
+    uploaded += row_group.count
+    print "\rUploaded #***REMOVED***uploaded***REMOVED*** of #***REMOVED***providers.count***REMOVED*** records"
+  end
+  print "\n"
 end
