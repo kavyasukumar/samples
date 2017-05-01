@@ -19,3 +19,6 @@
 
 # Ignore gems installed in local directory
 /vendor/bundle/
+
+# Ignore temp xlsx
+original_data/RWJF/~*
