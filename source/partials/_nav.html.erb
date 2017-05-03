@@ -1,0 +1,23 @@
+<nav class="tab-bar nav-<%=theme %>">
+  <section class="left">
+    <a class="logo" href="<%=site_domain%>" data-analytics-link="logo">
+      <span><%=site_display_name %></span>
+    </a>
+    <h1><%=title %></h1>
+  </section>
+  <section class="right">
+    <ul>
+      <li>
+        <a href="<%= page_url %>" data-analytics-link="nav-contents">
+          <h4>Maps</h4>
+        </a>
+      </li>
+      <li>
+        <a href="<%= page_url 'providers'%>" data-analytics-link="nav-contents">
+          <h4>Providers</h4>
+        </a>
+      </li>
+
+    </ul>
+  </section>
+</nav>

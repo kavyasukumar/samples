@@ -9,7 +9,7 @@ var kintoBucket = kintoBucket || window.getKintoBucket('http://kinto.voxmedia.co
  *   //= require foundation
  * then uncomment the following line.
  */
-// $(document).foundation();
+$(document).foundation();
 
 /* If you would like to use Javascript templates, you can enable them by adding
  * the following line to the top of this file

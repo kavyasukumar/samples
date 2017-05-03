@@ -14,6 +14,8 @@
 /* CSS for ads, cover, quotes, credits, other little things */
 @import 'modules/base';
 
+@import 'partials/nav-overrides';
+
 /* Try to avoid creating your own sass variables. Use existing variables in:
  *   shared/source/stylesheets/_settings
  *   shared/source/stylesheets/<your-brand>/_settings

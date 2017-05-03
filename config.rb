@@ -47,7 +47,7 @@ set :domain, 'www.vox.com'
 set :theme, 'dark'
 
 # Project title (required)
-set :title, 'Aca dashboard'
+set :title, 'Healthcare dashboard'
 
 # Default prefill tweet text for tweet buttons
 # set :tweet_text, data.microcopy['tweet_text']
@@ -108,7 +108,6 @@ set :title, 'Aca dashboard'
 # end
 
 # Automatically build a sitemap from Chorus
-build_sitemap_with data.entries
 # Automatically build a sitemap from the spreadsheet, NOT RECOMMENDED
 # build_sitemap_with data.pages
 
