@@ -102,6 +102,9 @@ task :import_2017_coverage do
   insurance_hash.each_slice(100) do |row_group|
     batch_req = kinto_client.create_batch_request
     row_group.each do |row|
+      row['provider_name'] = row.delete 'carrier'
+      row['provider_id'] = row.delete 'issuer_id'
+      row['is_active'] = true
       batch_req.add_request(coverage_2017.create_record_request row)
     end
     batch_req.send
