@@ -49,6 +49,8 @@ set :theme, 'dark'
 # Project title (required)
 set :title, 'Healthcare dashboard'
 
+set :kinto_token, '***REMOVED***'
+
 # Default prefill tweet text for tweet buttons
 # set :tweet_text, data.microcopy['tweet_text']
 # set :tweet_text, 'Checkout out this cool story I found!'
