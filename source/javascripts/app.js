@@ -1,15 +1,4 @@
-//= require_tree ./_vendor
-//= require _kinto_helper
-//= require _vendor_extra/kinto-http
-
-var kintoBucket = kintoBucket || window.getKintoBucket('http://kinto.voxmedia.com/v1','vox-aca-dashboard');
-
-/* If you use any Foundation javascript add the following line to the top of
- * of this file...
- *   //= require foundation
- * then uncomment the following line.
- */
-$(document).foundation();
+//= require _kinto_init
 
 /* If you would like to use Javascript templates, you can enable them by adding
  * the following line to the top of this file
