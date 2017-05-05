@@ -99,6 +99,7 @@ task :import_2017_coverage do
   coverage_2017.delete_records while !coverage_2017.count_records.zero?
 
   uploaded = 0
+  failed = 0
   insurance_hash.each_slice(100) do |row_group|
     batch_req = kinto_client.create_batch_request
     row_group.each do |row|
@@ -107,10 +108,14 @@ task :import_2017_coverage do
       row['is_active'] = true
       batch_req.add_request(coverage_2017.create_record_request row)
     end
-    batch_req.send
+    resp = batch_req.send
+    failures = resp['responses'].select ***REMOVED***|x| x["status"] != 201***REMOVED***
+    failed += failures.count
     uploaded += row_group.count
-    print "\rUploaded #***REMOVED***uploaded***REMOVED*** of #***REMOVED***insurance_hash.count***REMOVED*** records"
+    print "\rUploaded #***REMOVED***uploaded***REMOVED*** of #***REMOVED***insurance_hash.count***REMOVED*** records. #***REMOVED***failures.count***REMOVED*** failures"
   end
+  puts ''
+  puts "\rUploaded #***REMOVED***uploaded***REMOVED*** records with #***REMOVED***failed***REMOVED*** failures"
 end
 
 desc 'Shard presidential election results'
