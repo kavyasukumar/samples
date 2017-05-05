@@ -22,8 +22,9 @@ end
 
 # Add project specifc tasks or overrides below
 
-def excel_to_hash(excel_file)
+def excel_to_hash(excel_file, sheet_name = nil)
   excel = read_excel(excel_file)
+  excel = excel.sheet(sheet_name) unless sheet_name.nil?
   keys = excel.row(1)
   output = excel.map ***REMOVED***|k| Hash[keys.zip(k.to_a)]***REMOVED***
   output.shift # drop header row
@@ -176,4 +177,42 @@ task :import_providers do
     print "\rUploaded #***REMOVED***uploaded***REMOVED*** of #***REMOVED***providers.count***REMOVED*** records"
   end
   print "\n"
+end
+
+desc 'Import coverage history'
+task :import_coverage_history do
+  # cont = yes?('This will delete all existing records for 2017. Continue?')
+  # exit unless cont
+  [*2014..2016].each do |year|
+    puts "uploading data for #***REMOVED***year***REMOVED***..."
+    excel_file =  "./original_data/coverage_history/#***REMOVED***year***REMOVED***.xlsx"
+    coverage_hash = excel_to_hash(excel_file, 'issuers')
+
+    bucket = kinto_bucket(datastore_config['bucket'])
+    collection = bucket.collection("coverage-#***REMOVED***year***REMOVED***")
+
+    puts 'Deleting existing records...'
+    # need a while loop because only a 1000 records get deleted at a time
+    collection.delete_records while !collection.count_records.zero?
+
+    uploaded = 0
+    failed = 0
+    coverage_hash.each_slice(100) do |row_group|
+      batch_req = kinto_client.create_batch_request
+      row_group.each do |row|
+        row['provider'] = row.delete 'i'
+        row['state'] = row.delete 's'
+        row['county'] = row.delete 'c'
+        row['provider_id'] = row.delete 'id'
+        batch_req.add_request(collection.create_record_request row)
+      end
+      resp = batch_req.send
+      failures = resp['responses'].select ***REMOVED***|x| x["status"] != 201***REMOVED***
+      failed += failures.count
+      uploaded += row_group.count
+      print "\rUploaded #***REMOVED***uploaded***REMOVED*** of #***REMOVED***coverage_hash.count***REMOVED*** records. #***REMOVED***failures.count***REMOVED*** failures"
+    end
+    puts ''
+    puts "\rUploaded #***REMOVED***uploaded***REMOVED*** records with #***REMOVED***failed***REMOVED*** failures"
+  end
 end

@@ -1,13 +1,4 @@
-//= require _kinto_init
 
-var kintoBucket = kintoBucket || window.getKintoBucket('http://kinto.voxmedia.com/v1','vox-aca-dashboard');
-
-/* If you use any Foundation javascript add the following line to the top of
- * of this file...
- *   //= require foundation
- * then uncomment the following line.
- */
-// $(document).foundation();
 
 /* If you would like to use Javascript templates, you can enable them by adding
  * the following line to the top of this file
@@ -21,21 +12,28 @@ var kintoBucket = kintoBucket || window.getKintoBucket('http://kinto.voxmedia.co
 
 (function() ***REMOVED***
   // Application code goes here
+  // console.log('Sponge Bob Squarepants');
+  //
+  //
+  // var somefunc = function () ***REMOVED***
+  //   console.log('No. This is patrick');
+  // ***REMOVED***;
 
-  $(document).ready(function() ***REMOVED***
-    // Initialize lazy load
-    $('.lazy').lazyload(***REMOVED***
-      threshold : 0,
-      failure_limit: 999,
-      effect: 'fadeIn',
-      data_attribute_queries: [
-        ***REMOVED***media: "(max-width: 1600px)", data_name: "x-large"***REMOVED***,
-        ***REMOVED***media: "(max-width: 1200px)", data_name: "large"***REMOVED***,
-        ***REMOVED***media: "(max-width: 900px)", data_name: "medium"***REMOVED***,
-        ***REMOVED***media: "(max-width: 640px)", data_name: "small"***REMOVED***,
-        ***REMOVED***media: "(max-width: 400px)", data_name: "x-small"***REMOVED***
-      ]
-    ***REMOVED***);
+  // $(document).ready(function() ***REMOVED***
+  //   console.log('hello there');
+  //   // Initialize lazy load
+  //   $('.lazy').lazyload(***REMOVED***
+  //     threshold : 0,
+  //     failure_limit: 999,
+  //     effect: 'fadeIn',
+  //     data_attribute_queries: [
+  //       ***REMOVED***media: "(max-width: 1600px)", data_name: "x-large"***REMOVED***,
+  //       ***REMOVED***media: "(max-width: 1200px)", data_name: "large"***REMOVED***,
+  //       ***REMOVED***media: "(max-width: 900px)", data_name: "medium"***REMOVED***,
+  //       ***REMOVED***media: "(max-width: 640px)", data_name: "small"***REMOVED***,
+  //       ***REMOVED***media: "(max-width: 400px)", data_name: "x-small"***REMOVED***
+  //     ]
+  //   ***REMOVED***);
 
     // Kinto client documentation at https://doc.esdoc.org/github.com/Kinto/kinto-client/#collections
     // You can now access collections and records in Kinto like this
@@ -44,5 +42,5 @@ var kintoBucket = kintoBucket || window.getKintoBucket('http://kinto.voxmedia.co
     // myCollection.listRecords().then(function(data) ***REMOVED***console.log(data);***REMOVED***);
 
     // Initialize your code here
-  ***REMOVED***);
+  // ***REMOVED***);
 ***REMOVED***)();
