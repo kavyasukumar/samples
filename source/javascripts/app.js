@@ -1,4 +1,5 @@
-//= require _kinto_init
+//= require _data_adapter
+
 
 /* If you would like to use Javascript templates, you can enable them by adding
  * the following line to the top of this file
@@ -14,6 +15,7 @@
   // Application code goes here
 
   $(document).ready(function() ***REMOVED***
+    console.log('hello, is this krusty crab?');
     // Initialize lazy load
     $('.lazy').lazyload(***REMOVED***
       threshold : 0,
@@ -27,6 +29,7 @@
         ***REMOVED***media: "(max-width: 400px)", data_name: "x-small"***REMOVED***
       ]
     ***REMOVED***);
+    DataAdapter.getCoverage17();
 
     // Kinto client documentation at https://doc.esdoc.org/github.com/Kinto/kinto-client/#collections
     // You can now access collections and records in Kinto like this
