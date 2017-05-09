@@ -49,7 +49,7 @@ set :theme, 'dark'
 # Project title (required)
 set :title, 'Healthcare dashboard'
 
-set :kinto_token, '***REMOVED***'
+set :kinto_token, 'aca-user:pr1ngl3'
 
 # Default prefill tweet text for tweet buttons
 # set :tweet_text, data.microcopy['tweet_text']
