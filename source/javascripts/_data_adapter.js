@@ -69,16 +69,18 @@ var DataAdapter = (function() ***REMOVED***
     ***REMOVED***;
 
     _instance.updateCoverage17 = function(records, callBackFunction) ***REMOVED***
-      _updateCoverageData(2017, refresh, callBackFunction);
+      _updateCoverageData(2017, callBackFunction);
     ***REMOVED***;
 
-    _instance.getAllData = function(refresh) ***REMOVED***
-      _getCoverageData('2014', refresh);
-      _getCoverageData('2015', refresh);
-      _getCoverageData('2016', refresh);
-      _getCoverageData('2017', refresh);
-      return _data;
-    ***REMOVED***;
+    _instance.getProviderCount17 = function(callBackFunction)***REMOVED***
+      _getCoverageData(2017, false, function(coverage)***REMOVED***
+        var response = _.chain(coverage)
+        .where(function(item)***REMOVED*** return item.is_active; ***REMOVED***)
+        .countBy(function(item) ***REMOVED*** return item.fips_code;***REMOVED***)
+        .value();
+        callBackFunction.call(this, response);
+      ***REMOVED***);
+    ***REMOVED***
 
     return _instance;
   ***REMOVED***
