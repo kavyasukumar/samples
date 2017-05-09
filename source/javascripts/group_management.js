@@ -1,4 +1,5 @@
 //= require _data_adapter
+//=require_tree ./_templates
 /* globals DataAdapter, console */
 
 /* If you would like to use Javascript templates, you can enable them by adding
@@ -12,7 +13,7 @@
  */
 
 (function() ***REMOVED***
-  var test = function (response) ***REMOVED***
+  var handleDataFetch = function (response) ***REMOVED***
     console.log(response.length);
     var template = window.JST['_templates/example'];
     var html = template(***REMOVED***my_var: 'Hello!', list: [1, 2, 3, 4]***REMOVED***);
@@ -20,10 +21,7 @@
   ***REMOVED***;
 
   $(document).ready(function() ***REMOVED***
-    console.log('in map gen');
     window.dataAdapter = window.dataAdapter || DataAdapter.getInstance();
-
-    console.log('in map gen');
-    window.dataAdapter.getCoverage17(false, test);
+    window.dataAdapter.getCoverage17(false, handleDataFetch);
   ***REMOVED***);
 ***REMOVED***)();
