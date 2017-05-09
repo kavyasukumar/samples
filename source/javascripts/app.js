@@ -1,4 +1,9 @@
 //= require _data_adapter
+//= require foundation
+//= require foundation/foundation.accordion
+
+$(document).foundation();
+console.log('test');
 
 /* globals DataAdapter */
 
@@ -29,7 +34,7 @@
       ]
     ***REMOVED***);
 
-    // setting a glocal data adapter instance
+    // setting a global data adapter instance
     window.dataAdapter = window.dataAdapter || DataAdapter.getInstance();
   ***REMOVED***);
 ***REMOVED***)();
