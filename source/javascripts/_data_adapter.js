@@ -1,4 +1,3 @@
-//= require_tree ./_vendor
 //= require _kinto_helper
 //= require _vendor_extra/kinto-http
 
