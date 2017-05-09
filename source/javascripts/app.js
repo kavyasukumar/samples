@@ -1,5 +1,7 @@
 //= require _data_adapter
 
+/* globals DataAdapter */
+
 
 /* If you would like to use Javascript templates, you can enable them by adding
  * the following line to the top of this file

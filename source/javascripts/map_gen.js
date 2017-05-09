@@ -1,3 +1,4 @@
+/* globals DataAdapter */
 (function() ***REMOVED***
   // Application code goes here
 
