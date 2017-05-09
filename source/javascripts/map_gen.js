@@ -1,10 +1,12 @@
 /* globals DataAdapter */
+//= require _vendor/pancake.stack.min
 (function() ***REMOVED***
   // Application code goes here
 
   var svg = d3.select("svg"),
     width = +svg.attr("width"),
-    height = +svg.attr("height");
+    height = +svg.attr("height"),
+    flapjack;
 
   var planReport = d3.map();
 
@@ -71,20 +73,37 @@
         .data(topojson.feature(us, us.objects.counties).features)
         .enter().append("path")
           .attr("fill", function(d) ***REMOVED***
-            return color(d.count = data[d.id]); ***REMOVED***)
+            if(color(d.count = data[d.id]))***REMOVED***
+              return color(d.count = data[d.id]);
+            ***REMOVED*** else ***REMOVED***
+              return '#ccc';
+            ***REMOVED***
+          ***REMOVED***)
           .attr("d", path)
           .attr("stroke", function(d)***REMOVED***
             if(d.count)***REMOVED*** return '#fff'; ***REMOVED***
           ***REMOVED***)
+          .attr('stroke-width', '0.5px')
         .append("title")
           .text(function(d) ***REMOVED*** return d.count; ***REMOVED***);
 
       svg.append("path")
           .datum(topojson.mesh(us, us.objects.states, function(a, b) ***REMOVED*** return a !== b; ***REMOVED***))
           .attr("class", "states")
-          .attr("d", path);
+          .attr("d", path)
+          .attr('fill', 'none')
+          .attr('stroke', '#fff');
     ***REMOVED***
   ***REMOVED***
+
+  d3.select("#save").on("click", function()***REMOVED***
+    flapjack = Pancake('svg-map');
+    console.log(flapjack)
+    flapjack.height = 300;
+    flapjack.width = 480;
+    console.log(flapjack)
+    flapjack.download("2017_providers.png");
+  ***REMOVED***);
 
   $(document).ready(function() ***REMOVED***
     window.dataAdapter = window.dataAdapter || DataAdapter.getInstance();
