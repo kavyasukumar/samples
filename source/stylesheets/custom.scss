@@ -28,7 +28,9 @@
  */
 
  .counties ***REMOVED***
-   fill: none;
+   fill: #ccc;
+   stroke: #ccc;
+   stroke-width: 0.5px;
  ***REMOVED***
 
  .states ***REMOVED***
@@ -36,3 +38,13 @@
    stroke: #fff;
    stroke-linejoin: round;
  ***REMOVED***
+
+.tick***REMOVED***
+  line***REMOVED***
+    opacity: 0;
+  ***REMOVED***
+  text***REMOVED***
+    font-size: 16px;
+    font-family: 'Nitti';
+  ***REMOVED***
+***REMOVED***
