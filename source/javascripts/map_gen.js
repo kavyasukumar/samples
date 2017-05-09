@@ -47,8 +47,6 @@
       .text("Number of ACA insurers available");
 
   g.call(d3.axisBottom(x)
-      .tickSize(13)
-      // .tickFormat(function(x, i) ***REMOVED*** return i ? x : x + "+"; ***REMOVED***)
       .tickFormat(function(x, i) ***REMOVED***
         if(x === 3)***REMOVED***
           return x + '+';
@@ -56,6 +54,8 @@
           return x;
         ***REMOVED***
       ***REMOVED***)
+      .tickPadding(13)
+      .tickSize(0)
       .tickValues(color.domain()))
     .select(".domain")
       .remove();
