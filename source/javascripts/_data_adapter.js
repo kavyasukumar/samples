@@ -17,7 +17,8 @@ var DataAdapter = (function() ***REMOVED***
       _staleBit = ***REMOVED******REMOVED***;
     var _instance = ***REMOVED******REMOVED***;
 
-    var _getCoverageData = function(year, refresh, callBackFunction) ***REMOVED***
+    //Public properties and methods
+    _instance.getCoverage = function(year, refresh, callBackFunction) ***REMOVED***
       var dataKey = 'coverage-' + year;
       if (!refresh && _data[dataKey]) ***REMOVED***
         console.log('data exists');
@@ -39,7 +40,7 @@ var DataAdapter = (function() ***REMOVED***
       ***REMOVED***);
     ***REMOVED***;
 
-    var _updateCoverageData = function(year, records, callBackFunction) ***REMOVED***
+    _instance.updateCoverage = function(year, records, callBackFunction) ***REMOVED***
       var dataKey = 'coverage-' + year,
         collection = _kintoBucket.collection(dataKey),
         recordCount = records.count,
@@ -63,27 +64,31 @@ var DataAdapter = (function() ***REMOVED***
       ***REMOVED***);
     ***REMOVED***;
 
-    //Public properties and methods
-    _instance.getCoverage17 = function(refresh, callBackFunction) ***REMOVED***
-      _getCoverageData(2017, refresh, callBackFunction);
-    ***REMOVED***;
-
-    _instance.updateCoverage17 = function(records, callBackFunction) ***REMOVED***
-      _updateCoverageData(2017, callBackFunction);
-    ***REMOVED***;
-
-    _instance.getProviderCount17 = function(callBackFunction)***REMOVED***
-      _getCoverageData(2017, false, function(coverage)***REMOVED***
-        var response = _.chain(coverage)
-        .where(function(item)***REMOVED*** return item.is_active; ***REMOVED***)
-        .countBy(function(item) ***REMOVED*** return item.fips_code;***REMOVED***)
-        .value();
+    _instance.getProviderCount = function(year, callBackFunction) ***REMOVED***
+      this.getCoverage(year, false, function(coverage) ***REMOVED***
+        var response;
+        if (year === 2017) ***REMOVED***
+          response = _.chain(coverage)
+            .where(function(item) ***REMOVED***
+              return item.is_active;
+            ***REMOVED***)
+            .countBy(function(item) ***REMOVED***
+              return item.fips_code;
+            ***REMOVED***)
+            .value();
+        ***REMOVED*** else ***REMOVED***
+          response = _.chain(coverage)
+            .countBy(function(item) ***REMOVED***
+              return item.fips_code;
+            ***REMOVED***)
+            .value();
+        ***REMOVED***
         callBackFunction.call(this, response);
       ***REMOVED***);
     ***REMOVED***
 
     return _instance;
-  ***REMOVED***
+  ***REMOVED***;
 
   return ***REMOVED***
 
