@@ -72,12 +72,26 @@ end
 
 def fips_state
   csv = CSV.read('./original_data/fips.csv', :headers => true)
-  st_fips = ***REMOVED******REMOVED***
+  fips_st = ***REMOVED******REMOVED***
   csv.each do |v|
     key = v['stfips'].rjust(2,"0")
-    st_fips[key] = v['state']
+    fips_st[key] = v['state']
   end
-  st_fips
+  fips_st
+end
+
+def county_fips
+  csv = CSV.read('./original_data/fips.csv', :headers => true)
+  ct_fips = ***REMOVED******REMOVED***
+  words = [' County', ' Area', ' Municipality', ' Borough', ' Parish']
+  replace_regex = Regexp.union(words)
+  csv.each do |v|
+    name = v['name']
+    name = 'Carson' if v['name'] == 'Carson City' && v['state'] == 'NV'
+    key = "#***REMOVED***name.gsub(replace_regex, '')***REMOVED***, #***REMOVED***v['state']***REMOVED***"
+    ct_fips[key] = "#***REMOVED***v['stfips']***REMOVED***#***REMOVED***v['ctyfips'].rjust(3,'0')***REMOVED***"
+  end
+  ct_fips
 end
 
 def states
@@ -104,9 +118,11 @@ task :import_2017_coverage do
   insurance_hash.each_slice(100) do |row_group|
     batch_req = kinto_client.create_batch_request
     row_group.each do |row|
+      row['fips_code'] = row['fips_code'].to_s.rjust(5, '0')
       row['provider_name'] = row.delete 'carrier'
       row['provider_id'] = row.delete 'issuer_id'
       row['is_active'] = true
+      row.delete 'plan_count'
       batch_req.add_request(coverage_2017.create_record_request row)
     end
     resp = batch_req.send
@@ -181,8 +197,8 @@ end
 
 desc 'Import coverage history'
 task :import_coverage_history do
-  # cont = yes?('This will delete all existing records for 2017. Continue?')
-  # exit unless cont
+  cont = yes?('This will delete all existing records for 2017. Continue?')
+  exit unless cont
   [*2014..2016].each do |year|
     puts "uploading data for #***REMOVED***year***REMOVED***..."
     excel_file =  "./original_data/coverage_history/#***REMOVED***year***REMOVED***.xlsx"
@@ -197,13 +213,16 @@ task :import_coverage_history do
 
     uploaded = 0
     failed = 0
+    fips_hash = county_fips
     coverage_hash.each_slice(100) do |row_group|
       batch_req = kinto_client.create_batch_request
       row_group.each do |row|
-        row['provider'] = row.delete 'i'
+        row['provider_name'] = row.delete 'i'
         row['state'] = row.delete 's'
-        row['county'] = row.delete 'c'
-        row['provider_id'] = row.delete 'id'
+        row['county_name'] = row.delete 'c'
+        row['fips_code'] = fips_hash[row['id']]
+        puts row['id'] if row['fips_code'].nil?
+        row.delete 'id'
         batch_req.add_request(collection.create_record_request row)
       end
       resp = batch_req.send
