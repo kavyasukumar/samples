@@ -6,6 +6,7 @@
   var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height"),
+    currentYear,
     formData;
 
   var planReport = d3.map();
@@ -96,6 +97,7 @@
     ***REMOVED***
   ***REMOVED***
 
+  // required for downloading a PNG of the map(s)
   var svg2 = document.querySelector('svg');
   var canvas = document.querySelector('canvas');
 
@@ -107,7 +109,7 @@
     ***REMOVED***);
 
     var a = document.createElement('a');
-    a.setAttribute('download', '2017_providers.png');
+    a.setAttribute('download', currentYear+'_providers.png');
     a.setAttribute('href', imgURI);
     a.setAttribute('target', '_blank');
 
@@ -155,8 +157,11 @@
 
   $('#form-submit').on('click', function()***REMOVED***
     var control=Alpaca($("#form").get());
-    formData = (JSON.stringify(control.getValue(), null, "   "));
-    console.log(formData);
+    // formData = (JSON.stringify(control.getValue(), null, "   "));
+    formData = control.getValue();
+    currentYear = formData.select_year;
+    console.log(currentYear, formData)
+    window.dataAdapter.getProviderCount(currentYear, drawMap);
   ***REMOVED***)
 
   // doesn't get when radio buttons are changed
@@ -178,7 +183,8 @@
     /* TODO: REMOVE THIS COMMENT.
      Casey, I refactored the provider count fx. So changed the line below. Also you can directly pass in the fucntion name you want to call. The parameter ('data' in this case) gets automatically assigned.
      One other thing that might possibly affect what you have already done is that Fips codes are now always 5 digits with leading 0's if required. this was done to make things consitent across all data sets we have*/
-    window.dataAdapter.getProviderCount(2017, drawMap);
+    currentYear = '2017';
+    window.dataAdapter.getProviderCount(currentYear, drawMap);
 
     $("#form").alpaca(***REMOVED***
         "schema": ***REMOVED***
