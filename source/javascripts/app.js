@@ -3,7 +3,6 @@
 //= require foundation/foundation.accordion
 
 $(document).foundation();
-console.log('test');
 
 /* globals DataAdapter */
 

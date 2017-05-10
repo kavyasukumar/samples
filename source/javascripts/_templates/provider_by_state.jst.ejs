@@ -1,0 +1,33 @@
+<% _.each(data, function(coverage, state) ***REMOVED*** %>
+  <ul class="accordion" data-accordion>
+    <li class="accordion-navigation">
+      <a href="<%= '#' + state %>"><%= state %></a>
+      <div id="<%= state %>" class="content">
+        <% _.each(coverage, function(counties, provider) ***REMOVED*** %>
+        <table>
+          <thead>
+            <tr>
+              <th><h3><%= provider %></h3></th>
+              <th>Active?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% _.each(counties, function(val, index) ***REMOVED*** %>
+            <tr>
+              <td><%= val.county_name %></td>
+              <td class="switch tiny">
+                <input id="<%= val.id %>" type="checkbox"
+                <% if(val.is_active)***REMOVED*** %>
+                   checked
+                 <% ***REMOVED*** %>>
+                 <label for="<%= val.id %>"></label>
+              </td>
+            </tr>
+            <% ***REMOVED***) %>
+          </tbody>
+        </table>
+        <% ***REMOVED***) %>
+      </div>
+    </li>
+  </ul>
+<% ***REMOVED***) %>
