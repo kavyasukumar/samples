@@ -108,10 +108,10 @@
   $(document).ready(function() ***REMOVED***
     window.dataAdapter = window.dataAdapter || DataAdapter.getInstance();
 
-    window.dataAdapter.getProviderCount17(function(providerCount17)***REMOVED***
-      console.log('Here is the provider count for 2017 by fips code || MAP PAGE');
-      drawMap(providerCount17);
-    ***REMOVED***);
+    /* TODO: REMOVE THIS COMMENT.
+     Casey, I refactored the provider count fx. So changed the line below. Also you can directly pass in the fucntion name you want to call. The parameter ('data' in this case) gets automatically assigned.
+     One other thing that might possibly affect what you have already done is that Fips codes are now always 5 digits with leading 0's if required. this was done to make things consitent across all data sets we have*/
+    window.dataAdapter.getProviderCount(2017, drawMap);
   ***REMOVED***);
 
 ***REMOVED***)();
