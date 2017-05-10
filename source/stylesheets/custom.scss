@@ -27,12 +27,31 @@
  * to add that css to shared, or to create generic css to solve your problem
  */
 
+ #save***REMOVED***
+   background-color: #421a8c;
+   color: $white;
+   border-radius: 3px;
+   padding: 10px;
+   margin: 20px;
+ ***REMOVED***
+
  .counties ***REMOVED***
-   fill: none;
+   fill: #ccc;
+   stroke: #ccc;
+   stroke-width: 0.5px;
  ***REMOVED***
 
  .states ***REMOVED***
-   fill: none;
    stroke: #fff;
    stroke-linejoin: round;
  ***REMOVED***
+
+.tick***REMOVED***
+  line***REMOVED***
+    opacity: 0;
+  ***REMOVED***
+  text***REMOVED***
+    font-size: 16px;
+    font-family: 'Nitti';
+  ***REMOVED***
+***REMOVED***
