@@ -120,7 +120,6 @@
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext('2d');
 
-
     // lets get the resolution of our device.
     var pixelRatio = 2;
 
@@ -157,10 +156,8 @@
 
   $('#form-submit').on('click', function()***REMOVED***
     var control=Alpaca($("#form").get());
-    // formData = (JSON.stringify(control.getValue(), null, "   "));
     formData = control.getValue();
     currentYear = formData.select_year;
-    console.log(currentYear, formData)
     window.dataAdapter.getProviderCount(currentYear, drawMap);
   ***REMOVED***)
 
@@ -204,6 +201,9 @@
                   'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'],
                 "dependencies": "map_type"
               ***REMOVED***,
+              "map_num_label":***REMOVED***
+                "title": "One year or multiple years?"
+              ***REMOVED***,
               "map_num": ***REMOVED***
                 "required": true,
                 "default": "single",
@@ -240,11 +240,29 @@
         ***REMOVED***,
         "options": ***REMOVED***
           "fields": ***REMOVED***
+            "map_type": ***REMOVED***
+              "vertical": false,
+              "optionLabels": [
+                "<span>U.S.</span>",
+                "<span>state</span>"
+              ]
+            ***REMOVED***,
             "state_select": ***REMOVED***
               "type": "select",
               "dependencies": ***REMOVED***
                 "map_type": "state"
               ***REMOVED***
+            ***REMOVED***,
+            "map_num_label":***REMOVED***
+              "type": "hidden"
+            ***REMOVED***,
+            "map_num": ***REMOVED***
+              "vertical": false,
+              "sort": false,
+              "optionLabels": [
+                "<span>single</span>",
+                "<span>multiple</span>"
+              ]
             ***REMOVED***,
             "select_year": ***REMOVED***
               "type": "select",
@@ -268,6 +286,7 @@
           ***REMOVED***
         ***REMOVED***
     ***REMOVED***);
+    $('.radio.alpaca-control').css('display', 'flex');
   ***REMOVED***);
 
 ***REMOVED***)();

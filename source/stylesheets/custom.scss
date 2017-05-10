@@ -28,6 +28,9 @@
  * to add that css to shared, or to create generic css to solve your problem
  */
 
+$dark: #222222;
+$gray: #999999;
+
 #svg-map***REMOVED***
  margin: 50px 0 20px 0px;
 ***REMOVED***
@@ -51,19 +54,56 @@ nav***REMOVED***
 ***REMOVED***
 
 button***REMOVED***
- background-color: #421a8c;
- color: $white;
+ background-color: $gray;
+ // color: $white;
+ color: $dark;
  border-radius: 3px;
  padding: 10px;
  margin: 20px 20px 0 0;
 ***REMOVED***
 
-input[type="checkbox"], input[type="radio"]***REMOVED***
-  margin-right: 10px;
+.alpaca-field-radio***REMOVED***
+  display: flex;
+  justify-content: space-between;
+***REMOVED***
+
+.radio.alpaca-control***REMOVED***
+  width:50%;
+  background-color:#EFEFEF;
+  overflow:auto;
+***REMOVED***
+
+.radio.alpaca-control label span ***REMOVED***
+    text-align:center;
+    padding:6px 0px;
+    display:block;
+    border:1px solid #D0D0D0;
+    border-radius:3px 0 0 3px;
+    color: $dark;
+***REMOVED***
+
+.radio.alpaca-control:nth-of-type(2)***REMOVED***
+  label span***REMOVED***
+    border-radius:0 3px 3px 0;
+  ***REMOVED***
+***REMOVED***
+
+.radio.alpaca-control label input ***REMOVED***
+    position:absolute;
+    top:-20px;
+***REMOVED***
+
+.radio.alpaca-control input:checked + span ***REMOVED***
+    background-color: $gray;
+    border:1px solid $gray;
+    // color:#F7F7F7;
 ***REMOVED***
 
 .form-group***REMOVED***
   margin-bottom: 15px;
+  &.alpaca-field-hidden***REMOVED***
+    margin-bottom: 5px;
+  ***REMOVED***
 ***REMOVED***
 
 .counties ***REMOVED***
