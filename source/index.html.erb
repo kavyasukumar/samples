@@ -1,10 +1,19 @@
 <%=partial 'partials/nav' %>
 <%=partial 'partials/variables' %>
 
-<svg id="svg-map" width="960" height="600" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"></svg>
-<button id="save">Save image</button>
-<canvas id="canvas" width="960" height="600" style="display:none"></canvas>
+<div class="left">
+  <svg id="svg-map" width="960" height="600" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"></svg>
+  <canvas id="canvas" width="960" height="600" style="display:none"></canvas>
+</div>
 
+<div class="right-bar">
+  <div id="form"></div>
+  <button id="form-submit">Submit</button>
+  <button id="save">Save image</button>
+</div>
+
+<%= javascript_include_tag  'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.8/handlebars.min.js' %>
+<%= javascript_include_tag  '//code.cloudcms.com/alpaca/1.5.23/bootstrap/alpaca.min.js' %>
 <%= javascript_include_tag  'https://d3js.org/d3.v4.min.js' %>
 <%= javascript_include_tag  'https://d3js.org/d3-scale-chromatic.v1.min.js' %>
 <%= javascript_include_tag  'https://d3js.org/topojson.v2.min.js' %>

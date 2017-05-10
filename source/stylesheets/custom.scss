@@ -28,24 +28,46 @@
  * to add that css to shared, or to create generic css to solve your problem
  */
 
- #save***REMOVED***
-   background-color: #421a8c;
-   color: $white;
-   border-radius: 3px;
-   padding: 10px;
-   margin: 20px;
- ***REMOVED***
+#svg-map***REMOVED***
+ margin: 50px 0 20px 0px;
+***REMOVED***
 
- .counties ***REMOVED***
-   fill: #ccc;
-   stroke: #ccc;
-   stroke-width: 0.5px;
- ***REMOVED***
+nav***REMOVED***
+  z-index: 2;
+***REMOVED***
 
- .states ***REMOVED***
-   stroke: #fff;
-   stroke-linejoin: round;
- ***REMOVED***
+.right-bar***REMOVED***
+  position: fixed;
+  z-index: 1;
+  top: 0px;
+  right: 0px;
+  padding: 65px 25px 0;
+  background-color: #F5F5F5;
+  height: 100vh;
+***REMOVED***
+
+.alpaca-field-object***REMOVED***
+  padding: 0px;
+***REMOVED***
+
+button***REMOVED***
+ background-color: #421a8c;
+ color: $white;
+ border-radius: 3px;
+ padding: 10px;
+ margin: 20px 20px 0 0;
+***REMOVED***
+
+.counties ***REMOVED***
+ fill: #ccc;
+ stroke: #ccc;
+ stroke-width: 0.5px;
+***REMOVED***
+
+.states ***REMOVED***
+ stroke: #fff;
+ stroke-linejoin: round;
+***REMOVED***
 
 .tick***REMOVED***
   line***REMOVED***

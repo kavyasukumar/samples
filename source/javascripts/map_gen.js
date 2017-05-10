@@ -6,7 +6,7 @@
   var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height"),
-    flapjack;
+    formData;
 
   var planReport = d3.map();
 
@@ -153,6 +153,25 @@
     img.src = url;
   ***REMOVED***);
 
+  $('#form-submit').on('click', function()***REMOVED***
+    var control=Alpaca($("#form").get());
+    formData = (JSON.stringify(control.getValue(), null, "   "));
+    console.log(formData);
+  ***REMOVED***)
+
+  // doesn't get when radio buttons are changed
+  // $("#form").change(function()***REMOVED***
+  //    console.log('change');
+  // ***REMOVED***);
+
+  // triggers twice
+  // $("#form").click(function()***REMOVED***
+  //   var control=Alpaca($("#form").get());
+  //   formData = (JSON.stringify(control.getValue(), null, "   "));
+  //   console.log(formData);
+  // ***REMOVED***);
+
+
   $(document).ready(function() ***REMOVED***
     window.dataAdapter = window.dataAdapter || DataAdapter.getInstance();
 
@@ -160,6 +179,89 @@
      Casey, I refactored the provider count fx. So changed the line below. Also you can directly pass in the fucntion name you want to call. The parameter ('data' in this case) gets automatically assigned.
      One other thing that might possibly affect what you have already done is that Fips codes are now always 5 digits with leading 0's if required. this was done to make things consitent across all data sets we have*/
     window.dataAdapter.getProviderCount(2017, drawMap);
+
+    $("#form").alpaca(***REMOVED***
+        "schema": ***REMOVED***
+            "type": "object",
+            "properties": ***REMOVED***
+              "map_type": ***REMOVED***
+                "required": true,
+                "default": "U.S.",
+                "enum": ["U.S.", "state"]
+              ***REMOVED***,
+              "state_select": ***REMOVED***
+                "title": "Select state",
+                "type": "string",
+                "required": true,
+                "default": "Alabama",
+                "enum": [
+                  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'],
+                "dependencies": "map_type"
+              ***REMOVED***,
+              "map_num": ***REMOVED***
+                "required": true,
+                "default": "single",
+                "enum": ["single", "multiple"]
+              ***REMOVED***,
+              "select_year": ***REMOVED***
+                "title": "Select year",
+                "type": "string",
+                "required": true,
+                "default": '2017',
+                "enum": [
+                  '2014',
+                  '2015',
+                  '2016',
+                  '2017'
+                ],
+                "dependencies": "map_num"
+              ***REMOVED***,
+              "select_years": ***REMOVED***
+                "title": "Select years",
+                "type": "array",
+                "enum": [
+                  '2014',
+                  '2015',
+                  '2016',
+                  '2017'
+                ],
+                "dependencies": "map_num"
+              ***REMOVED***,
+              "election_results": ***REMOVED***
+                "dependencies": "select_year"
+              ***REMOVED***
+            ***REMOVED***
+        ***REMOVED***,
+        "options": ***REMOVED***
+          "fields": ***REMOVED***
+            "state_select": ***REMOVED***
+              "type": "select",
+              "dependencies": ***REMOVED***
+                "map_type": "state"
+              ***REMOVED***
+            ***REMOVED***,
+            "select_year": ***REMOVED***
+              "type": "select",
+              "dependencies": ***REMOVED***
+                "map_num": "single"
+              ***REMOVED***
+            ***REMOVED***,
+            "select_years": ***REMOVED***
+              "type": "checkbox",
+              "dependencies": ***REMOVED***
+                "map_num": "multiple"
+              ***REMOVED***
+            ***REMOVED***,
+            "election_results": ***REMOVED***
+              "type": "checkbox",
+              "rightLabel": "Add 2016 election results",
+              "dependencies": ***REMOVED***
+                "select_year": "2017"
+              ***REMOVED***
+            ***REMOVED***
+          ***REMOVED***
+        ***REMOVED***
+    ***REMOVED***);
   ***REMOVED***);
 
 ***REMOVED***)();
