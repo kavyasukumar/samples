@@ -1,8 +1,9 @@
 <%=partial 'partials/nav' %>
 <%=partial 'partials/variables' %>
 
-<svg id="svg-map" width="960" height="600"></svg>
+<svg id="svg-map" width="960" height="600" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"></svg>
 <button id="save">Save image</button>
+<canvas id="canvas" width="960" height="600" style="display:none"></canvas>
 
 <%= javascript_include_tag  'https://d3js.org/d3.v4.min.js' %>
 <%= javascript_include_tag  'https://d3js.org/d3-scale-chromatic.v1.min.js' %>

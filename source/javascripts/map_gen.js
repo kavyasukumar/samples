@@ -1,5 +1,5 @@
 /* globals DataAdapter */
-//= require _vendor/pancake.stack.min
+//= require _data_adapter
 (function() ***REMOVED***
   // Application code goes here
 
@@ -96,13 +96,61 @@
     ***REMOVED***
   ***REMOVED***
 
+  var svg2 = document.querySelector('svg');
+  var canvas = document.querySelector('canvas');
+
+  function triggerDownload (imgURI) ***REMOVED***
+    var evt = new MouseEvent('click', ***REMOVED***
+      view: window,
+      bubbles: false,
+      cancelable: true
+    ***REMOVED***);
+
+    var a = document.createElement('a');
+    a.setAttribute('download', '2017_providers.png');
+    a.setAttribute('href', imgURI);
+    a.setAttribute('target', '_blank');
+
+    a.dispatchEvent(evt);
+  ***REMOVED***
+
   d3.select("#save").on("click", function()***REMOVED***
-    flapjack = Pancake('svg-map');
-    console.log(flapjack)
-    flapjack.height = 300;
-    flapjack.width = 480;
-    console.log(flapjack)
-    flapjack.download("2017_providers.png");
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+
+
+    // lets get the resolution of our device.
+    var pixelRatio = 2;
+
+    // lets scale the canvas and change its CSS width/height to make it high res.
+    canvas.style.width = canvas.width +'px';
+    canvas.style.height = canvas.height +'px';
+    canvas.width *= pixelRatio;
+    canvas.height *= pixelRatio;
+
+    // Now that its high res we need to compensate so our images can be drawn as
+    //normal, by scaling everything up by the pixelRatio.
+    ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0);
+
+    var data = (new XMLSerializer()).serializeToString(svg2);
+    var DOMURL = window.URL || window.webkitURL || window;
+
+    var img = new Image();
+    var svgBlob = new Blob([data], ***REMOVED***type: 'image/svg+xml;charset=utf-8'***REMOVED***);
+    var url = DOMURL.createObjectURL(svgBlob);
+
+    img.onload = function () ***REMOVED***
+      ctx.drawImage(img, 0, 0);
+      DOMURL.revokeObjectURL(url);
+
+      var imgURI = canvas
+          .toDataURL('image/png')
+          .replace('image/png', 'image/octet-stream');
+
+      triggerDownload(imgURI);
+    ***REMOVED***;
+
+    img.src = url;
   ***REMOVED***);
 
   $(document).ready(function() ***REMOVED***
