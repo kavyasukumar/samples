@@ -6,10 +6,13 @@
   var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height"),
-    currentYear,
-    formData;
-
-  var planReport = d3.map();
+    formData = ***REMOVED***
+      'map_type': "U.S.",
+      'map_num': "single",
+      'select_year': "2017",
+      'election_results': false
+    ***REMOVED***,
+    currentYear;
 
   var path = d3.geoPath();
 
@@ -67,11 +70,23 @@
         .await(ready);
 
     function ready(error, us) ***REMOVED***
+      var tj = topojson.feature(us, us.objects.counties).features;
+      if(formData['map_type'] === 'state')***REMOVED***
+        tj = topojson.feature(us, us.objects.counties).features.filter(function(d)***REMOVED***
+          if(_.contains(state_fips[formData['state_select']], d.id))***REMOVED***
+            return d;
+          ***REMOVED***
+        ***REMOVED***);
+        d3.selectAll('path').attr('fill', 'none').attr('stroke', 'none');
+        d3.selectAll('.counties').attr('stroke', 'none').attr('fill', 'none');
+      ***REMOVED*** else ***REMOVED***
+        d3.selectAll('.counties').attr('stroke', '#ccc').attr('fill', '#ccc');
+      ***REMOVED***
       if (error) throw error;
       svg.append("g")
           .attr("class", "counties")
         .selectAll("path")
-        .data(topojson.feature(us, us.objects.counties).features)
+        .data(tj)
         .enter().append("path")
           .attr("fill", function(d) ***REMOVED***
             if(color(d.count = data[d.id]))***REMOVED***
@@ -93,9 +108,26 @@
           .attr("class", "states")
           .attr("d", path)
           .attr('fill', 'none')
-          .attr('stroke', '#fff');
+          .attr('stroke', function()***REMOVED***
+            if(formData['map_type'] === 'state')***REMOVED***
+              return 'none';
+            ***REMOVED*** else ***REMOVED***
+              return '#fff';
+            ***REMOVED***
+          ***REMOVED***);
     ***REMOVED***
   ***REMOVED***
+
+  $('#form-submit').on('click', function()***REMOVED***
+    var control=Alpaca($("#form").get());
+    formData = control.getValue();
+    console.log(formData);
+    currentYear = formData.select_year;
+    window.dataAdapter.getProviderCount(currentYear, drawMap);
+  ***REMOVED***);
+
+
+
 
   // required for downloading a PNG of the map(s)
   var svg2 = document.querySelector('svg');
@@ -154,26 +186,6 @@
     img.src = url;
   ***REMOVED***);
 
-  $('#form-submit').on('click', function()***REMOVED***
-    var control=Alpaca($("#form").get());
-    formData = control.getValue();
-    currentYear = formData.select_year;
-    window.dataAdapter.getProviderCount(currentYear, drawMap);
-  ***REMOVED***)
-
-  // doesn't get when radio buttons are changed
-  // $("#form").change(function()***REMOVED***
-  //    console.log('change');
-  // ***REMOVED***);
-
-  // triggers twice
-  // $("#form").click(function()***REMOVED***
-  //   var control=Alpaca($("#form").get());
-  //   formData = (JSON.stringify(control.getValue(), null, "   "));
-  //   console.log(formData);
-  // ***REMOVED***);
-
-
   $(document).ready(function() ***REMOVED***
     window.dataAdapter = window.dataAdapter || DataAdapter.getInstance();
 
@@ -196,9 +208,8 @@
                 "title": "Select state",
                 "type": "string",
                 "required": true,
-                "default": "Alabama",
-                "enum": [
-                  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'],
+                "default": "AL",
+                "enum": ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'],
                 "dependencies": "map_type"
               ***REMOVED***,
               "map_num_label":***REMOVED***
@@ -249,6 +260,8 @@
             ***REMOVED***,
             "state_select": ***REMOVED***
               "type": "select",
+              "optionLabels": [
+                'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'],
               "dependencies": ***REMOVED***
                 "map_type": "state"
               ***REMOVED***
