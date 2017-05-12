@@ -2,6 +2,7 @@
 //= require _data_adapter
 (function() ***REMOVED***
   // Application code goes here
+  var stateIdx = ['WA', 'MT', 'ID', 'ND', 'WI', 'ME', 'MI', 'WI', 'OR', 'SD', 'NH', 'VT', 'NY', 'WY', 'IA', 'NE', 'MA', 'IL', 'PA', 'CT', 'RI', 'CA', 'UT', 'NV', 'OH', 'IN', 'NY', 'CO', 'WV', 'MO', 'KS', 'DE', 'MD', 'VA', 'KY', 'DC', 'AZ', 'OK', 'NM', 'TN', 'NC', 'TX', 'AR', 'SC', 'AL', 'GA', 'MS', 'LA', 'FL', 'HI', 'AR'];
   var tester;
 
   var svg = d3.select("svg"),
@@ -49,49 +50,6 @@
   svg
       .call(zoom) // delete this line to disable free zooming
       .call(zoom.transform, initialTransform);
-
-  // var projection = d3.geoMercator()
-  //     .scale(300)
-  //     .translate([width,height]);
-
-  // var projection = d3.geoAlbersUsa()
-  //     .scale(1000)
-  //     .translate([width / 2, height / 2]);
-  //
-  // var zoom = d3.zoom()
-  //     .on("zoom", zoomed);
-  //
-  // var initialTransform = d3.zoomIdentity
-  //     .translate(0,0)
-  //     .scale(1);
-  //
-  // var path = d3.geoPath()
-  //     .projection(projection);
-  //
-  // var x = d3.scaleLinear()
-  //     .domain([0, 4])
-  //     .rangeRound([600, 860]);
-  //
-  // var color = d3.scaleThreshold()
-  //     .domain(d3.range(0, 4))
-  //     .range(d3.schemeBlues[5]);
-  //
-  // var svg = d3.select("#svg-map")
-  //     .on("click", stopped, true);
-  //
-  // svg.append("rect")
-  //     .attr("class", "background")
-  //     .attr("width", width)
-  //     .attr("height", height)
-  //     .on("click", reset);
-  //
-  // var g = svg.append("g")
-  //     .attr("class", "key")
-  //     .attr("transform", "translate(32.5,40)");
-  //
-  // svg
-  //     .call(zoom) // delete this line to disable free zooming
-  //     .call(zoom.transform, initialTransform);
 
   // g.selectAll("rect")
   //   .data(color.range().map(function(d) ***REMOVED***
@@ -184,13 +142,15 @@
     function ready(error, us) ***REMOVED***
       var tj = topojson.feature(us, us.objects.counties).features;
       if(formData['map_type'] === 'state')***REMOVED***
+        tester = topojson.feature(us, us.objects.states).features[_.indexOf(stateIdx, formData['state_select'])];
         tj = topojson.feature(us, us.objects.counties).features.filter(function(d)***REMOVED***
           if(_.contains(state_fips[formData['state_select']], d.id))***REMOVED***
             return d;
           ***REMOVED***
         ***REMOVED***);
-        d3.selectAll('path').attr('fill', 'none').attr('stroke', 'none');
-        d3.selectAll('.counties').attr('stroke', 'none').attr('fill', 'none');
+        // d3.selectAll('path').attr('fill', 'none').attr('stroke', 'none');
+        // d3.selectAll('.counties').attr('stroke', 'none').attr('fill', 'none');
+        clicked();
       ***REMOVED*** else ***REMOVED***
         d3.selectAll('.counties').attr('stroke', '#ccc').attr('fill', '#ccc');
       ***REMOVED***
@@ -202,11 +162,11 @@
           .data(tj)
         .enter().append("path")
           .attr("fill", function(d) ***REMOVED***
-            // console.log(d)
             if(String(d.id).length === 4)***REMOVED***
               d.id = '0'+String(d.id);
             ***REMOVED***
             if(color(d.count = data[d.id]))***REMOVED***
+              // console.log(color(d.count = data[d.id]))
               return color(d.count = data[d.id]);
             ***REMOVED*** else ***REMOVED***
               return '#ccc';
@@ -221,24 +181,20 @@
         .append("title")
           .text(function(d) ***REMOVED*** return d.count; ***REMOVED***);
 
-      svg.append("path")
-          .datum(topojson.mesh(us, us.objects.states, function(a, b) ***REMOVED*** return a !== b; ***REMOVED***))
-          .attr("class", "mesh")
-          .attr("d", path)
-          .attr('fill', 'none')
-          .attr('stroke', function()***REMOVED***
-            if(formData['map_type'] === 'state')***REMOVED***
-              return 'none';
-            ***REMOVED*** else ***REMOVED***
-              return '#fff';
-            ***REMOVED***
-          ***REMOVED***);
-
-      tester = topojson.feature(us, us.objects.states).features[0];
-      // setTimeout(function()***REMOVED***
-      //   clicked();
-      // ***REMOVED***, 5000);
-
+      if(d3.select('.mesh')['_groups'][0][0] === null)***REMOVED***
+        svg.append("path")
+            .datum(topojson.mesh(us, us.objects.states, function(a, b) ***REMOVED*** return a !== b; ***REMOVED***))
+            .attr("class", "mesh")
+            .attr("d", path)
+            .attr('fill', 'none')
+            .attr('stroke', '#fff')
+      ***REMOVED*** else ***REMOVED***
+        if(formData['map_type'] === 'state')***REMOVED***
+          d3.selectAll('.mesh').style('display', 'none');
+        ***REMOVED*** else ***REMOVED***
+          d3.selectAll('.mesh').style('display', 'block');
+        ***REMOVED***
+      ***REMOVED***
 
       // svg.append("g")
       //     .attr("class", "counties")
@@ -282,7 +238,6 @@
   $('#form-submit').on('click', function()***REMOVED***
     var control=Alpaca($("#form").get());
     formData = control.getValue();
-    // console.log(formData);
     currentYear = formData.select_year;
     window.dataAdapter.getProviderCount(currentYear, drawMap);
   ***REMOVED***);
