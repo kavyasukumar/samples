@@ -2,23 +2,23 @@
 //= require _data_adapter
 (function() ***REMOVED***
   // Application code goes here
+  var tester;
 
   var svg = d3.select("svg"),
-    width = +svg.attr("width"),
-    height = +svg.attr("height"),
-    formData = ***REMOVED***
-      'map_type': "U.S.",
-      'map_num': "single",
-      'select_year': "2017",
-      'election_results': false
-    ***REMOVED***,
-    currentYear,
-    active = d3.select(null);
+      width = +svg.attr("width"),
+      height = +svg.attr("height"),
+      formData = ***REMOVED***
+        'map_type': "U.S.",
+        'map_num': "single",
+        'select_year': "2017",
+        'election_results': false
+      ***REMOVED***,
+      currentYear,
+      active = d3.select(null);
 
-  // var path = d3.geoPath();
   var projection = d3.geoAlbersUsa()
-    .scale(1000)
-    .translate([width / 2, height / 2]);
+      .scale(1000)
+      .translate([width / 2, height / 2]);
 
   var zoom = d3.zoom()
       .on("zoom", zoomed);
@@ -30,66 +30,111 @@
   var path = d3.geoPath()
       .projection(projection);
 
+  svg.on("click", stopped, true);
+
+  svg.append("rect")
+      .attr("class", "background")
+      .attr("width", width)
+      .attr("height", height)
+      .on("click", reset);
+
+  var g = svg.append("g").attr('class', 'counties');
   var x = d3.scaleLinear()
       .domain([0, 4])
       .rangeRound([600, 860]);
-
   var color = d3.scaleThreshold()
       .domain(d3.range(0, 4))
       .range(d3.schemeBlues[5]);
 
-  svg.on("click", reset);
-
-  var g = svg.append("g")
-      .attr("class", "key")
-      .attr("transform", "translate(32.5,40)");
-
   svg
-    .call(zoom) // delete this line to disable free zooming
-    .call(zoom.transform, initialTransform);
+      .call(zoom) // delete this line to disable free zooming
+      .call(zoom.transform, initialTransform);
 
-  g.selectAll("rect")
-    .data(color.range().map(function(d) ***REMOVED***
-        d = color.invertExtent(d);
-        if (d[0] == null) d[0] = x.domain()[0];
-        if (d[1] == null) d[1] = x.domain()[1];
-        return d;
-      ***REMOVED***))
-    .enter().append("rect")
-      .attr("height", 8)
-      .attr("x", function(d) ***REMOVED*** return x(d[0]) - 32.5; ***REMOVED***)
-      .attr("width", function(d) ***REMOVED*** return x(d[1]) - x(d[0]); ***REMOVED***)
-      .attr("fill", function(d) ***REMOVED*** return color(d[0]); ***REMOVED***);
+  // var projection = d3.geoMercator()
+  //     .scale(300)
+  //     .translate([width,height]);
 
-  g.append("text")
-      .attr("class", "caption")
-      .attr("x", x.range()[0] - 32.5)
-      .attr("y", -6)
-      .attr("fill", "#000")
-      .attr("text-anchor", "start")
-      .attr("font-weight", "bold")
-      .text("Number of ACA insurers available");
+  // var projection = d3.geoAlbersUsa()
+  //     .scale(1000)
+  //     .translate([width / 2, height / 2]);
+  //
+  // var zoom = d3.zoom()
+  //     .on("zoom", zoomed);
+  //
+  // var initialTransform = d3.zoomIdentity
+  //     .translate(0,0)
+  //     .scale(1);
+  //
+  // var path = d3.geoPath()
+  //     .projection(projection);
+  //
+  // var x = d3.scaleLinear()
+  //     .domain([0, 4])
+  //     .rangeRound([600, 860]);
+  //
+  // var color = d3.scaleThreshold()
+  //     .domain(d3.range(0, 4))
+  //     .range(d3.schemeBlues[5]);
+  //
+  // var svg = d3.select("#svg-map")
+  //     .on("click", stopped, true);
+  //
+  // svg.append("rect")
+  //     .attr("class", "background")
+  //     .attr("width", width)
+  //     .attr("height", height)
+  //     .on("click", reset);
+  //
+  // var g = svg.append("g")
+  //     .attr("class", "key")
+  //     .attr("transform", "translate(32.5,40)");
+  //
+  // svg
+  //     .call(zoom) // delete this line to disable free zooming
+  //     .call(zoom.transform, initialTransform);
 
-  g.call(d3.axisBottom(x)
-      .tickFormat(function(x, i) ***REMOVED***
-        if(x === 3)***REMOVED***
-          return x + '+';
-        ***REMOVED*** else ***REMOVED***
-          return x;
-        ***REMOVED***
-      ***REMOVED***)
-      .tickPadding(13)
-      .tickSize(0)
-      .tickValues(color.domain()))
-    .select(".domain")
-      .remove();
+  // g.selectAll("rect")
+  //   .data(color.range().map(function(d) ***REMOVED***
+  //       d = color.invertExtent(d);
+  //       if (d[0] == null) d[0] = x.domain()[0];
+  //       if (d[1] == null) d[1] = x.domain()[1];
+  //       return d;
+  //     ***REMOVED***))
+  //   .enter().append("rect")
+  //     .attr("height", 8)
+  //     .attr("x", function(d) ***REMOVED*** return x(d[0]) - 32.5; ***REMOVED***)
+  //     .attr("width", function(d) ***REMOVED*** return x(d[1]) - x(d[0]); ***REMOVED***)
+  //     .attr("fill", function(d) ***REMOVED*** return color(d[0]); ***REMOVED***);
+  //
+  // g.append("text")
+  //     .attr("class", "caption")
+  //     .attr("x", x.range()[0] - 32.5)
+  //     .attr("y", -6)
+  //     .attr("fill", "#000")
+  //     .attr("text-anchor", "start")
+  //     .attr("font-weight", "bold")
+  //     .text("Number of ACA insurers available");
+  //
+  // g.call(d3.axisBottom(x)
+  //     .tickFormat(function(x, i) ***REMOVED***
+  //       if(x === 3)***REMOVED***
+  //         return x + '+';
+  //       ***REMOVED*** else ***REMOVED***
+  //         return x;
+  //       ***REMOVED***
+  //     ***REMOVED***)
+  //     .tickPadding(13)
+  //     .tickSize(0)
+  //     .tickValues(color.domain()))
+  //   .select(".domain")
+  //     .remove();
 
-  function clicked(d) ***REMOVED***
-    if (active.node() === this) return reset();
-    active.classed("active", false);
-    active = d3.select(this).classed("active", true);
+  function clicked() ***REMOVED***
+    // if (active.node() === this) return reset();
+    // active.classed("active", false);
+    // active = d3.select(this).classed("active", true);
 
-    var bounds = path.bounds(d),
+    var bounds = path.bounds(tester),
         dx = bounds[1][0] - bounds[0][0],
         dy = bounds[1][1] - bounds[0][1],
         x = (bounds[0][0] + bounds[1][0]) / 2,
@@ -97,13 +142,12 @@
         scale = Math.max(1, Math.min(8, 0.9 / Math.max(dx / width, dy / height))),
         translate = [width / 2 - scale * x, height / 2 - scale * y];
 
-    console.log(d, bounds, translate, svg);
-
+    console.log(bounds);
     var transform = d3.zoomIdentity
       .translate(translate[0], translate[1])
       .scale(scale);
 
-    svg.transition()
+    d3.selectAll('.counties').transition()
         .duration(750)
         .call(zoom.transform, transform);
   ***REMOVED***
@@ -120,15 +164,18 @@
   function zoomed() ***REMOVED***
     var transform = d3.event.transform;
 
-    g.style("stroke-width", 1.5 / transform.k + "px");
-    g.attr("transform", transform);
+    d3.selectAll('.counties').style("stroke-width", 1.5 / transform.k + "px");
+    d3.selectAll('.counties').attr("transform", transform);
   ***REMOVED***
 
+  // If the drag behavior prevents the default click,
+  // also stop propagation so we don’t click-to-zoom.
   function stopped() ***REMOVED***
     if (d3.event.defaultPrevented) d3.event.stopPropagation();
   ***REMOVED***
 
   function drawMap(data)***REMOVED***
+    console.log(formData);
     d3.queue()
         // .defer(d3.json, "https://d3js.org/us-10m.v1.json")
         .defer(d3.json, "https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/us.json")
@@ -148,12 +195,14 @@
         d3.selectAll('.counties').attr('stroke', '#ccc').attr('fill', '#ccc');
       ***REMOVED***
       if (error) throw error;
+
       svg.append("g")
           .attr("class", "counties")
-        .selectAll("path")
-        .data(tj)
+       .selectAll("path")
+          .data(tj)
         .enter().append("path")
           .attr("fill", function(d) ***REMOVED***
+            // console.log(d)
             if(String(d.id).length === 4)***REMOVED***
               d.id = '0'+String(d.id);
             ***REMOVED***
@@ -168,13 +217,13 @@
             if(d.count)***REMOVED*** return '#fff'; ***REMOVED***
           ***REMOVED***)
           .attr('stroke-width', '0.5px')
-          .on("click", clicked)
+          // .on("click", clicked)
         .append("title")
           .text(function(d) ***REMOVED*** return d.count; ***REMOVED***);
 
       svg.append("path")
           .datum(topojson.mesh(us, us.objects.states, function(a, b) ***REMOVED*** return a !== b; ***REMOVED***))
-          .attr("class", "states")
+          .attr("class", "mesh")
           .attr("d", path)
           .attr('fill', 'none')
           .attr('stroke', function()***REMOVED***
@@ -184,13 +233,56 @@
               return '#fff';
             ***REMOVED***
           ***REMOVED***);
+
+      tester = topojson.feature(us, us.objects.states).features[0];
+      // setTimeout(function()***REMOVED***
+      //   clicked();
+      // ***REMOVED***, 5000);
+
+
+      // svg.append("g")
+      //     .attr("class", "counties")
+      //   .selectAll("path")
+      //   .data(tj)
+      //   .enter().append("path")
+      //     .attr("fill", function(d) ***REMOVED***
+      //       if(String(d.id).length === 4)***REMOVED***
+      //         d.id = '0'+String(d.id);
+      //       ***REMOVED***
+      //       if(color(d.count = data[d.id]))***REMOVED***
+      //         return color(d.count = data[d.id]);
+      //       ***REMOVED*** else ***REMOVED***
+      //         return '#ccc';
+      //       ***REMOVED***
+      //     ***REMOVED***)
+      //     .attr("d", path)
+      //     .attr("stroke", function(d)***REMOVED***
+      //       if(d.count)***REMOVED*** return '#fff'; ***REMOVED***
+      //     ***REMOVED***)
+      //     .attr('stroke-width', '0.5px')
+      //     .on("click", clicked)
+      //   .append("title")
+      //     .text(function(d) ***REMOVED*** return d.count; ***REMOVED***);
+      //
+      // svg.append("path")
+      //     .datum(topojson.mesh(us, us.objects.states, function(a, b) ***REMOVED*** return a !== b; ***REMOVED***))
+      //     .attr("class", "states")
+      //     .attr("d", path)
+      //     .attr('fill', 'none')
+      //     .attr('stroke', function()***REMOVED***
+      //       if(formData['map_type'] === 'state')***REMOVED***
+      //         return 'none';
+      //       ***REMOVED*** else ***REMOVED***
+      //         return '#fff';
+      //       ***REMOVED***
+      //     ***REMOVED***);
     ***REMOVED***
   ***REMOVED***
 
   $('#form-submit').on('click', function()***REMOVED***
     var control=Alpaca($("#form").get());
     formData = control.getValue();
-    console.log(formData);
+    // console.log(formData);
     currentYear = formData.select_year;
     window.dataAdapter.getProviderCount(currentYear, drawMap);
   ***REMOVED***);
