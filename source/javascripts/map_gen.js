@@ -143,13 +143,13 @@
       var tj = topojson.feature(us, us.objects.counties).features;
       if(formData['map_type'] === 'state')***REMOVED***
         tester = topojson.feature(us, us.objects.states).features[_.indexOf(stateIdx, formData['state_select'])];
-        tj = topojson.feature(us, us.objects.counties).features.filter(function(d)***REMOVED***
-          if(_.contains(state_fips[formData['state_select']], d.id))***REMOVED***
-            return d;
-          ***REMOVED***
-        ***REMOVED***);
+        // tj = topojson.feature(us, us.objects.counties).features.filter(function(d)***REMOVED***
+        //   if(_.contains(state_fips[formData['state_select']], d.id))***REMOVED***
+        //     return d;
+        //   ***REMOVED***
+        // ***REMOVED***);
         // d3.selectAll('path').attr('fill', 'none').attr('stroke', 'none');
-        // d3.selectAll('.counties').attr('stroke', 'none').attr('fill', 'none');
+        d3.selectAll('.counties').attr('stroke', 'none').attr('fill', 'none');
         clicked();
       ***REMOVED*** else ***REMOVED***
         d3.selectAll('.counties').attr('stroke', '#ccc').attr('fill', '#ccc');
@@ -167,7 +167,16 @@
             ***REMOVED***
             if(color(d.count = data[d.id]))***REMOVED***
               // console.log(color(d.count = data[d.id]))
-              return color(d.count = data[d.id]);
+              if(formData['map_type'] === 'state')***REMOVED***
+                if(_.contains(state_fips[formData['state_select']], d.id))***REMOVED***
+                  return color(d.count = data[d.id]);
+                ***REMOVED*** else ***REMOVED***
+                  console.log('none');
+                  return 'none';
+                ***REMOVED***
+              ***REMOVED*** else ***REMOVED***
+                return color(d.count = data[d.id]);
+              ***REMOVED***
             ***REMOVED*** else ***REMOVED***
               return '#ccc';
             ***REMOVED***
