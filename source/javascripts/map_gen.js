@@ -12,9 +12,23 @@
       'select_year': "2017",
       'election_results': false
     ***REMOVED***,
-    currentYear;
+    currentYear,
+    active = d3.select(null);
 
-  var path = d3.geoPath();
+  // var path = d3.geoPath();
+  var projection = d3.geoAlbersUsa()
+    .scale(1000)
+    .translate([width / 2, height / 2]);
+
+  var zoom = d3.zoom()
+      .on("zoom", zoomed);
+
+  var initialTransform = d3.zoomIdentity
+      .translate(0,0)
+      .scale(1);
+
+  var path = d3.geoPath()
+      .projection(projection);
 
   var x = d3.scaleLinear()
       .domain([0, 4])
@@ -24,9 +38,15 @@
       .domain(d3.range(0, 4))
       .range(d3.schemeBlues[5]);
 
+  svg.on("click", reset);
+
   var g = svg.append("g")
       .attr("class", "key")
       .attr("transform", "translate(32.5,40)");
+
+  svg
+    .call(zoom) // delete this line to disable free zooming
+    .call(zoom.transform, initialTransform);
 
   g.selectAll("rect")
     .data(color.range().map(function(d) ***REMOVED***
@@ -64,9 +84,54 @@
     .select(".domain")
       .remove();
 
+  function clicked(d) ***REMOVED***
+    if (active.node() === this) return reset();
+    active.classed("active", false);
+    active = d3.select(this).classed("active", true);
+
+    var bounds = path.bounds(d),
+        dx = bounds[1][0] - bounds[0][0],
+        dy = bounds[1][1] - bounds[0][1],
+        x = (bounds[0][0] + bounds[1][0]) / 2,
+        y = (bounds[0][1] + bounds[1][1]) / 2,
+        scale = Math.max(1, Math.min(8, 0.9 / Math.max(dx / width, dy / height))),
+        translate = [width / 2 - scale * x, height / 2 - scale * y];
+
+    console.log(d, bounds, translate, svg);
+
+    var transform = d3.zoomIdentity
+      .translate(translate[0], translate[1])
+      .scale(scale);
+
+    svg.transition()
+        .duration(750)
+        .call(zoom.transform, transform);
+  ***REMOVED***
+
+  function reset() ***REMOVED***
+    active.classed("active", false);
+    active = d3.select(null);
+
+    svg.transition()
+        .duration(750)
+        .call(zoom.transform, initialTransform);
+  ***REMOVED***
+
+  function zoomed() ***REMOVED***
+    var transform = d3.event.transform;
+
+    g.style("stroke-width", 1.5 / transform.k + "px");
+    g.attr("transform", transform);
+  ***REMOVED***
+
+  function stopped() ***REMOVED***
+    if (d3.event.defaultPrevented) d3.event.stopPropagation();
+  ***REMOVED***
+
   function drawMap(data)***REMOVED***
     d3.queue()
-        .defer(d3.json, "https://d3js.org/us-10m.v1.json")
+        // .defer(d3.json, "https://d3js.org/us-10m.v1.json")
+        .defer(d3.json, "https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/us.json")
         .await(ready);
 
     function ready(error, us) ***REMOVED***
@@ -89,6 +154,9 @@
         .data(tj)
         .enter().append("path")
           .attr("fill", function(d) ***REMOVED***
+            if(String(d.id).length === 4)***REMOVED***
+              d.id = '0'+String(d.id);
+            ***REMOVED***
             if(color(d.count = data[d.id]))***REMOVED***
               return color(d.count = data[d.id]);
             ***REMOVED*** else ***REMOVED***
@@ -100,6 +168,7 @@
             if(d.count)***REMOVED*** return '#fff'; ***REMOVED***
           ***REMOVED***)
           .attr('stroke-width', '0.5px')
+          .on("click", clicked)
         .append("title")
           .text(function(d) ***REMOVED*** return d.count; ***REMOVED***);
 
