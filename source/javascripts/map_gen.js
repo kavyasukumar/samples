@@ -20,9 +20,6 @@
   var projection = d3.geoAlbersUsa()
       .scale(1000)
       .translate([width / 2, height / 2]);
-  // var projection = d3.geoMercator()
-  //     .scale(100)
-  //     .translate([width / 2, height / 2]);
 
   var zoom = d3.zoom()
       .on("zoom", zoomed);
@@ -31,17 +28,15 @@
       .translate(0,0)
       .scale(1);
 
+  // var projection = d3.geoMercator()
+  //     .scale(100)
+  //     .translate([width / 2, height / 2]);
+  //
   var path = d3.geoPath()
       .projection(projection);
 
   svg.on("click", stopped, true);
 
-  // svg.append("rect")
-  //     .attr("class", "background")
-  //     .attr("width", width)
-  //     .attr("height", height)
-  //     .on("click", reset);
-  //
   var x = d3.scaleLinear()
       .domain([0, 4])
       .rangeRound([600, 860]);
@@ -52,7 +47,7 @@
   // svg
   //     .call(zoom) // delete this line to disable free zooming
   //     .call(zoom.transform, initialTransform);
-// .attr('transform', "translate(20,2.5) rotate(10)");
+
   function drawScale()***REMOVED***
     var g = svg.append("g").attr('class', 'scale')
                .attr('transform', "translate(0,40)");
@@ -104,7 +99,7 @@
         dy = bounds[1][1] - bounds[0][1],
         x = (bounds[0][0] + bounds[1][0]) / 2,
         y = (bounds[0][1] + bounds[1][1]) / 2,
-        scale = Math.max(1, Math.min(8, 0.9 / Math.max(dx / width, dy / height))),
+        scale = Math.max(1, Math.min(8, 0.7 / Math.max(dx / width, dy / height))),
         translate = [width / 2 - scale * x, height / 2 - scale * y];
 
     var transform = d3.zoomIdentity
@@ -113,10 +108,6 @@
 
     d3.selectAll('.counties').transition()
         .duration(750)
-        // .attrTween('transform', function() ***REMOVED***
-        //             return d3.interpolateString('translate(0,0) rotate(0)','translate(0,0)' +
-        //                    'rotate(-15, 0, 0)');
-        //         ***REMOVED***)
         .call(zoom.transform, transform);
   ***REMOVED***
 
@@ -134,9 +125,6 @@
 
     d3.selectAll('.counties').style("stroke-width", 1.5 / transform.k + "px");
     d3.selectAll('.counties').attr("transform", transform);
-    // var ctrans = d3.selectAll('.counties').attr('transform');
-    // d3.selectAll('.counties').attr('transform', ctrans+' rotate(90, 0, 0)');
-    // console.log()
   ***REMOVED***
 
   // If the drag behavior prevents the default click,
@@ -146,6 +134,16 @@
   ***REMOVED***
 
   function drawMap(data)***REMOVED***
+
+    if(formData['map_type'] === 'state')***REMOVED***
+      projection = d3.geoMercator()
+                      .center([43.09, -79.06])
+                      .scale(800)
+                      .translate([width / 2, height / 2]);
+    ***REMOVED***
+
+    path.projection(projection);
+
     console.log(formData);
     svg.html('');
     svg.append("rect")
@@ -222,7 +220,6 @@
         ***REMOVED***
         if(formData['map_type'] === 'state')***REMOVED***
           tester = topojson.feature(us, us.objects.states).features[_.indexOf(stateIdx, formData['state_select'])];
-          console.log(tester);
           // tj = topojson.feature(us, us.objects.counties).features.filter(function(d)***REMOVED***
           //   if(_.contains(state_fips[formData['state_select']], d.id))***REMOVED***
           //     return d;
@@ -235,44 +232,6 @@
           d3.selectAll('.counties').attr('stroke', '#ccc').attr('fill', '#ccc');
         ***REMOVED***
       ***REMOVED***
-
-
-      // svg.append("g")
-      //     .attr("class", "counties")
-      //   .selectAll("path")
-      //   .data(tj)
-      //   .enter().append("path")
-      //     .attr("fill", function(d) ***REMOVED***
-      //       if(String(d.id).length === 4)***REMOVED***
-      //         d.id = '0'+String(d.id);
-      //       ***REMOVED***
-      //       if(color(d.count = data[d.id]))***REMOVED***
-      //         return color(d.count = data[d.id]);
-      //       ***REMOVED*** else ***REMOVED***
-      //         return '#ccc';
-      //       ***REMOVED***
-      //     ***REMOVED***)
-      //     .attr("d", path)
-      //     .attr("stroke", function(d)***REMOVED***
-      //       if(d.count)***REMOVED*** return '#fff'; ***REMOVED***
-      //     ***REMOVED***)
-      //     .attr('stroke-width', '0.5px')
-      //     .on("click", clicked)
-      //   .append("title")
-      //     .text(function(d) ***REMOVED*** return d.count; ***REMOVED***);
-      //
-      // svg.append("path")
-      //     .datum(topojson.mesh(us, us.objects.states, function(a, b) ***REMOVED*** return a !== b; ***REMOVED***))
-      //     .attr("class", "states")
-      //     .attr("d", path)
-      //     .attr('fill', 'none')
-      //     .attr('stroke', function()***REMOVED***
-      //       if(formData['map_type'] === 'state')***REMOVED***
-      //         return 'none';
-      //       ***REMOVED*** else ***REMOVED***
-      //         return '#fff';
-      //       ***REMOVED***
-      //     ***REMOVED***);
   ***REMOVED***
 
   $('#form-submit').on('click', function()***REMOVED***
