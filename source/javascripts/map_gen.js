@@ -51,41 +51,41 @@
       .call(zoom) // delete this line to disable free zooming
       .call(zoom.transform, initialTransform);
 
-  // g.selectAll("rect")
-  //   .data(color.range().map(function(d) ***REMOVED***
-  //       d = color.invertExtent(d);
-  //       if (d[0] == null) d[0] = x.domain()[0];
-  //       if (d[1] == null) d[1] = x.domain()[1];
-  //       return d;
-  //     ***REMOVED***))
-  //   .enter().append("rect")
-  //     .attr("height", 8)
-  //     .attr("x", function(d) ***REMOVED*** return x(d[0]) - 32.5; ***REMOVED***)
-  //     .attr("width", function(d) ***REMOVED*** return x(d[1]) - x(d[0]); ***REMOVED***)
-  //     .attr("fill", function(d) ***REMOVED*** return color(d[0]); ***REMOVED***);
-  //
-  // g.append("text")
-  //     .attr("class", "caption")
-  //     .attr("x", x.range()[0] - 32.5)
-  //     .attr("y", -6)
-  //     .attr("fill", "#000")
-  //     .attr("text-anchor", "start")
-  //     .attr("font-weight", "bold")
-  //     .text("Number of ACA insurers available");
-  //
-  // g.call(d3.axisBottom(x)
-  //     .tickFormat(function(x, i) ***REMOVED***
-  //       if(x === 3)***REMOVED***
-  //         return x + '+';
-  //       ***REMOVED*** else ***REMOVED***
-  //         return x;
-  //       ***REMOVED***
-  //     ***REMOVED***)
-  //     .tickPadding(13)
-  //     .tickSize(0)
-  //     .tickValues(color.domain()))
-  //   .select(".domain")
-  //     .remove();
+  g.selectAll("rect")
+    .data(color.range().map(function(d) ***REMOVED***
+        d = color.invertExtent(d);
+        if (d[0] == null) d[0] = x.domain()[0];
+        if (d[1] == null) d[1] = x.domain()[1];
+        return d;
+      ***REMOVED***))
+    .enter().append("rect")
+      .attr("height", 8)
+      .attr("x", function(d) ***REMOVED*** return x(d[0]) - 32.5; ***REMOVED***)
+      .attr("width", function(d) ***REMOVED*** return x(d[1]) - x(d[0]); ***REMOVED***)
+      .attr("fill", function(d) ***REMOVED*** return color(d[0]); ***REMOVED***);
+
+  g.append("text")
+      .attr("class", "caption")
+      .attr("x", x.range()[0] - 32.5)
+      .attr("y", -6)
+      .attr("fill", "#000")
+      .attr("text-anchor", "start")
+      .attr("font-weight", "bold")
+      .text("Number of ACA insurers available");
+
+  g.call(d3.axisBottom(x)
+      .tickFormat(function(x, i) ***REMOVED***
+        if(x === 3)***REMOVED***
+          return x + '+';
+        ***REMOVED*** else ***REMOVED***
+          return x;
+        ***REMOVED***
+      ***REMOVED***)
+      .tickPadding(13)
+      .tickSize(0)
+      .tickValues(color.domain()))
+    .select(".domain")
+      .remove();
 
   function clicked() ***REMOVED***
     // if (active.node() === this) return reset();
@@ -132,6 +132,8 @@
     if (d3.event.defaultPrevented) d3.event.stopPropagation();
   ***REMOVED***
 
+  // var gg = svg.append("g").attr("class", "counties");
+
   function drawMap(data)***REMOVED***
     console.log(formData);
     d3.queue()
@@ -141,6 +143,8 @@
 
     function ready(error, us) ***REMOVED***
       var tj = topojson.feature(us, us.objects.counties).features;
+      if (error) throw error;
+
       if(formData['map_type'] === 'state')***REMOVED***
         tester = topojson.feature(us, us.objects.states).features[_.indexOf(stateIdx, formData['state_select'])];
         // tj = topojson.feature(us, us.objects.counties).features.filter(function(d)***REMOVED***
@@ -154,31 +158,33 @@
       ***REMOVED*** else ***REMOVED***
         d3.selectAll('.counties').attr('stroke', '#ccc').attr('fill', '#ccc');
       ***REMOVED***
-      if (error) throw error;
 
-      svg.append("g")
-          .attr("class", "counties")
-       .selectAll("path")
+      var stf = [];
+      stf = state_fips[formData['state_select']];
+      // gg
+       svg.append("g").attr("class", "counties paths").selectAll("path")
           .data(tj)
         .enter().append("path")
+          .attr('id', function(d)***REMOVED***
+            return 'f_'+d.id;
+          ***REMOVED***)
           .attr("fill", function(d) ***REMOVED***
             if(String(d.id).length === 4)***REMOVED***
               d.id = '0'+String(d.id);
             ***REMOVED***
-            if(color(d.count = data[d.id]))***REMOVED***
-              // console.log(color(d.count = data[d.id]))
-              if(formData['map_type'] === 'state')***REMOVED***
-                if(_.contains(state_fips[formData['state_select']], d.id))***REMOVED***
-                  return color(d.count = data[d.id]);
-                ***REMOVED*** else ***REMOVED***
-                  console.log('none');
-                  return 'none';
-                ***REMOVED***
-              ***REMOVED*** else ***REMOVED***
+            if(formData['map_type'] === 'state')***REMOVED***
+              console.log(d.id);
+              if(_.contains(stf, String(d.id)))***REMOVED***
                 return color(d.count = data[d.id]);
+              ***REMOVED*** else ***REMOVED***
+                return '#fff';
               ***REMOVED***
             ***REMOVED*** else ***REMOVED***
-              return '#ccc';
+              if(color(d.count = data[d.id]))***REMOVED***
+                return color(d.count = data[d.id]);
+              ***REMOVED*** else ***REMOVED***
+                return '#ccc';
+              ***REMOVED***
             ***REMOVED***
           ***REMOVED***)
           .attr("d", path)
