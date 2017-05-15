@@ -20,6 +20,9 @@
   var projection = d3.geoAlbersUsa()
       .scale(1000)
       .translate([width / 2, height / 2]);
+  // var projection = d3.geoMercator()
+  //     .scale(100)
+  //     .translate([width / 2, height / 2]);
 
   var zoom = d3.zoom()
       .on("zoom", zoomed);
@@ -33,59 +36,59 @@
 
   svg.on("click", stopped, true);
 
-  svg.append("rect")
-      .attr("class", "background")
-      .attr("width", width)
-      .attr("height", height)
-      .on("click", reset);
+  // svg.append("rect")
+  //     .attr("class", "background")
+  //     .attr("width", width)
+  //     .attr("height", height)
+  //     .on("click", reset);
+  //
+  // var g = svg.append("g").attr('class', 'counties');
+  // var x = d3.scaleLinear()
+  //     .domain([0, 4])
+  //     .rangeRound([600, 860]);
+  // var color = d3.scaleThreshold()
+  //     .domain(d3.range(0, 4))
+  //     .range(d3.schemeBlues[5]);
+  //
+  // svg
+  //     .call(zoom) // delete this line to disable free zooming
+  //     .call(zoom.transform, initialTransform);
 
-  var g = svg.append("g").attr('class', 'counties');
-  var x = d3.scaleLinear()
-      .domain([0, 4])
-      .rangeRound([600, 860]);
-  var color = d3.scaleThreshold()
-      .domain(d3.range(0, 4))
-      .range(d3.schemeBlues[5]);
-
-  svg
-      .call(zoom) // delete this line to disable free zooming
-      .call(zoom.transform, initialTransform);
-
-  g.selectAll("rect")
-    .data(color.range().map(function(d) ***REMOVED***
-        d = color.invertExtent(d);
-        if (d[0] == null) d[0] = x.domain()[0];
-        if (d[1] == null) d[1] = x.domain()[1];
-        return d;
-      ***REMOVED***))
-    .enter().append("rect")
-      .attr("height", 8)
-      .attr("x", function(d) ***REMOVED*** return x(d[0]) - 32.5; ***REMOVED***)
-      .attr("width", function(d) ***REMOVED*** return x(d[1]) - x(d[0]); ***REMOVED***)
-      .attr("fill", function(d) ***REMOVED*** return color(d[0]); ***REMOVED***);
-
-  g.append("text")
-      .attr("class", "caption")
-      .attr("x", x.range()[0] - 32.5)
-      .attr("y", -6)
-      .attr("fill", "#000")
-      .attr("text-anchor", "start")
-      .attr("font-weight", "bold")
-      .text("Number of ACA insurers available");
-
-  g.call(d3.axisBottom(x)
-      .tickFormat(function(x, i) ***REMOVED***
-        if(x === 3)***REMOVED***
-          return x + '+';
-        ***REMOVED*** else ***REMOVED***
-          return x;
-        ***REMOVED***
-      ***REMOVED***)
-      .tickPadding(13)
-      .tickSize(0)
-      .tickValues(color.domain()))
-    .select(".domain")
-      .remove();
+  // g.selectAll("rect")
+  //   .data(color.range().map(function(d) ***REMOVED***
+  //       d = color.invertExtent(d);
+  //       if (d[0] == null) d[0] = x.domain()[0];
+  //       if (d[1] == null) d[1] = x.domain()[1];
+  //       return d;
+  //     ***REMOVED***))
+  //   .enter().append("rect")
+  //     .attr("height", 8)
+  //     .attr("x", function(d) ***REMOVED*** return x(d[0]) - 32.5; ***REMOVED***)
+  //     .attr("width", function(d) ***REMOVED*** return x(d[1]) - x(d[0]); ***REMOVED***)
+  //     .attr("fill", function(d) ***REMOVED*** return color(d[0]); ***REMOVED***);
+  //
+  // g.append("text")
+  //     .attr("class", "caption")
+  //     .attr("x", x.range()[0] - 32.5)
+  //     .attr("y", -6)
+  //     .attr("fill", "#000")
+  //     .attr("text-anchor", "start")
+  //     .attr("font-weight", "bold")
+  //     .text("Number of ACA insurers available");
+  //
+  // g.call(d3.axisBottom(x)
+  //     .tickFormat(function(x, i) ***REMOVED***
+  //       if(x === 3)***REMOVED***
+  //         return x + '+';
+  //       ***REMOVED*** else ***REMOVED***
+  //         return x;
+  //       ***REMOVED***
+  //     ***REMOVED***)
+  //     .tickPadding(13)
+  //     .tickSize(0)
+  //     .tickValues(color.domain()))
+  //   .select(".domain")
+  //     .remove();
 
   function clicked() ***REMOVED***
     // if (active.node() === this) return reset();
@@ -100,13 +103,16 @@
         scale = Math.max(1, Math.min(8, 0.9 / Math.max(dx / width, dy / height))),
         translate = [width / 2 - scale * x, height / 2 - scale * y];
 
-    console.log(bounds);
     var transform = d3.zoomIdentity
       .translate(translate[0], translate[1])
       .scale(scale);
 
     d3.selectAll('.counties').transition()
         .duration(750)
+        // .attrTween('transform', function() ***REMOVED***
+        //             return d3.interpolateString('translate(0,0) rotate(0)','translate(0,0)' +
+        //                    'rotate(-15, 0, 0)');
+        //         ***REMOVED***)
         .call(zoom.transform, transform);
   ***REMOVED***
 
@@ -124,6 +130,9 @@
 
     d3.selectAll('.counties').style("stroke-width", 1.5 / transform.k + "px");
     d3.selectAll('.counties').attr("transform", transform);
+    // var ctrans = d3.selectAll('.counties').attr('transform');
+    // d3.selectAll('.counties').attr('transform', ctrans+' rotate(90, 0, 0)');
+    // console.log()
   ***REMOVED***
 
   // If the drag behavior prevents the default click,
@@ -136,6 +145,25 @@
 
   function drawMap(data)***REMOVED***
     console.log(formData);
+    svg.html('');
+    svg.append("rect")
+        .attr("class", "background")
+        .attr("width", width)
+        .attr("height", height)
+        .on("click", reset);
+
+    var g = svg.append("g").attr('class', 'counties');
+    var x = d3.scaleLinear()
+        .domain([0, 4])
+        .rangeRound([600, 860]);
+    var color = d3.scaleThreshold()
+        .domain(d3.range(0, 4))
+        .range(d3.schemeBlues[5]);
+
+    svg
+        .call(zoom) // delete this line to disable free zooming
+        .call(zoom.transform, initialTransform);
+
     d3.queue()
         // .defer(d3.json, "https://d3js.org/us-10m.v1.json")
         .defer(d3.json, "https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/us.json")
@@ -173,7 +201,7 @@
               d.id = '0'+String(d.id);
             ***REMOVED***
             if(formData['map_type'] === 'state')***REMOVED***
-              console.log(d.id);
+              // console.log(d.id);
               if(_.contains(stf, String(d.id)))***REMOVED***
                 return color(d.count = data[d.id]);
               ***REMOVED*** else ***REMOVED***
@@ -192,23 +220,22 @@
             if(d.count)***REMOVED*** return '#fff'; ***REMOVED***
           ***REMOVED***)
           .attr('stroke-width', '0.5px')
-          // .on("click", clicked)
         .append("title")
           .text(function(d) ***REMOVED*** return d.count; ***REMOVED***);
 
-      if(d3.select('.mesh')['_groups'][0][0] === null)***REMOVED***
+      // if(d3.select('.mesh')['_groups'][0][0] === null)***REMOVED***
         svg.append("path")
             .datum(topojson.mesh(us, us.objects.states, function(a, b) ***REMOVED*** return a !== b; ***REMOVED***))
             .attr("class", "mesh")
             .attr("d", path)
             .attr('fill', 'none')
             .attr('stroke', '#fff')
-      ***REMOVED*** else ***REMOVED***
+      // ***REMOVED*** else ***REMOVED***
         if(formData['map_type'] === 'state')***REMOVED***
           d3.selectAll('.mesh').style('display', 'none');
         ***REMOVED*** else ***REMOVED***
           d3.selectAll('.mesh').style('display', 'block');
-        ***REMOVED***
+        // ***REMOVED***
       ***REMOVED***
 
       // svg.append("g")
