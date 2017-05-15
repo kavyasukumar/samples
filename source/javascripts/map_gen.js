@@ -140,6 +140,10 @@
                       .center([43.09, -79.06])
                       .scale(800)
                       .translate([width / 2, height / 2]);
+    ***REMOVED*** else ***REMOVED***
+      projection = d3.geoAlbersUsa()
+                      .scale(1000)
+                      .translate([width / 2, height / 2]);
     ***REMOVED***
 
     path.projection(projection);
@@ -329,14 +333,6 @@
                 "enum": ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'],
                 "dependencies": "map_type"
               ***REMOVED***,
-              "map_num_label":***REMOVED***
-                "title": "One year or multiple years?"
-              ***REMOVED***,
-              "map_num": ***REMOVED***
-                "required": true,
-                "default": "single",
-                "enum": ["single", "multiple"]
-              ***REMOVED***,
               "select_year": ***REMOVED***
                 "title": "Select year",
                 "type": "string",
@@ -347,22 +343,7 @@
                   '2015',
                   '2016',
                   '2017'
-                ],
-                "dependencies": "map_num"
-              ***REMOVED***,
-              "select_years": ***REMOVED***
-                "title": "Select years",
-                "type": "array",
-                "enum": [
-                  '2014',
-                  '2015',
-                  '2016',
-                  '2017'
-                ],
-                "dependencies": "map_num"
-              ***REMOVED***,
-              "election_results": ***REMOVED***
-                "dependencies": "select_year"
+                ]
               ***REMOVED***
             ***REMOVED***
         ***REMOVED***,
@@ -383,34 +364,10 @@
                 "map_type": "state"
               ***REMOVED***
             ***REMOVED***,
-            "map_num_label":***REMOVED***
-              "type": "hidden"
-            ***REMOVED***,
-            "map_num": ***REMOVED***
-              "vertical": false,
-              "sort": false,
-              "optionLabels": [
-                "<span>single</span>",
-                "<span>multiple</span>"
-              ]
-            ***REMOVED***,
             "select_year": ***REMOVED***
               "type": "select",
               "dependencies": ***REMOVED***
                 "map_num": "single"
-              ***REMOVED***
-            ***REMOVED***,
-            "select_years": ***REMOVED***
-              "type": "checkbox",
-              "dependencies": ***REMOVED***
-                "map_num": "multiple"
-              ***REMOVED***
-            ***REMOVED***,
-            "election_results": ***REMOVED***
-              "type": "checkbox",
-              "rightLabel": "Add 2016 election results",
-              "dependencies": ***REMOVED***
-                "select_year": "2017"
               ***REMOVED***
             ***REMOVED***
           ***REMOVED***
