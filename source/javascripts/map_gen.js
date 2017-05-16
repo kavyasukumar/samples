@@ -156,8 +156,7 @@
       svg.append('g').attr('font-family', 'Helvetica')
           .append("text")
           .attr('class', 'title')
-          .attr('x', 25)
-          .attr('y', 50)
+          .attr('y', 40)
           .attr("font-weight", "bold")
           .text(formData['image_title']);
     ***REMOVED***
@@ -259,7 +258,7 @@
       var info = svg.append('g')
                     .attr('class', 'info')
                     .attr('font-family', 'Helvetica')
-                    .attr('transform', 'translate(70,575)');
+                    .attr('transform', 'translate(0,575)');
 
       info.append('text').html('Source: Robert Wood Johnson Foundation');
       info.append('text')
