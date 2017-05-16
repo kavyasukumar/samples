@@ -1,6 +1,7 @@
 /* globals DataAdapter */
 //= require _data_adapter
 //= require _vendor_extra/moment
+//= require _vendor/pancake.stack
 (function() ***REMOVED***
   // Application code goes here
   var stateIdx = ['WA', 'MT', 'ID', 'ND', 'MN', 'ME', 'MI', 'WI', 'OR', 'SD', 'NH', 'VT', 'NY', 'WY', 'IA', 'NE', 'MA', 'IL', 'PA', 'CT', 'RI', 'CA', 'UT', 'NV', 'OH', 'IN', 'NY', 'CO', 'WV', 'MO', 'KS', 'DE', 'MD', 'VA', 'KY', 'DC', 'AZ', 'OK', 'NM', 'TN', 'NC', 'TX', 'AR', 'SC', 'AL', 'GA', 'MS', 'LA', 'FL', 'HI', 'AK'];
@@ -73,8 +74,9 @@
         .attr("y", -6)
         .attr("fill", "#000")
         .attr("text-anchor", "start")
-        .attr("font-weight", "bold")
-        .attr('font-family', 'Helvetica')
+        // .attr("font-weight", "bold")
+        .attr('font-size', '14px')
+        .attr('font-family', 'Balto')
         .text("Number of ACA insurers available");
 
     g.call(d3.axisBottom(x)
@@ -90,12 +92,13 @@
         .tickValues(color.domain()))
       .select(".domain")
         .remove();
+
+    d3.selectAll('.tick')
+      .attr('font-size', '14px')
+      .attr('font-family', 'Nitti');
   ***REMOVED***
 
   function clicked() ***REMOVED***
-    // if (active.node() === this) return reset();
-    // active.classed("active", false);
-    // active = d3.select(this).classed("active", true);
 
     var bounds = path.bounds(tester),
         dx = bounds[1][0] - bounds[0][0],
@@ -157,12 +160,15 @@
 
       console.log(formData);
       svg.html('');
+      d3.select('canvas').attr('width', 900).attr('height', 600);
       if(formData['image_title'])***REMOVED***
-        svg.append('g').attr('font-family', 'Helvetica')
+        svg.append('g')
+            .attr('font-family', 'Balto')
             .append("text")
             .attr('class', 'title')
             .attr('y', 40)
             .attr("font-weight", "bold")
+            .attr('font-size', '20px')
             .text(formData['image_title']);
       ***REMOVED***
       svg.append("rect")
@@ -263,13 +269,13 @@
         var dt = moment(new Date()).format('MMM D, YYYY');
         var info = svg.append('g')
                       .attr('class', 'info')
-                      .attr('font-family', 'Helvetica')
+                      .attr('font-family', 'Balto')
                       .attr('transform', 'translate(0,575)');
 
         info.append('text').html('Source: Robert Wood Johnson Foundation');
         info.append('text')
             .attr('y', 20)
-            .html(dt);
+            .html('As of '+dt);
     ***REMOVED***
   ***REMOVED***
 
@@ -277,70 +283,17 @@
     var control=Alpaca($("#form").get());
     formData = control.getValue();
     currentYear = formData.select_year;
-    console.log('clicked')
     window.dataAdapter.getProviderCount(currentYear, drawMap);
   ***REMOVED***);
 
 
-  // required for downloading a PNG of the map(s)
-  var svg2 = document.querySelector('svg');
-  var canvas = document.querySelector('canvas');
-
-  function triggerDownload (imgURI) ***REMOVED***
-    var evt = new MouseEvent('click', ***REMOVED***
-      view: window,
-      bubbles: false,
-      cancelable: true
-    ***REMOVED***);
-
-    var a = document.createElement('a');
+  d3.select("#save").on("click", function()***REMOVED***
     var tName = currentYear;
     if(formData['map_type'] === 'state')***REMOVED***
       tName = formData['state_select']+'_'+currentYear;
     ***REMOVED***
-    a.setAttribute('download', tName+'_providers.png');
-    a.setAttribute('href', imgURI);
-    a.setAttribute('target', '_blank');
-
-    a.dispatchEvent(evt);
-  ***REMOVED***
-
-  d3.select("#save").on("click", function()***REMOVED***
-    var canvas = document.getElementById('canvas');
-    var ctx = canvas.getContext('2d');
-
-    // lets get the resolution of our device.
-    var pixelRatio = 2;
-
-    // lets scale the canvas and change its CSS width/height to make it high res.
-    canvas.style.width = canvas.width +'px';
-    canvas.style.height = canvas.height +'px';
-    canvas.width *= pixelRatio;
-    canvas.height *= pixelRatio;
-
-    // Now that its high res we need to compensate so our images can be drawn as
-    //normal, by scaling everything up by the pixelRatio.
-    ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0);
-
-    var data = (new XMLSerializer()).serializeToString(svg2);
-    var DOMURL = window.URL || window.webkitURL || window;
-
-    var img = new Image();
-    var svgBlob = new Blob([data], ***REMOVED***type: 'image/svg+xml;charset=utf-8'***REMOVED***);
-    var url = DOMURL.createObjectURL(svgBlob);
-
-    img.onload = function () ***REMOVED***
-      ctx.drawImage(img, 0, 0);
-      DOMURL.revokeObjectURL(url);
-
-      var imgURI = canvas
-          .toDataURL('image/png')
-          .replace('image/png', 'image/octet-stream');
-
-      triggerDownload(imgURI);
-    ***REMOVED***;
-
-    img.src = url;
+    var flapjack = Pancake("svg-map");
+    flapjack.download(tName+'_providers.png');
   ***REMOVED***);
 
   $(document).ready(function() ***REMOVED***
