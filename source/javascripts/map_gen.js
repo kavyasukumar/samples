@@ -150,6 +150,13 @@
 
     console.log(formData);
     svg.html('');
+    if(formData['image_title'])***REMOVED***
+      svg.append("text")
+          .attr('class', 'title')
+          .attr('x', 25)
+          .attr('y', 50)
+          .html(formData['image_title']);
+    ***REMOVED***
     svg.append("rect")
         .attr("class", "background")
         .attr("width", width)
@@ -320,6 +327,10 @@
         "schema": ***REMOVED***
             "type": "object",
             "properties": ***REMOVED***
+              "image_title": ***REMOVED***
+                "required": true,
+                "title": "Image title"
+              ***REMOVED***,
               "map_type": ***REMOVED***
                 "required": true,
                 "default": "U.S.",
