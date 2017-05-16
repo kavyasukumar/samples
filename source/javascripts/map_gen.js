@@ -15,6 +15,7 @@
         'select_year': "2017",
         'election_results': false
       ***REMOVED***,
+      oldFormData = ***REMOVED******REMOVED***,
       currentYear,
       active = d3.select(null);
 
@@ -136,142 +137,147 @@
   ***REMOVED***
 
   function drawMap(data)***REMOVED***
-
-    if(formData['map_type'] === 'state')***REMOVED***
-      projection = d3.geoMercator()
-                      .center([43.09, -79.06])
-                      .scale(800)
-                      .translate([width / 2, height / 2]);
+    console.log('draw map!');
+    if(formData === oldFormData)***REMOVED***
+      return;
     ***REMOVED*** else ***REMOVED***
-      projection = d3.geoAlbersUsa()
-                      .scale(1000)
-                      .translate([width / 2, height / 2]);
-    ***REMOVED***
+      oldFormData = formData;
+      if(formData['map_type'] === 'state')***REMOVED***
+        projection = d3.geoMercator()
+                        .center([43.09, -79.06])
+                        .scale(800)
+                        .translate([width / 2, height / 2]);
+      ***REMOVED*** else ***REMOVED***
+        projection = d3.geoAlbersUsa()
+                        .scale(1000)
+                        .translate([width / 2, height / 2]);
+      ***REMOVED***
 
-    path.projection(projection);
+      path.projection(projection);
 
-    console.log(formData);
-    svg.html('');
-    if(formData['image_title'])***REMOVED***
-      svg.append('g').attr('font-family', 'Helvetica')
-          .append("text")
-          .attr('class', 'title')
-          .attr('y', 40)
-          .attr("font-weight", "bold")
-          .text(formData['image_title']);
-    ***REMOVED***
-    svg.append("rect")
-        .attr("class", "background")
-        .attr("width", width)
-        .attr("height", height)
-        .attr("fill", 'none');
+      console.log(formData);
+      svg.html('');
+      if(formData['image_title'])***REMOVED***
+        svg.append('g').attr('font-family', 'Helvetica')
+            .append("text")
+            .attr('class', 'title')
+            .attr('y', 40)
+            .attr("font-weight", "bold")
+            .text(formData['image_title']);
+      ***REMOVED***
+      svg.append("rect")
+          .attr("class", "background")
+          .attr("width", width)
+          .attr("height", height)
+          .attr("fill", 'none');
 
-    drawScale();
+      drawScale();
 
-    svg
-        .call(zoom) // delete this line to disable free zooming
-        .call(zoom.transform, initialTransform);
+      // svg
+      //     .call(zoom) // delete this line to disable free zooming
+      //     .call(zoom.transform, initialTransform);
 
-    d3.queue()
-        // .defer(d3.json, "https://d3js.org/us-10m.v1.json")
-        .defer(d3.json, "https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/us.json")
-        .await(ready);
+      d3.queue()
+          // .defer(d3.json, "https://d3js.org/us-10m.v1.json")
+          .defer(d3.json, "https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/us.json")
+          .await(ready);
 
-    function ready(error, us) ***REMOVED***
-      var tj = topojson.feature(us, us.objects.counties).features;
-      if (error) throw error;
+      function ready(error, us) ***REMOVED***
+        console.log('ready');
+        var tj = topojson.feature(us, us.objects.counties).features;
+        if (error) throw error;
 
-      var stf = [];
-      stf = state_fips[formData['state_select']];
-       svg.append("g").attr("class", "counties paths").selectAll("path")
-          .data(tj)
-        .enter().append("path")
-          .attr('id', function(d)***REMOVED***
-            return 'f_'+d.id;
-          ***REMOVED***)
-          .attr("fill", function(d) ***REMOVED***
-            if(String(d.id).length === 4)***REMOVED***
-              d.id = '0'+String(d.id);
-            ***REMOVED***
-            if(formData['map_type'] === 'state')***REMOVED***
-              // console.log(d.id);
-              if(_.contains(stf, String(d.id)))***REMOVED***
+        var stf = [];
+        stf = state_fips[formData['state_select']];
+         svg.append("g").attr("class", "counties paths").selectAll("path")
+            .data(tj)
+          .enter().append("path")
+            .attr('id', function(d)***REMOVED***
+              return 'f_'+d.id;
+            ***REMOVED***)
+            .attr("fill", function(d) ***REMOVED***
+              if(String(d.id).length === 4)***REMOVED***
+                d.id = '0'+String(d.id);
+              ***REMOVED***
+              if(formData['map_type'] === 'state')***REMOVED***
+                if(_.contains(stf, String(d.id)))***REMOVED***
+                  if(color(d.count = data[d.id]))***REMOVED***
+                    return color(d.count = data[d.id]);
+                  ***REMOVED*** else ***REMOVED***
+                    return '#ccc';
+                  ***REMOVED***
+                ***REMOVED*** else ***REMOVED***
+                  return 'none';
+                ***REMOVED***
+              ***REMOVED*** else ***REMOVED***
                 if(color(d.count = data[d.id]))***REMOVED***
                   return color(d.count = data[d.id]);
                 ***REMOVED*** else ***REMOVED***
                   return '#ccc';
                 ***REMOVED***
-              ***REMOVED*** else ***REMOVED***
-                return 'none';
               ***REMOVED***
-            ***REMOVED*** else ***REMOVED***
-              if(color(d.count = data[d.id]))***REMOVED***
-                return color(d.count = data[d.id]);
-              ***REMOVED*** else ***REMOVED***
-                return '#ccc';
-              ***REMOVED***
-            ***REMOVED***
-          ***REMOVED***)
-          .attr("d", path)
-          .attr("stroke", function(d)***REMOVED***
-            if(d.count)***REMOVED*** return '#fff'; ***REMOVED***
-          ***REMOVED***)
-          .attr('stroke-width', '0.5px')
-        .append("title")
-          .text(function(d) ***REMOVED*** return d.count; ***REMOVED***);
-
-        svg.append("path")
-            .datum(topojson.mesh(us, us.objects.states, function(a, b) ***REMOVED*** return a !== b; ***REMOVED***))
-            .attr("class", "mesh")
+            ***REMOVED***)
             .attr("d", path)
-            .attr('fill', 'none')
-            .attr('stroke', '#fff')
+            .attr("stroke", function(d)***REMOVED***
+              if(d.count)***REMOVED*** return '#fff'; ***REMOVED***
+            ***REMOVED***)
+            .attr('stroke-width', '0.5px')
+          .append("title")
+            .text(function(d) ***REMOVED*** return d.count; ***REMOVED***);
 
-        if(formData['map_type'] === 'state')***REMOVED***
-          d3.selectAll('.mesh').style('display', 'none');
-        ***REMOVED*** else ***REMOVED***
-          d3.selectAll('.mesh').style('display', 'block');
+          svg.append("path")
+              .datum(topojson.mesh(us, us.objects.states, function(a, b) ***REMOVED*** return a !== b; ***REMOVED***))
+              .attr("class", "mesh")
+              .attr("d", path)
+              .attr('fill', 'none')
+              .attr('stroke', '#fff')
+
+          if(formData['map_type'] === 'state')***REMOVED***
+            d3.selectAll('.mesh').style('display', 'none');
+          ***REMOVED*** else ***REMOVED***
+            d3.selectAll('.mesh').style('display', 'block');
+          ***REMOVED***
+          if(formData['map_type'] === 'state')***REMOVED***
+            tester = topojson.feature(us, us.objects.states).features[_.indexOf(stateIdx, formData['state_select'])];
+            // tj = topojson.feature(us, us.objects.counties).features.filter(function(d)***REMOVED***
+            //   if(_.contains(state_fips[formData['state_select']], d.id))***REMOVED***
+            //     return d;
+            //   ***REMOVED***
+            // ***REMOVED***);
+            // d3.selectAll('path').attr('fill', 'none').attr('stroke', 'none');
+            d3.selectAll('.counties').attr('stroke', 'none').attr('fill', 'none');
+            clicked();
+          ***REMOVED*** else ***REMOVED***
+            d3.selectAll('.counties').attr('stroke', '#ccc').attr('fill', '#ccc');
+          ***REMOVED***
         ***REMOVED***
-        if(formData['map_type'] === 'state')***REMOVED***
-          tester = topojson.feature(us, us.objects.states).features[_.indexOf(stateIdx, formData['state_select'])];
-          // tj = topojson.feature(us, us.objects.counties).features.filter(function(d)***REMOVED***
-          //   if(_.contains(state_fips[formData['state_select']], d.id))***REMOVED***
-          //     return d;
-          //   ***REMOVED***
-          // ***REMOVED***);
-          // d3.selectAll('path').attr('fill', 'none').attr('stroke', 'none');
-          d3.selectAll('.counties').attr('stroke', 'none').attr('fill', 'none');
-          clicked();
-        ***REMOVED*** else ***REMOVED***
-          d3.selectAll('.counties').attr('stroke', '#ccc').attr('fill', '#ccc');
-        ***REMOVED***
-      ***REMOVED***
-      svg.append('g')
-          .attr('class', 'vox-logo')
-          .attr('transform', 'translate(770,560)')
-          .attr('preserveAspectRatio', "none")
-          .append('path')
-          .attr('d', "M24.34,6.27h0.75l0.09-.35H15.76l-0.09.35H17a2.18,2.18,0,0,1,2.16,2.47,9.45,9.45,0,0,1-1.06,3.57L12,25.82,10.52,8.25c-0.13-1.37.57-2,2.11-2h0.88l0.09-.35H0.3l-0.13.35H1c1.06,0,1.45.66,1.54,1.89L4.92,30.88h5.59L19.89,11C21.35,8.07,22.85,6.27,24.34,6.27ZM23.24,31c-0.84,0-1.37-.26-1.37-1.67a50.71,50.71,0,0,1,1.37-8.41,2.89,2.89,0,0,0,2.6,2.91,6.6,6.6,0,0,0,1-.09C25.4,29.74,24.87,31,23.24,31ZM49.93,19a3,3,0,0,0,2.91-3.13,2.38,2.38,0,0,0-2.47-2.47c-2.6,0-3.83,2.07-6,5.86-0.44-2.38-1.54-5.46-4.27-5.46-3.08,0-6.65,4.4-9.91,7.13A7.53,7.53,0,0,1,25.75,23c-1.37,0-2.16-1.37-2.16-3.79,1-4,1.45-5,3-5,1,0,1.45.57,1.45,1.76a32.44,32.44,0,0,1-.84,6.08c1.45-.44,3.65-2.29,5.5-4.27a6.26,6.26,0,0,0-6.08-3.92A10.91,10.91,0,0,0,16.06,24.59c0,3.88,2.77,6.83,7.09,6.83,7.13,0,10.13-6.16,10.13-10.48,0-.62,0-1.06-0.09-1.63C34.29,18.11,35.7,17,36.85,17c1.32,0,2.38,3.3,3.39,8.28-0.92,1-1.85,3-2.29,3.3A2.92,2.92,0,0,0,35,25.69a3.12,3.12,0,0,0-3,3.08,2.5,2.5,0,0,0,2.55,2.64c3,0,3.88-2.86,5.77-5.42,0.57,2.73,1.94,5.42,4.27,5.42,2.77,0,5.33-2.38,6.65-4.05L51.07,27a3.8,3.8,0,0,1-2.64,1.37c-1.72,0-3-3.7-3.88-8.19,0.57-.75,1.45-2.69,2.07-3.39A3.63,3.63,0,0,0,49.93,19Z")
-          .attr('fill', '#000');
 
-      var dt = moment(new Date()).format('MMM D, YYYY');
-      var info = svg.append('g')
-                    .attr('class', 'info')
-                    .attr('font-family', 'Helvetica')
-                    .attr('transform', 'translate(0,575)');
+        svg.append('g')
+            .attr('class', 'vox-logo')
+            .attr('transform', 'translate(770,560)')
+            .attr('preserveAspectRatio', "none")
+            .append('path')
+            .attr('d', "M24.34,6.27h0.75l0.09-.35H15.76l-0.09.35H17a2.18,2.18,0,0,1,2.16,2.47,9.45,9.45,0,0,1-1.06,3.57L12,25.82,10.52,8.25c-0.13-1.37.57-2,2.11-2h0.88l0.09-.35H0.3l-0.13.35H1c1.06,0,1.45.66,1.54,1.89L4.92,30.88h5.59L19.89,11C21.35,8.07,22.85,6.27,24.34,6.27ZM23.24,31c-0.84,0-1.37-.26-1.37-1.67a50.71,50.71,0,0,1,1.37-8.41,2.89,2.89,0,0,0,2.6,2.91,6.6,6.6,0,0,0,1-.09C25.4,29.74,24.87,31,23.24,31ZM49.93,19a3,3,0,0,0,2.91-3.13,2.38,2.38,0,0,0-2.47-2.47c-2.6,0-3.83,2.07-6,5.86-0.44-2.38-1.54-5.46-4.27-5.46-3.08,0-6.65,4.4-9.91,7.13A7.53,7.53,0,0,1,25.75,23c-1.37,0-2.16-1.37-2.16-3.79,1-4,1.45-5,3-5,1,0,1.45.57,1.45,1.76a32.44,32.44,0,0,1-.84,6.08c1.45-.44,3.65-2.29,5.5-4.27a6.26,6.26,0,0,0-6.08-3.92A10.91,10.91,0,0,0,16.06,24.59c0,3.88,2.77,6.83,7.09,6.83,7.13,0,10.13-6.16,10.13-10.48,0-.62,0-1.06-0.09-1.63C34.29,18.11,35.7,17,36.85,17c1.32,0,2.38,3.3,3.39,8.28-0.92,1-1.85,3-2.29,3.3A2.92,2.92,0,0,0,35,25.69a3.12,3.12,0,0,0-3,3.08,2.5,2.5,0,0,0,2.55,2.64c3,0,3.88-2.86,5.77-5.42,0.57,2.73,1.94,5.42,4.27,5.42,2.77,0,5.33-2.38,6.65-4.05L51.07,27a3.8,3.8,0,0,1-2.64,1.37c-1.72,0-3-3.7-3.88-8.19,0.57-.75,1.45-2.69,2.07-3.39A3.63,3.63,0,0,0,49.93,19Z")
+            .attr('fill', '#000');
 
-      info.append('text').html('Source: Robert Wood Johnson Foundation');
-      info.append('text')
-          .attr('y', 20)
-          .html(dt);
+        var dt = moment(new Date()).format('MMM D, YYYY');
+        var info = svg.append('g')
+                      .attr('class', 'info')
+                      .attr('font-family', 'Helvetica')
+                      .attr('transform', 'translate(0,575)');
 
-
+        info.append('text').html('Source: Robert Wood Johnson Foundation');
+        info.append('text')
+            .attr('y', 20)
+            .html(dt);
+    ***REMOVED***
   ***REMOVED***
 
   $('#form-submit').on('click', function()***REMOVED***
     var control=Alpaca($("#form").get());
     formData = control.getValue();
     currentYear = formData.select_year;
+    console.log('clicked')
     window.dataAdapter.getProviderCount(currentYear, drawMap);
   ***REMOVED***);
 
