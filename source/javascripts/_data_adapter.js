@@ -10,11 +10,21 @@ var DataAdapter = (function() ***REMOVED***
   window.localStorage.setItem('kintoToken', KINTO_TOKEN);
   var _kintoBucket = _kintoBucket || window.getKintoBucket('https://voxmedia-kinto.herokuapp.com/v1', 'vox-aca-dashboard', true);
 
+
+  var setLocalData = function(key, obj)***REMOVED***
+    window.localStorage.setItem('vox-' + key, JSON.stringify(obj));
+  ***REMOVED***;
+
+  var getLocalData = function(key)***REMOVED***
+    return JSON.parse(window.localStorage.getItem('vox-' + key));
+  ***REMOVED***;
+
   var hasUpdates = function(dataKey, callBackFunction)***REMOVED***
     var localLastMod = getLocalData(dataKey + '-last_modified');
 
     if(!localLastMod)***REMOVED***
       callBackFunction.call(this,true);
+      return;
     ***REMOVED***
 
     var serverLastMod = null;
@@ -31,12 +41,13 @@ var DataAdapter = (function() ***REMOVED***
               ***REMOVED***);
   ***REMOVED***;
 
-  var setLocalData = function(key, obj)***REMOVED***
-    window.localStorage.setItem('vox-' + key, JSON.stringify(obj));
-  ***REMOVED***;
-
-  var getLocalData = function(key)***REMOVED***
-    return JSON.parse(window.localStorage.getItem('vox-' + key));
+  var mergeData = function(superset, changeSet)***REMOVED***
+    _.each(changeSet, function(rec)***REMOVED***
+      var idx = _.findIndex(superset, function(d)***REMOVED***
+        return d.id === rec.id;***REMOVED***);
+      superset[idx].is_active = rec.is_active;
+    ***REMOVED***);
+    return superset;
   ***REMOVED***;
 
   var init = function() ***REMOVED***
@@ -48,7 +59,7 @@ var DataAdapter = (function() ***REMOVED***
 
 
     // Public properties and methods
-    _instance.getCoverage = function(year, refresh, callBackFunction) ***REMOVED***
+    _instance.getCoverage = function(year, callBackFunction) ***REMOVED***
       // callBackFunction.call(this, dummy);
       // return;
       var dataKey = 'coverage-' + year;
@@ -65,8 +76,8 @@ var DataAdapter = (function() ***REMOVED***
           limit: 1000,
           pages: Infinity
         ***REMOVED***).then(function(response) ***REMOVED***
-          _data[dataKey] = response.data;
           setLocalData(dataKey, response.data);
+          setLocalData(dataKey + '-preview', response.data);
           setLocalData(dataKey + '-last_modified', response.last_modified);
           callBackFunction.call(this, response.data);
         ***REMOVED***).catch(function(error) ***REMOVED***
@@ -76,7 +87,6 @@ var DataAdapter = (function() ***REMOVED***
     ***REMOVED***;
 
     _instance.updateCoverage = function(records, callBackFunction) ***REMOVED***
-      console.log('in updateCoverage');
       var dataKey = 'coverage-2017',
         collection = _kintoBucket.collection(dataKey),
         recordCount = records.length,
@@ -86,10 +96,7 @@ var DataAdapter = (function() ***REMOVED***
         subset = [],
         currData = getLocalData(dataKey);
 
-      _.each(records, function(rec)***REMOVED***
-        var idx = _.findIndex(currData, function(d)***REMOVED*** return d.id === rec.id;***REMOVED***);
-        currData[idx].is_active = rec.is_active;
-      ***REMOVED***);
+      currData = mergeData(currData, records);
 
       var batchUpdateFx = function(batch) ***REMOVED***
         console.log('in batchUpdateFx');
@@ -103,6 +110,7 @@ var DataAdapter = (function() ***REMOVED***
         processedCount += chunk;
         if (processedCount >= recordCount) ***REMOVED***
           setLocalData('coverage-2017', currData);
+          setLocalData('coverage-2017-preview', currData);
           setLocalData('coverage-2017-last_modified',
                         response[0].body.data.last_modified)
           callBackFunction.call(this);
@@ -122,13 +130,11 @@ var DataAdapter = (function() ***REMOVED***
     ***REMOVED***;
 
     _instance.getProviderCount = function(year, callBackFunction) ***REMOVED***
-      this.getCoverage(year, false, function(coverage) ***REMOVED***
+      this.getCoverage(year, function(coverage) ***REMOVED***
         var response;
         if (year === 2017) ***REMOVED***
           response = _.chain(coverage)
-            .where(function(item) ***REMOVED***
-              return item.is_active;
-            ***REMOVED***)
+            .where(***REMOVED***is_active: true***REMOVED***)
             .countBy(function(item) ***REMOVED***
               return item.fips_code;
             ***REMOVED***)
@@ -142,7 +148,38 @@ var DataAdapter = (function() ***REMOVED***
         ***REMOVED***
         callBackFunction.call(this, response);
       ***REMOVED***);
-    ***REMOVED***
+    ***REMOVED***;
+
+    _instance.getPreviewProviderCount = function(callBackFunction) ***REMOVED***
+      var data = getLocalData('coverage-2017-preview');
+
+      var rollupFx = function(coverage) ***REMOVED***
+        var response = _.chain(coverage)
+          .where(***REMOVED***is_active: true***REMOVED***)
+          .countBy(function(item) ***REMOVED***
+            return item.fips_code;
+          ***REMOVED***)
+          .value();
+        callBackFunction.call(this, response);
+      ***REMOVED***;
+
+      if(!data)***REMOVED***
+        this.getCoverage(2017, rollupFx);
+      ***REMOVED*** else***REMOVED***
+        rollupFx(data);
+      ***REMOVED***
+    ***REMOVED***;
+
+    _instance.updateCoveragePreview = function(records)***REMOVED***
+      var dataKey = 'coverage-2017-preview',
+        currData = getLocalData(dataKey);
+      currData = mergeData(currData, records);
+      setLocalData('coverage-2017-preview', currData);
+    ***REMOVED***;
+
+    _instance.getPreviewCoverage = function()***REMOVED***
+      return getLocalData('coverage-2017-preview');
+    ***REMOVED***;
 
     return _instance;
   ***REMOVED***;

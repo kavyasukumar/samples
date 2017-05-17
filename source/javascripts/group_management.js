@@ -11,6 +11,13 @@
                 .replace(/\s/g, '-');
   ***REMOVED***;
 
+  var wireEvents = function()***REMOVED***
+    $('.state-toggle').on('change', handleStateToggle);
+    $('.county-toggle').on('change', handleCountyToggle);
+    $('a.submit').on('click', beforeSave);
+    $('a.preview').on('click', beforeSave);
+  ***REMOVED***;
+
   var disableSaveButton = function(state)***REMOVED***
     if(state)***REMOVED***
       $('a.submit').addClass('disabled', state);
@@ -19,13 +26,31 @@
     ***REMOVED***
   ***REMOVED***;
 
+  var disablePreviewButton = function(state)***REMOVED***
+    if(state)***REMOVED***
+      $('a.preview').addClass('disabled', state);
+    ***REMOVED*** else ***REMOVED***
+      $('a.preview').removeClass('disabled', state);
+    ***REMOVED***
+  ***REMOVED***;
+
+  var disableButtons = function(state)***REMOVED***
+    disablePreviewButton(state);
+    disableSaveButton(state);
+  ***REMOVED***;
+
   var beforeSave = function()***REMOVED***
-    if($('a.submit').hasClass('disabled'))***REMOVED***
+    if($(this).hasClass('disabled'))***REMOVED***
       return;
     ***REMOVED***
-    disableSaveButton(true);
-    $('a.submit').text('publising...');
-    saveChanges();
+    var preview = $(this).hasClass('preview');
+    if(!preview)***REMOVED***
+      $('a.submit').text('publising...');
+      disableButtons(true);
+    ***REMOVED*** else ***REMOVED***
+      disablePreviewButton(true);
+    ***REMOVED***
+    saveChanges(preview);
   ***REMOVED***;
 
   var handleDataFetch = function (response) ***REMOVED***
@@ -47,9 +72,7 @@
     var html = template(***REMOVED***data: byProvider, parameterize: parameterize***REMOVED***);
     $('.body').html(html);
     $(document).foundation('accordion', 'reflow');
-    $('.state-toggle').on('change', handleStateToggle);
-    $('.county-toggle').on('change', handleCountyToggle);
-    $('a.submit').on('click', beforeSave);
+    wireEvents();
   ***REMOVED***;
 
   var handleStateToggle = function()***REMOVED***
@@ -57,7 +80,7 @@
         targetClass = '.' + id + '-input',
         val = $(this).prop('checked');
     $(targetClass).prop('checked', val);
-    disableSaveButton(false);
+    disableButtons(false);
   ***REMOVED***;
 
   var handleCountyToggle = function() ***REMOVED***
@@ -69,16 +92,19 @@
         stateToggle = '#' + $(this).data('stateToggleId');
 
     $(stateToggle).prop('checked', checkedState);
-    disableSaveButton(false);
+    disableButtons(false);
   ***REMOVED***;
 
   var afterSave = function()***REMOVED***
     $('a.submit').text('Publish');
   ***REMOVED***;
 
-  var saveChanges = function()***REMOVED***
+  var saveChanges = function(isPreview)***REMOVED***
     var changedRecords = [];
-    window.dataAdapter.getCoverage(2017, false, function(response)***REMOVED***
+    window.dataAdapter.getCoverage(2017, function(response)***REMOVED***
+      if(isPreview)***REMOVED***
+        response = window.dataAdapter.getPreviewCoverage();
+      ***REMOVED***
       _.each(response, function(record)***REMOVED***
         var id = '#' + record.id,
             is_active = record.is_active,
@@ -89,16 +115,24 @@
           changedRecords.push(newRecord);
         ***REMOVED***
       ***REMOVED***);
+
       if(changedRecords.length === 0)***REMOVED***
         afterSave();
         return;
       ***REMOVED***
+
+      if(isPreview)***REMOVED***
+        disablePreviewButton(true);
+        window.dataAdapter.updateCoveragePreview(changedRecords);
+        return;
+      ***REMOVED***
+
       window.dataAdapter.updateCoverage(changedRecords, afterSave);
     ***REMOVED***);
   ***REMOVED***;
 
   $(document).ready(function() ***REMOVED***
     window.dataAdapter = window.dataAdapter || DataAdapter.getInstance();
-    window.dataAdapter.getCoverage(2017, false, handleDataFetch);
+    window.dataAdapter.getCoverage(2017, handleDataFetch);
   ***REMOVED***);
 ***REMOVED***)();
