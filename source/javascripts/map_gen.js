@@ -332,6 +332,23 @@
                   '2016',
                   '2017'
                 ]
+              ***REMOVED***,
+              "election_results": ***REMOVED***
+                "dependencies": "select_year"
+              ***REMOVED***,
+              "scenario_label": ***REMOVED***
+                "dependencies": "select_year",
+                "type": "string",
+                "title": "Which type of data would you like to display?"
+              ***REMOVED***,
+              "scenario": ***REMOVED***
+                "dependencies": "select_year",
+                "required": true,
+                "default": 'actual',
+                "enum": [
+                  'actual',
+                  'hypothetical'
+                ]
               ***REMOVED***
             ***REMOVED***
         ***REMOVED***,
@@ -357,6 +374,28 @@
               "dependencies": ***REMOVED***
                 "map_num": "single"
               ***REMOVED***
+            ***REMOVED***,
+            "election_results": ***REMOVED***
+              "type": "checkbox",
+              "rightLabel": "Add 2016 election results",
+              "dependencies": ***REMOVED***
+                "select_year": "2017"
+              ***REMOVED***
+            ***REMOVED***,
+            "scenario_label":***REMOVED***
+              "dependencies": ***REMOVED***
+                "select_year": "2017"
+              ***REMOVED***,
+              "type": "hidden"
+            ***REMOVED***,
+            "scenario": ***REMOVED***
+              "dependencies": ***REMOVED***
+                "select_year": "2017"
+              ***REMOVED***,
+              "optionLabels": [
+                "<span>actual</span>",
+                "<span>hypothetical</span>"
+              ]
             ***REMOVED***
           ***REMOVED***
         ***REMOVED***
