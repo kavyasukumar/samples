@@ -13,6 +13,7 @@
 /* CSS for ads, cover, quotes, credits, other little things */
 @import 'modules/base';
 @import 'partials/nav-overrides';
+@import 'partials/provider';
 /* Try to avoid creating your own sass variables. Use existing variables in:
  *   shared/source/stylesheets/_settings
  *   shared/source/stylesheets/<your-brand>/_settings
@@ -138,13 +139,4 @@ button ***REMOVED***
   stroke: #fff;
   stroke-linecap: round;
   stroke-linejoin: round;
-***REMOVED***
-
-#provider-dash ***REMOVED***
-  table.columns ***REMOVED***
-    padding: 0;
-  ***REMOVED***
-  ul.accordion.row***REMOVED***
-    margin: auto;
-  ***REMOVED***
 ***REMOVED***
