@@ -1,133 +1,128 @@
 @import 'framework';
 @import 'foundation/components/accordion';
 @import 'foundation/components/switches';
-
 /* CSS for SPECIAL (not standard) chorus snippets, as copy-pasted from here:
  * http://product.voxmedia.com/a/multipage-app-docs
  */
 // @import 'modules/snippets';
-
 /* CSS for 'partial/modules/nav'. set :theme to 'light' or 'dark' in config.rb
  * If you uncomment the light nav scss below, change the theme setting in your config.
  */
 // @import 'modules/nav-light';
 @import 'modules/nav-dark';
-
 /* CSS for ads, cover, quotes, credits, other little things */
 @import 'modules/base';
-
 @import 'partials/nav-overrides';
-
 /* Try to avoid creating your own sass variables. Use existing variables in:
  *   shared/source/stylesheets/_settings
  *   shared/source/stylesheets/<your-brand>/_settings
  * If these settings are not appropriate or correct, please file a ticket
  */
-
 /* If you are copy-pasting scss between projects, consider filing a ticket
  * to add that css to shared, or to create generic css to solve your problem
  */
-
 $dark: #222222;
 $gray: #999999;
 
-#svg-map***REMOVED***
- margin: 20px 0 20px 0px;
+#svg-map ***REMOVED***
+  margin: 20px 0;
 ***REMOVED***
 
-.info***REMOVED***
-  text***REMOVED***
+.info ***REMOVED***
+  text ***REMOVED***
     color: $blueprint-dark-gray;
   ***REMOVED***
 ***REMOVED***
 
-nav***REMOVED***
+nav ***REMOVED***
   z-index: 2;
 ***REMOVED***
 
-.right-bar***REMOVED***
+.right-bar ***REMOVED***
   position: fixed;
   z-index: 1;
-  top: 0px;
-  right: 0px;
+  top: 0;
+  right: 0;
   padding: 65px 25px 0;
   background-color: #F5F5F5;
   height: 100vh;
 ***REMOVED***
 
-.alpaca-field-object***REMOVED***
-  padding: 0px;
+.alpaca-field-object ***REMOVED***
+  padding: 0;
 ***REMOVED***
 
-button***REMOVED***
- background-color: $gray;
- // color: $white;
- color: $dark;
- border-radius: 3px;
- padding: 10px;
- margin: 20px 20px 0 0;
+button ***REMOVED***
+  background-color: $gray;
+  // color: $white;
+  color: $dark;
+  border-radius: 3px;
+  padding: 10px;
+  margin: 20px 20px 0 0;
 ***REMOVED***
 
-.alpaca-field-radio***REMOVED***
+.alpaca-field-radio ***REMOVED***
   display: flex;
   justify-content: space-between;
 ***REMOVED***
 
-.radio.alpaca-control***REMOVED***
-  width:50%;
-  background-color:#EFEFEF;
-  overflow:auto;
+.radio.alpaca-control ***REMOVED***
+  width: 50%;
+  background-color: #EFEFEF;
+  overflow: auto;
 ***REMOVED***
 
 .radio.alpaca-control label span ***REMOVED***
-    text-align:center;
-    padding:6px 0px;
-    display:block;
-    border:1px solid #D0D0D0;
-    border-radius:3px 0 0 3px;
-    color: $dark;
+  text-align: center;
+  padding: 6px 0;
+  display: block;
+  border: 1px solid #D0D0D0;
+  border-radius: 3px 0 0 3px;
+  color: $dark;
 ***REMOVED***
 
-.radio.alpaca-control:nth-of-type(2)***REMOVED***
-  label span***REMOVED***
-    border-radius:0 3px 3px 0;
+.radio.alpaca-control:nth-of-type(2) ***REMOVED***
+  label span ***REMOVED***
+    border-radius: 0 3px 3px 0;
   ***REMOVED***
 ***REMOVED***
 
 .radio.alpaca-control label input ***REMOVED***
-    position:absolute;
-    top:-20px;
+  position: absolute;
+  top: -20px;
 ***REMOVED***
 
 .radio.alpaca-control input:checked + span ***REMOVED***
-    background-color: $gray;
-    border:1px solid $gray;
-    // color:#F7F7F7;
+  background-color: $gray;
+  border: 1px solid $gray;
+  // color:#F7F7F7;
 ***REMOVED***
 
-.form-group***REMOVED***
+.form-group ***REMOVED***
   margin-bottom: 15px;
-  &.alpaca-field-hidden***REMOVED***
+
+  &.alpaca-field-hidden ***REMOVED***
     margin-bottom: 5px;
   ***REMOVED***
 ***REMOVED***
 
 .counties ***REMOVED***
- // fill: #ccc;
- // stroke: #ccc;
- stroke-width: 0.5px;
+  // fill: #ccc;
+  // stroke: #ccc;
+  stroke-width: 0.5px;
 ***REMOVED***
 
 .states ***REMOVED***
- // stroke: #fff;
- stroke-linejoin: round;
+  // stroke: #fff;
+  stroke-linejoin: round;
 ***REMOVED***
 
-.tick***REMOVED***
-  line***REMOVED***
+.tick ***REMOVED***
+  line ***REMOVED***
     opacity: 0;
   ***REMOVED***
-  text***REMOVED***
+
+  text ***REMOVED***
     font-size: 16px;
     font-family: 'Nitti';
   ***REMOVED***
@@ -143,4 +138,13 @@ button***REMOVED***
   stroke: #fff;
   stroke-linecap: round;
   stroke-linejoin: round;
+***REMOVED***
+
+#provider-dash ***REMOVED***
+  table.columns ***REMOVED***
+    padding: 0;
+  ***REMOVED***
+  ul.accordion.row***REMOVED***
+    margin: auto;
+  ***REMOVED***
 ***REMOVED***
