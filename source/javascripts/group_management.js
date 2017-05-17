@@ -7,11 +7,23 @@
 (function() ***REMOVED***
   var parameterize = function(input)***REMOVED***
     return input.toLowerCase()
-                .replace(/\[|\]|\(|\)|\***REMOVED***|\***REMOVED***|\\|\/|\.|\&/g, '')
+                .replace(/\[|\]|\(|\)|\***REMOVED***|\***REMOVED***|\\|\/|\.|\,|\&/g, '')
                 .replace(/\s/g, '-');
   ***REMOVED***;
 
+  var disableSaveButton = function(state)***REMOVED***
+    if(state)***REMOVED***
+      $('a.submit').addClass('disabled', state);
+    ***REMOVED*** else ***REMOVED***
+      $('a.submit').removeClass('disabled', state);
+    ***REMOVED***
+  ***REMOVED***;
+
   var beforeSave = function()***REMOVED***
+    if($('a.submit').hasClass('disabled'))***REMOVED***
+      return;
+    ***REMOVED***
+    disableSaveButton(true);
     $('a.submit').text('saving...');
     saveChanges();
   ***REMOVED***;
@@ -45,6 +57,7 @@
         targetClass = '.' + id + '-input',
         val = $(this).prop('checked');
     $(targetClass).prop('checked', val);
+    disableSaveButton(false);
   ***REMOVED***;
 
   var handleCountyToggle = function() ***REMOVED***
@@ -56,11 +69,11 @@
         stateToggle = '#' + $(this).data('stateToggleId');
 
     $(stateToggle).prop('checked', checkedState);
+    disableSaveButton(false);
   ***REMOVED***;
 
   var afterSave = function()***REMOVED***
-    $('a.submit').text('saved');
-    console.log('aftersave');
+    $('a.submit').text('Save changes');
   ***REMOVED***;
 
   var saveChanges = function()***REMOVED***
@@ -76,6 +89,10 @@
           changedRecords.push(newRecord);
         ***REMOVED***
       ***REMOVED***);
+      if(changedRecords.length === 0)***REMOVED***
+        afterSave();
+        return;
+      ***REMOVED***
       window.dataAdapter.updateCoverage(2017, changedRecords, afterSave);
     ***REMOVED***);
   ***REMOVED***;
