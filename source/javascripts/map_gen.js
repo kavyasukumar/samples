@@ -2,6 +2,7 @@
 //= require _data_adapter
 //= require _vendor_extra/moment
 //= require _vendor/pancake.stack
+//= require _vendor/textures.min
 (function() ***REMOVED***
   // Application code goes here
   var stateIdx = ['WA', 'MT', 'ID', 'ND', 'MN', 'ME', 'MI', 'WI', 'OR', 'SD', 'NH', 'VT', 'NY', 'WY', 'IA', 'NE', 'MA', 'IL', 'PA', 'CT', 'RI', 'CA', 'UT', 'NV', 'OH', 'IN', 'NY', 'CO', 'WV', 'MO', 'KS', 'DE', 'MD', 'VA', 'KY', 'DC', 'AZ', 'OK', 'NM', 'TN', 'NC', 'TX', 'AR', 'SC', 'AL', 'GA', 'MS', 'LA', 'FL', 'HI', 'AK'];
@@ -179,12 +180,7 @@
 
       drawScale();
 
-      // svg
-      //     .call(zoom) // delete this line to disable free zooming
-      //     .call(zoom.transform, initialTransform);
-
       d3.queue()
-          // .defer(d3.json, "https://d3js.org/us-10m.v1.json")
           .defer(d3.json, "https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/us.json")
           .await(ready);
 
@@ -202,26 +198,55 @@
               return 'f_'+d.id;
             ***REMOVED***)
             .attr("fill", function(d) ***REMOVED***
+              var tFill;
+              var shortFips = d.id;
               if(String(d.id).length === 4)***REMOVED***
                 d.id = '0'+String(d.id);
               ***REMOVED***
               if(formData['map_type'] === 'state')***REMOVED***
                 if(_.contains(stf, String(d.id)))***REMOVED***
                   if(color(d.count = data[d.id]))***REMOVED***
-                    return color(d.count = data[d.id]);
+                    tFill = color(d.count = data[d.id]);
                   ***REMOVED*** else ***REMOVED***
-                    return '#ccc';
+                    tFill = '#ccc';
                   ***REMOVED***
                 ***REMOVED*** else ***REMOVED***
-                  return 'none';
+                  tFill = 'none';
                 ***REMOVED***
               ***REMOVED*** else ***REMOVED***
                 if(color(d.count = data[d.id]))***REMOVED***
-                  return color(d.count = data[d.id]);
+                  tFill = color(d.count = data[d.id]);
                 ***REMOVED*** else ***REMOVED***
-                  return '#ccc';
+                  tFill = '#ccc';
                 ***REMOVED***
               ***REMOVED***
+              return tFill;
+
+              // if(formData['select_year'] === "2017" && formData['election_results'])***REMOVED***
+              //   var lineColor = 'blue';
+              //   console.log(shortFips);
+              //   var electionEntry = _.findWhere(us_election, ***REMOVED***fips: String(shortFips)***REMOVED***);
+              //   console.log(electionEntry)
+              //   if(electionEntry)***REMOVED***
+              //     if(+electionEntry.trump > +electionEntry.clinton)***REMOVED***
+              //       lineColor = 'red';
+              //     ***REMOVED***
+              //   ***REMOVED*** else ***REMOVED***
+              //     lineColor = 'white';
+              //   ***REMOVED***
+              //
+              //   var t = textures.circles()
+              //                   .size(3)
+              //                   .radius(1)
+              //                   .fill(lineColor)
+              //                   .background(tFill);
+              //
+              //   svg.call(t);
+              //   return t.url();
+              // ***REMOVED*** else ***REMOVED***
+              //   return tFill;
+              // ***REMOVED***
+
             ***REMOVED***)
             .attr("d", path)
             .attr("stroke", function(d)***REMOVED***
