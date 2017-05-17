@@ -24,7 +24,7 @@
       return;
     ***REMOVED***
     disableSaveButton(true);
-    $('a.submit').text('saving...');
+    $('a.submit').text('publising...');
     saveChanges();
   ***REMOVED***;
 
@@ -73,7 +73,7 @@
   ***REMOVED***;
 
   var afterSave = function()***REMOVED***
-    $('a.submit').text('Save changes');
+    $('a.submit').text('Publish');
   ***REMOVED***;
 
   var saveChanges = function()***REMOVED***
@@ -93,7 +93,7 @@
         afterSave();
         return;
       ***REMOVED***
-      window.dataAdapter.updateCoverage(2017, changedRecords, afterSave);
+      window.dataAdapter.updateCoverage(changedRecords, afterSave);
     ***REMOVED***);
   ***REMOVED***;
 

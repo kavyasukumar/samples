@@ -10,6 +10,35 @@ var DataAdapter = (function() ***REMOVED***
   window.localStorage.setItem('kintoToken', KINTO_TOKEN);
   var _kintoBucket = _kintoBucket || window.getKintoBucket('https://voxmedia-kinto.herokuapp.com/v1', 'vox-aca-dashboard', true);
 
+  var hasUpdates = function(dataKey, callBackFunction)***REMOVED***
+    var localLastMod = getLocalData(dataKey + '-last_modified');
+
+    if(!localLastMod)***REMOVED***
+      callBackFunction.call(this,true);
+    ***REMOVED***
+
+    var serverLastMod = null;
+    _kintoBucket.collection(dataKey).listRecords(***REMOVED***
+              since: localLastMod.toString(),
+              limit: 1
+            ***REMOVED***).then(function(resp)***REMOVED***
+                serverLastMod = resp.last_modified;
+                if(serverLastMod > localLastMod)***REMOVED***
+                  callBackFunction.call(this,true);
+                ***REMOVED*** else***REMOVED***
+                    callBackFunction.call(this,false);
+                ***REMOVED***
+              ***REMOVED***);
+  ***REMOVED***;
+
+  var setLocalData = function(key, obj)***REMOVED***
+    window.localStorage.setItem('vox-' + key, JSON.stringify(obj));
+  ***REMOVED***;
+
+  var getLocalData = function(key)***REMOVED***
+    return JSON.parse(window.localStorage.getItem('vox-' + key));
+  ***REMOVED***;
+
   var init = function() ***REMOVED***
 
     // Private properties and methods
@@ -17,41 +46,50 @@ var DataAdapter = (function() ***REMOVED***
       _staleBit = ***REMOVED******REMOVED***;
     var _instance = ***REMOVED******REMOVED***;
 
-    //Public properties and methods
+
+    // Public properties and methods
     _instance.getCoverage = function(year, refresh, callBackFunction) ***REMOVED***
       // callBackFunction.call(this, dummy);
       // return;
       var dataKey = 'coverage-' + year;
-      if (!refresh && _data[dataKey]) ***REMOVED***
-        console.log('data exists');
-        callBackFunction.call(this, _data[dataKey]);
-        return;
-      ***REMOVED***
+      hasUpdates(dataKey, function(update)***REMOVED***
+        if (!update) ***REMOVED***
+          console.log('data exists');
+          callBackFunction.call(this, getLocalData(dataKey));
+          return;
+        ***REMOVED***
 
-      var collection = _kintoBucket.collection(dataKey);
-      _staleBit[dataKey] = false;
+        var collection = _kintoBucket.collection(dataKey);
 
-      collection.listRecords(***REMOVED***
-        limit: 1000,
-        pages: Infinity
-      ***REMOVED***).then(function(response) ***REMOVED***
-        _data[dataKey] = response.data;
-        callBackFunction.call(this, response.data);
-      ***REMOVED***).catch(function(error) ***REMOVED***
-        _staleBit[dataKey] = false;
-        console.log(error);
+        collection.listRecords(***REMOVED***
+          limit: 1000,
+          pages: Infinity
+        ***REMOVED***).then(function(response) ***REMOVED***
+          _data[dataKey] = response.data;
+          setLocalData(dataKey, response.data);
+          setLocalData(dataKey + '-last_modified', response.last_modified);
+          callBackFunction.call(this, response.data);
+        ***REMOVED***).catch(function(error) ***REMOVED***
+          console.log(error);
+        ***REMOVED***);
       ***REMOVED***);
     ***REMOVED***;
 
-    _instance.updateCoverage = function(year, records, callBackFunction) ***REMOVED***
+    _instance.updateCoverage = function(records, callBackFunction) ***REMOVED***
       console.log('in updateCoverage');
-      var dataKey = 'coverage-' + year,
+      var dataKey = 'coverage-2017',
         collection = _kintoBucket.collection(dataKey),
         recordCount = records.length,
-        processedCount = 0;
+        processedCount = 0,
+        i,j,
+        chunk = 100,
+        subset = [],
+        currData = getLocalData(dataKey);
 
-      _staleBit[dataKey] = true;
-      var i,j, chunk = 100, subset = [];
+      _.each(records, function(rec)***REMOVED***
+        var idx = _.findIndex(currData, function(d)***REMOVED*** return d.id === rec.id;***REMOVED***);
+        currData[idx].is_active = rec.is_active;
+      ***REMOVED***);
 
       var batchUpdateFx = function(batch) ***REMOVED***
         console.log('in batchUpdateFx');
@@ -64,7 +102,10 @@ var DataAdapter = (function() ***REMOVED***
         console.log('in batchHandleFx');
         processedCount += chunk;
         if (processedCount >= recordCount) ***REMOVED***
-        callBackFunction.call(this);
+          setLocalData('coverage-2017', currData);
+          setLocalData('coverage-2017-last_modified',
+                        response[0].body.data.last_modified)
+          callBackFunction.call(this);
         ***REMOVED***
       ***REMOVED***;
 
