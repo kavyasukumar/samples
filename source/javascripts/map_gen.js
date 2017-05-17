@@ -163,14 +163,47 @@
       svg.html('');
       d3.select('canvas').attr('width', 900).attr('height', 620);
       if(formData['image_title'])***REMOVED***
-        svg.append('g')
-            .attr('font-family', 'Balto')
-            .append("text")
-            .attr('class', 'title')
-            .attr('y', 25)
-            .attr("font-weight", "bold")
-            .attr('font-size', '32px')
-            .text(formData['image_title']);
+        var titleG = svg.append('g')
+                         .attr('font-family', 'Balto')
+                         .attr('transform', 'translate(0,25)')
+
+        if(formData['image_title'].length > 33)***REMOVED***
+          var titleArray = [],
+              wordArray = formData['image_title'].split(' '),
+              x = Math.ceil(formData['image_title'].length/33),
+              count = 0,
+              temp = [];
+              
+          for(i in wordArray)***REMOVED***
+            if(count + wordArray[i].length+1 < 33)***REMOVED***
+              temp.push(wordArray[i]);
+              count += wordArray[i].length;
+            ***REMOVED*** else ***REMOVED***
+              titleArray.push(temp);
+              temp = [wordArray[i]];
+              count = wordArray[i].length + 1;
+            ***REMOVED***
+          ***REMOVED***
+          titleArray.push(temp);
+
+          for(i in titleArray)***REMOVED***
+            var num = parseInt(i);
+            titleG.append("text")
+                  .attr('class', 'title')
+                  .attr('y', num*32)
+                  .attr("font-weight", "bold")
+                  .attr('font-size', '32px')
+                  .text(titleArray[i].join(' '));
+          ***REMOVED***
+        ***REMOVED*** else ***REMOVED***
+          titleG.append("text")
+                .attr('class', 'title')
+                .attr('y', 25)
+                .attr("font-weight", "bold")
+                .attr('font-size', '32px')
+                .text(formData['image_title']);
+        ***REMOVED***
+
       ***REMOVED***
       svg.append("rect")
           .attr("class", "background")
