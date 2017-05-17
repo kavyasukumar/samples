@@ -149,6 +149,9 @@ task :shard_election_results do
                       ***REMOVED***
 
   require 'fileutils'
+  File.open('./processed_data/election_results/US_results.json', 'w') do |file|
+    file.write results.to_json
+  end
   FileUtils::mkdir_p './processed_data/election_results'
   results.chunk ***REMOVED***|x| x['fips'][0, x['fips'].length-3].rjust(2,"0")***REMOVED***
          .map  do |f, rows|
