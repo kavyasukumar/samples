@@ -1,14 +1,20 @@
-<% _.each(data, function(coverage, state) ***REMOVED*** %>
-  <ul class="accordion" data-accordion>
+<% _.each(data, function(coverage, provider) ***REMOVED*** %>
+  <ul class="accordion row" data-accordion>
     <li class="accordion-navigation">
-      <a href="<%= '#' + state %>"><%= state %></a>
-      <div id="<%= state %>" class="content">
-        <% _.each(coverage, function(counties, provider) ***REMOVED*** %>
-        <table>
+      <a href="<%= '#' + parameterize(provider) %>"><%= provider %></a>
+      <div id="<%= parameterize(provider) %>" class="content row">
+        <% _.each(coverage, function(counties, state) ***REMOVED*** %>
+        <table class="large-12 columns">
           <thead>
             <tr>
-              <th><h3><%= provider %></h3></th>
-              <th>Active?</th>
+              <th class="large-10 columns"><h3><%= state %></h3></th>
+              <th class="switch tiny">
+                <input id="<%= state + '-' + provider + '-toggle' %>" type="checkbox"
+                <% if(_.some( counties, function( el ) ***REMOVED*** return el.is_active;***REMOVED***))***REMOVED*** %>
+                   checked
+                 <% ***REMOVED*** %>>
+                 <label for="<%= state + '-' + provider + '-toggle' %>"></label>
+               </th>
             </tr>
           </thead>
           <tbody>
