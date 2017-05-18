@@ -5,8 +5,6 @@
 /* globals DataAdapter, console */
 
 (function() ***REMOVED***
-  var wireEvents;
-  
   var parameterize = function(input)***REMOVED***
     return input.toLowerCase()
                 .replace(/\[|\]|\(|\)|\***REMOVED***|\***REMOVED***|\\|\/|\.|\,|\&/g, '')
@@ -103,7 +101,6 @@
     var html = template(***REMOVED***data: byProvider, parameterize: parameterize***REMOVED***);
     $('.body').html(html);
     $(document).foundation('accordion', 'reflow');
-    wireEvents();
   ***REMOVED***;
 
   var handleStateToggle = function()***REMOVED***
@@ -126,7 +123,7 @@
     disableButtons(false);
   ***REMOVED***;
 
-  wireEvents = function()***REMOVED***
+  var wireEvents = function()***REMOVED***
     $('.state-toggle').on('change', handleStateToggle);
     $('.county-toggle').on('change', handleCountyToggle);
     $('a.submit').on('click', beforeSave);
@@ -134,6 +131,7 @@
   ***REMOVED***;
 
   $(document).ready(function() ***REMOVED***
+    wireEvents();
     window.dataAdapter = window.dataAdapter || DataAdapter.getInstance();
     window.dataAdapter.getCoverage(2017, handleDataFetch);
   ***REMOVED***);
