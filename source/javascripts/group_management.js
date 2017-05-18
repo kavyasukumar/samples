@@ -173,7 +173,7 @@
     $('a.submit').on('click', beforeSave);
     $('a.preview').on('click', beforeSave);
     $('a.discard').on('click', discardChanges);
-    $('.search').on('keyup', filterResults);
+    $('.search').on('keyup', _.debounce(filterResults,500));
   ***REMOVED***;
 
   $(document).ready(function() ***REMOVED***
