@@ -16,7 +16,7 @@
               <thead>
                 <tr>
                   <th class="large-10 columns">
-                    <h3><%= state %></h3></th>
+                    <h3><%= STATE_LOOKUP[state] %></h3></th>
                   <th class="switch tiny">
                     <input id="<%= state + '-' + providerSlug + '-toggle' %>" class="state-toggle" type="checkbox" <% if(_.some( counties, function( el ) ***REMOVED*** return el.is_active;***REMOVED***))***REMOVED*** %> checked
                     <% ***REMOVED*** %>>
