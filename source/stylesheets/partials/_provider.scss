@@ -5,6 +5,11 @@
   ul.accordion.row***REMOVED***
     margin: auto;
     margin-bottom: 20px;
+    li.accordion-navigation***REMOVED***
+      &.hide***REMOVED***
+        display: none;
+      ***REMOVED***
+    ***REMOVED***
   ***REMOVED***
 ***REMOVED***
 
@@ -14,7 +19,7 @@
   ***REMOVED***
   a.discard***REMOVED***
     display: block;
-    padding: 1rem 1.25rem 0rem 1.25rem;
+    padding: 1rem 1.25rem 0 0;
     font-size: 1.2rem;
     text-decoration: underline;
   ***REMOVED***

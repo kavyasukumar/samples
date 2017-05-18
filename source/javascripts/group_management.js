@@ -153,12 +153,27 @@
     ***REMOVED***);
   ***REMOVED***;
 
+  var filterResults = function()***REMOVED***
+    var q = $(this)[0].value;
+    _.each($('ul.accordion'), function(el)***REMOVED***
+   var substrRegex = new RegExp(q, 'i');
+     var provider  = $(el).find('a').text();
+     if (substrRegex.test(provider))***REMOVED***
+          $(el).children('li').removeClass('active');
+			    $(el).removeClass('hide');
+       ***REMOVED*** else ***REMOVED***
+           $(el).addClass('hide');
+       ***REMOVED***
+  ***REMOVED***);
+  ***REMOVED***;
+
   wireEvents = function()***REMOVED***
     $('.state-toggle').on('change', handleStateToggle);
     $('.county-toggle').on('change', handleCountyToggle);
     $('a.submit').on('click', beforeSave);
     $('a.preview').on('click', beforeSave);
     $('a.discard').on('click', discardChanges);
+    $('.search').on('keyup', filterResults);
   ***REMOVED***;
 
   $(document).ready(function() ***REMOVED***
