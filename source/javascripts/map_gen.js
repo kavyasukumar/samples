@@ -40,65 +40,59 @@
   var myColors = ['#fff200', '#ddd', '#bed8e9', '#8cafcd', '#5a87b2', '#5a87b2', '#5a87b2', '#5a87b2', '#285f96', '#285f96', '#00377b', '#00377b', '#00377b', '#00377b', '#00377b'];
   //
   // var x = d3.scaleLinear()
-  //     .domain([0, 13])
+  //     .domain([0, 15])
   //     .rangeRound([600, 860]);
+
   var color = d3.scaleOrdinal()
       .domain(d3.range(0, 15))
       .range(myColors);
 
-  // var x = d3.scaleLinear()
-  //     .domain([0, 4])
-  //     .rangeRound([600, 860]);
-  //
-  // var color = d3.scaleThreshold()
-  //     .domain(d3.range(0, 4))
-  //     .range(d3.schemeBlues[5]);
 
   function drawScale()***REMOVED***
     var g = svg.append("g").attr('class', 'scale')
-               .attr('transform', "translate(0,25)");
+               .attr('transform', "translate(5,585)");
 
     g.selectAll("rect")
-      .data(color.range().map(function(d) ***REMOVED***
-          d = color.invertExtent(d);
-          if (d[0] == null) d[0] = x.domain()[0];
-          if (d[1] == null) d[1] = x.domain()[1];
-          return d;
-        ***REMOVED***))
+      .data(color.range().map(function(d) ***REMOVED*** return d; ***REMOVED***))
       .enter().append("rect")
-        .attr("height", 8)
-        .attr("x", function(d) ***REMOVED*** return x(d[0]) - 32.5; ***REMOVED***)
-        .attr("width", function(d) ***REMOVED*** return x(d[1]) - x(d[0]); ***REMOVED***)
-        .attr("fill", function(d) ***REMOVED*** return color(d[0]); ***REMOVED***);
+        .attr("height", 20)
+        .attr("x", function(d, i) ***REMOVED*** return i*59; ***REMOVED***)
+        .attr("width", 59)
+        .attr("fill", function(d) ***REMOVED*** return d; ***REMOVED***);
 
     g.append("text")
         .attr("class", "caption")
-        .attr("x", x.range()[0] - 32.5)
         .attr("y", -6)
-        .attr("fill", "#000")
+        .attr("fill", "#4c4e4d")
         .attr("text-anchor", "start")
-        // .attr("font-weight", "bold")
         .attr('font-size', '22px')
         .attr('font-family', 'Nitti')
         .text("Number of ACA insurers available");
 
-    g.call(d3.axisBottom(x)
-        .tickFormat(function(x, i) ***REMOVED***
-          if(x === 3)***REMOVED***
-            return x + '+';
-          ***REMOVED*** else ***REMOVED***
-            return x;
-          ***REMOVED***
-        ***REMOVED***)
-        .tickPadding(13)
-        .tickSize(0)
-        .tickValues(color.domain()))
-      .select(".domain")
-        .remove();
+      g.selectAll("text")
+        .data([0, 0, 1, 2, 3, 4, 8, 10, 15])
+        .enter().append("text")
+        .attr("x", function(d, i) ***REMOVED*** return d*59; ***REMOVED***)
+        .attr("y", 50)
+        .attr("fill", "#4c4e4d")
+        .attr("text-anchor", "middle")
+        .attr('font-size', '20px')
+        .attr('font-family', 'Nitti')
+        .text(function(d) ***REMOVED*** return d; ***REMOVED***);
 
-    d3.selectAll('.tick')
-      .attr('font-size', '22px')
-      .attr('font-family', 'Nitti');
+      g.selectAll("line")
+        .data([0, 1, 2, 3, 4, 8, 10, 15])
+        .enter().append("line")
+        .attr("x1", function(d, i) ***REMOVED*** return d*59; ***REMOVED***)
+        .attr("x2", function(d, i) ***REMOVED*** return d*59; ***REMOVED***)
+        .attr("y1", 0)
+        .attr("y2", 30)
+        .attr('stroke', '#999')
+        .attr('width', "1px");
+
+    // d3.selectAll('.tick')
+    //   .attr('font-size', '22px')
+    //   .attr('font-family', 'Nitti');
   ***REMOVED***
 
   function clicked() ***REMOVED***
@@ -108,7 +102,7 @@
         dy = bounds[1][1] - bounds[0][1],
         x = (bounds[0][0] + bounds[1][0]) / 2,
         y = (bounds[0][1] + bounds[1][1]) / 2,
-        scale = Math.max(1, Math.min(8, 0.7 / Math.max(dx / width, dy / height))),
+        scale = Math.max(1, Math.min(8, 0.6 / Math.max(dx / width, dy / height))),
         translate = [width / 2 - scale * x, height / 2 - scale * y];
 
     var transform = d3.zoomIdentity
@@ -163,11 +157,11 @@
 
       console.log(formData);
       svg.html('');
-      d3.select('canvas').attr('width', 900).attr('height', 620);
+      d3.select('canvas').attr('width', 900).attr('height', 700);
       if(formData['image_title'])***REMOVED***
         var titleG = svg.append('g')
                          .attr('font-family', 'Balto')
-                         .attr('transform', 'translate(0,25)')
+                         .attr('transform', 'translate(5,25)')
 
         if(formData['image_title'].length > 33)***REMOVED***
           var titleArray = [],
@@ -213,7 +207,7 @@
           .attr("height", height)
           .attr("fill", 'none');
 
-      // drawScale();
+      drawScale();
 
       d3.queue()
           .defer(d3.json, "https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/us.json")
@@ -226,7 +220,9 @@
 
         var stf = [];
         stf = state_fips[formData['state_select']];
-         svg.append("g").attr("class", "counties paths").selectAll("path")
+         svg.append("g").attr("class", "counties paths")
+            .attr('transform', 'translate(0,-40)')
+            .selectAll("path")
             .data(tj)
           .enter().append("path")
             .attr('id', function(d)***REMOVED***
@@ -267,6 +263,7 @@
             .text(function(d) ***REMOVED*** return d.count; ***REMOVED***);
 
           svg.append("path")
+              .attr('transform', 'translate(0,-40)')
               .datum(topojson.mesh(us, us.objects.states, function(a, b) ***REMOVED*** return a !== b; ***REMOVED***))
               .attr("class", "mesh")
               .attr("d", path)
@@ -289,7 +286,7 @@
 
         svg.append('g')
             .attr('class', 'vox-logo')
-            .attr('transform', 'translate(770,570)')
+            .attr('transform', 'translate(798,640)')
             .attr('preserveAspectRatio', "none")
             .append('path')
             .attr('fill', '#333')
@@ -301,7 +298,8 @@
                       .attr('class', 'info')
                       .attr('font-family', 'Nitti')
                       .attr('font-size', '22px')
-                      .attr('transform', 'translate(0,585)');
+                      .attr('fill', '#707070')
+                      .attr('transform', 'translate(5,655)');
 
         info.append('text').html('Source: Robert Wood Johnson Foundation');
         info.append('text')
