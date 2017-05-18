@@ -38,10 +38,6 @@
   svg.on("click", stopped, true);
 
   var myColors = ['#fff200', '#ddd', '#bed8e9', '#8cafcd', '#5a87b2', '#5a87b2', '#5a87b2', '#5a87b2', '#285f96', '#285f96', '#00377b', '#00377b', '#00377b', '#00377b', '#00377b'];
-  //
-  // var x = d3.scaleLinear()
-  //     .domain([0, 15])
-  //     .rangeRound([600, 860]);
 
   var color = d3.scaleOrdinal()
       .domain(d3.range(0, 15))
@@ -62,7 +58,7 @@
 
     g.append("text")
         .attr("class", "caption")
-        .attr("y", -6)
+        .attr("y", -10)
         .attr("fill", "#4c4e4d")
         .attr("text-anchor", "start")
         .attr('font-size', '22px')
@@ -73,11 +69,12 @@
         .data([0, 0, 1, 2, 3, 4, 8, 10, 15])
         .enter().append("text")
         .attr("x", function(d, i) ***REMOVED*** return d*59; ***REMOVED***)
-        .attr("y", 50)
+        .attr("y", 45)
         .attr("fill", "#4c4e4d")
         .attr("text-anchor", "middle")
         .attr('font-size', '20px')
         .attr('font-family', 'Nitti')
+        // .attr('-webkit-font-feature-settings', 'tnum')
         .text(function(d) ***REMOVED*** return d; ***REMOVED***);
 
       g.selectAll("line")
@@ -86,13 +83,10 @@
         .attr("x1", function(d, i) ***REMOVED*** return d*59; ***REMOVED***)
         .attr("x2", function(d, i) ***REMOVED*** return d*59; ***REMOVED***)
         .attr("y1", 0)
-        .attr("y2", 30)
+        .attr("y2", 28)
         .attr('stroke', '#999')
         .attr('width', "1px");
 
-    // d3.selectAll('.tick')
-    //   .attr('font-size', '22px')
-    //   .attr('font-family', 'Nitti');
   ***REMOVED***
 
   function clicked() ***REMOVED***
@@ -286,7 +280,7 @@
 
         svg.append('g')
             .attr('class', 'vox-logo')
-            .attr('transform', 'translate(798,640)')
+            .attr('transform', 'translate(798,650)')
             .attr('preserveAspectRatio', "none")
             .append('path')
             .attr('fill', '#333')
@@ -299,7 +293,7 @@
                       .attr('font-family', 'Nitti')
                       .attr('font-size', '22px')
                       .attr('fill', '#707070')
-                      .attr('transform', 'translate(5,655)');
+                      .attr('transform', 'translate(5,665)');
 
         info.append('text').html('Source: Robert Wood Johnson Foundation');
         info.append('text')
