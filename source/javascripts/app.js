@@ -1,6 +1,7 @@
 //= require _data_adapter
 //= require foundation
 //= require foundation/foundation.accordion
+//= require foundation/foundation.alert
 
 $(document).foundation();
 

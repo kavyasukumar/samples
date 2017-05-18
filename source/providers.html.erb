@@ -1,14 +1,16 @@
 <%=partial 'partials/variables' %>
 <%=partial 'partials/nav' %>
 <article class="article" role="article">
+  <div data-alert class="alert-box hidden"></div>
   <section id="intro" class="row">
     <p>
       Use the toggles below to update coverage at the state or county level</p>
   </section>
   <section id='controls'>
     <div class="row">
-      <a href="#" class="button right submit disabled">Publish</a>
+      <a href="#" class="button right submit disabled">Save & Publish</a>
       <a href="#" class="button right preview disabled">Save</a>
+      <a href="#" class="right discard">Discard changes</a>
     </div>
   </section>
   <section id="provider-dash" class="body">

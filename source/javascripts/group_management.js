@@ -2,10 +2,27 @@
 //= require_tree ./_templates
 //= require _underscore_mixins
 
-/* globals DataAdapter, console */
+/* globals DataAdapter, console, setTimeout */
 
 (function() ***REMOVED***
-  var wireEvents;
+  var wireEvents; // declaring upfront for linting happiness
+
+  var alertFx = function(text, level)***REMOVED***
+    $('.alert-box').removeClass('success')
+                   .removeClass('info')
+                   .removeClass('warning')
+                   .removeClass('error')
+                   .addClass(level)
+                   .html(text)
+                   .fadeOut()
+                   .removeClass('hidden')
+                   .fadeIn();
+     setTimeout(function()***REMOVED***
+       $('.alert-box').fadeOut(300, function()***REMOVED***
+          $('.alert-box').addClass('hidden');
+       ***REMOVED***);
+     ***REMOVED***, 2000);
+  ***REMOVED***
 
   var parameterize = function(input)***REMOVED***
     return input.toLowerCase()
@@ -35,14 +52,14 @@
   ***REMOVED***;
 
   var afterSave = function()***REMOVED***
-    $('a.submit').text('Publish');
+    $('a.submit').text('Save & Publish');
   ***REMOVED***;
 
   var saveChanges = function(isPreview)***REMOVED***
     var changedRecords = [];
     window.dataAdapter.getCoverage(2017, function(response)***REMOVED***
       if(isPreview)***REMOVED***
-        response = window.dataAdapter.getPreviewCoverage();
+        response = window.dataAdapter.getPreviewCoverageSync();
       ***REMOVED***
       _.each(response, function(record)***REMOVED***
         var id = '#' + record.id,
@@ -57,16 +74,20 @@
 
       if(changedRecords.length === 0)***REMOVED***
         afterSave();
+        var word = isPreview ? 'save' : 'publish';
+        alertFx('There are no changes to' + word, 'warning');
         return;
       ***REMOVED***
 
       if(isPreview)***REMOVED***
         disablePreviewButton(true);
+        alertFx('Saved data. You may have unpublished changes', 'success');
         window.dataAdapter.updateCoveragePreview(changedRecords);
         return;
       ***REMOVED***
 
       window.dataAdapter.updateCoverage(changedRecords, afterSave);
+      alertFx('Published data.', 'success');
     ***REMOVED***);
   ***REMOVED***;
 
@@ -126,11 +147,18 @@
     disableButtons(false);
   ***REMOVED***;
 
+  var discardChanges = function()***REMOVED***
+    window.dataAdapter.discardPreviewChanges(function()***REMOVED***
+      alertFx('Unpublished changes have been deleted', 'info');
+    ***REMOVED***);
+  ***REMOVED***;
+
   wireEvents = function()***REMOVED***
     $('.state-toggle').on('change', handleStateToggle);
     $('.county-toggle').on('change', handleCountyToggle);
     $('a.submit').on('click', beforeSave);
     $('a.preview').on('click', beforeSave);
+    $('a.discard').on('click', discardChanges);
   ***REMOVED***;
 
   $(document).ready(function() ***REMOVED***

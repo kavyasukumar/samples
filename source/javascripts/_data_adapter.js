@@ -177,9 +177,30 @@ var DataAdapter = (function() ***REMOVED***
       setLocalData('coverage-2017-preview', currData);
     ***REMOVED***;
 
-    _instance.getPreviewCoverage = function()***REMOVED***
+    _instance.getPreviewCoverageSync = function()***REMOVED***
       return getLocalData('coverage-2017-preview');
     ***REMOVED***;
+
+    _instance.getPreviewCoverage = function(callBackFunction)***REMOVED***
+      var data = getLocalData('coverage-2017-preview');
+
+      if(data)***REMOVED***
+        callBackFunction.call(data);
+        return;
+      ***REMOVED***
+      
+      this.getCoverage(2017, function(response)***REMOVED***
+        setLocalData('coverage-2017-preview', response);
+        callBackFunction.call(response);
+      ***REMOVED***);
+    ***REMOVED***;
+
+    _instance.discardPreviewChanges = function(callBackFunction)***REMOVED***
+      this.getCoverage(2017, function(response)***REMOVED***
+        setLocalData('coverage-2017-preview', response);
+        callBackFunction.call(response);
+      ***REMOVED***);
+    ***REMOVED***
 
     return _instance;
   ***REMOVED***;
