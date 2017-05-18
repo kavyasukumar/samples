@@ -32,25 +32,27 @@
       .translate(0,0)
       .scale(1);
 
-  // var projection = d3.geoMercator()
-  //     .scale(100)
-  //     .translate([width / 2, height / 2]);
-  //
   var path = d3.geoPath()
       .projection(projection);
 
   svg.on("click", stopped, true);
 
-  var x = d3.scaleLinear()
-      .domain([0, 4])
-      .rangeRound([600, 860]);
-  var color = d3.scaleThreshold()
-      .domain(d3.range(0, 4))
-      .range(d3.schemeBlues[5]);
+  var myColors = ['#fff200', '#ddd', '#bed8e9', '#8cafcd', '#5a87b2', '#5a87b2', '#5a87b2', '#5a87b2', '#285f96', '#285f96', '#00377b', '#00377b', '#00377b', '#00377b', '#00377b'];
+  //
+  // var x = d3.scaleLinear()
+  //     .domain([0, 13])
+  //     .rangeRound([600, 860]);
+  var color = d3.scaleOrdinal()
+      .domain(d3.range(0, 15))
+      .range(myColors);
 
-  // svg
-  //     .call(zoom) // delete this line to disable free zooming
-  //     .call(zoom.transform, initialTransform);
+  // var x = d3.scaleLinear()
+  //     .domain([0, 4])
+  //     .rangeRound([600, 860]);
+  //
+  // var color = d3.scaleThreshold()
+  //     .domain(d3.range(0, 4))
+  //     .range(d3.schemeBlues[5]);
 
   function drawScale()***REMOVED***
     var g = svg.append("g").attr('class', 'scale')
@@ -173,7 +175,7 @@
               x = Math.ceil(formData['image_title'].length/33),
               count = 0,
               temp = [];
-              
+
           for(i in wordArray)***REMOVED***
             if(count + wordArray[i].length+1 < 33)***REMOVED***
               temp.push(wordArray[i]);
@@ -211,7 +213,7 @@
           .attr("height", height)
           .attr("fill", 'none');
 
-      drawScale();
+      // drawScale();
 
       d3.queue()
           .defer(d3.json, "https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/us.json")
@@ -238,47 +240,22 @@
               ***REMOVED***
               if(formData['map_type'] === 'state')***REMOVED***
                 if(_.contains(stf, String(d.id)))***REMOVED***
-                  if(color(d.count = data[d.id]))***REMOVED***
-                    tFill = color(d.count = data[d.id]);
+                  if(typeof(data[d.id]) === 'undefined')***REMOVED***
+                    tFill = '#fcccff';
                   ***REMOVED*** else ***REMOVED***
-                    tFill = '#ccc';
+                    tFill = color(d.count = data[d.id]);
                   ***REMOVED***
                 ***REMOVED*** else ***REMOVED***
                   tFill = 'none';
                 ***REMOVED***
               ***REMOVED*** else ***REMOVED***
-                if(color(d.count = data[d.id]))***REMOVED***
-                  tFill = color(d.count = data[d.id]);
+                if(typeof(data[d.id]) === 'undefined')***REMOVED***
+                  tFill = '#fcccff';
                 ***REMOVED*** else ***REMOVED***
-                  tFill = '#ccc';
+                  tFill = color(d.count = data[d.id]);
                 ***REMOVED***
               ***REMOVED***
               return tFill;
-
-              // if(formData['select_year'] === "2017" && formData['election_results'])***REMOVED***
-              //   var lineColor = 'blue';
-              //   console.log(shortFips);
-              //   var electionEntry = _.findWhere(us_election, ***REMOVED***fips: String(shortFips)***REMOVED***);
-              //   console.log(electionEntry)
-              //   if(electionEntry)***REMOVED***
-              //     if(+electionEntry.trump > +electionEntry.clinton)***REMOVED***
-              //       lineColor = 'red';
-              //     ***REMOVED***
-              //   ***REMOVED*** else ***REMOVED***
-              //     lineColor = 'white';
-              //   ***REMOVED***
-              //
-              //   var t = textures.circles()
-              //                   .size(3)
-              //                   .radius(1)
-              //                   .fill(lineColor)
-              //                   .background(tFill);
-              //
-              //   svg.call(t);
-              //   return t.url();
-              // ***REMOVED*** else ***REMOVED***
-              //   return tFill;
-              // ***REMOVED***
 
             ***REMOVED***)
             .attr("d", path)
@@ -391,9 +368,6 @@
                   '2017'
                 ]
               ***REMOVED***,
-              "election_results": ***REMOVED***
-                "dependencies": "select_year"
-              ***REMOVED***,
               "scenario_label": ***REMOVED***
                 "dependencies": "select_year",
                 "type": "string",
@@ -431,13 +405,6 @@
               "type": "select",
               "dependencies": ***REMOVED***
                 "map_num": "single"
-              ***REMOVED***
-            ***REMOVED***,
-            "election_results": ***REMOVED***
-              "type": "checkbox",
-              "rightLabel": "Add 2016 election results",
-              "dependencies": ***REMOVED***
-                "select_year": "2017"
               ***REMOVED***
             ***REMOVED***,
             "scenario_label":***REMOVED***
