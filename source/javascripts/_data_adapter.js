@@ -112,7 +112,7 @@ var DataAdapter = (function() ***REMOVED***
           setLocalData('coverage-2017', currData);
           setLocalData('coverage-2017-preview', currData);
           setLocalData('coverage-2017-last_modified',
-                        response[0].body.data.last_modified)
+                        response[0].body.data.last_modified);
           callBackFunction.call(this);
         ***REMOVED***
       ***REMOVED***;

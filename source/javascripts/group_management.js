@@ -5,17 +5,12 @@
 /* globals DataAdapter, console */
 
 (function() ***REMOVED***
+  var wireEvents;
+  
   var parameterize = function(input)***REMOVED***
     return input.toLowerCase()
                 .replace(/\[|\]|\(|\)|\***REMOVED***|\***REMOVED***|\\|\/|\.|\,|\&/g, '')
                 .replace(/\s/g, '-');
-  ***REMOVED***;
-
-  var wireEvents = function()***REMOVED***
-    $('.state-toggle').on('change', handleStateToggle);
-    $('.county-toggle').on('change', handleCountyToggle);
-    $('a.submit').on('click', beforeSave);
-    $('a.preview').on('click', beforeSave);
   ***REMOVED***;
 
   var disableSaveButton = function(state)***REMOVED***
@@ -39,6 +34,42 @@
     disableSaveButton(state);
   ***REMOVED***;
 
+  var afterSave = function()***REMOVED***
+    $('a.submit').text('Publish');
+  ***REMOVED***;
+
+  var saveChanges = function(isPreview)***REMOVED***
+    var changedRecords = [];
+    window.dataAdapter.getCoverage(2017, function(response)***REMOVED***
+      if(isPreview)***REMOVED***
+        response = window.dataAdapter.getPreviewCoverage();
+      ***REMOVED***
+      _.each(response, function(record)***REMOVED***
+        var id = '#' + record.id,
+            is_active = record.is_active,
+            is_checked =  $(id).prop('checked');
+
+        if (is_active !== is_checked)***REMOVED***
+          var newRecord = ***REMOVED***id : record.id, is_active : is_checked***REMOVED***;
+          changedRecords.push(newRecord);
+        ***REMOVED***
+      ***REMOVED***);
+
+      if(changedRecords.length === 0)***REMOVED***
+        afterSave();
+        return;
+      ***REMOVED***
+
+      if(isPreview)***REMOVED***
+        disablePreviewButton(true);
+        window.dataAdapter.updateCoveragePreview(changedRecords);
+        return;
+      ***REMOVED***
+
+      window.dataAdapter.updateCoverage(changedRecords, afterSave);
+    ***REMOVED***);
+  ***REMOVED***;
+
   var beforeSave = function()***REMOVED***
     if($(this).hasClass('disabled'))***REMOVED***
       return;
@@ -55,7 +86,7 @@
 
   var handleDataFetch = function (response) ***REMOVED***
       var byProvider = _.chain(response)
-	                  .groupBy(function(resp)***REMOVED*** return resp.provider_name ***REMOVED***)
+	                  .groupBy(function(resp)***REMOVED*** return resp.provider_name; ***REMOVED***)
                     .each(function(val, key, list)***REMOVED***
 		                    list[key] = _.chain(val)
                                      .groupBy(function(v)***REMOVED***
@@ -95,40 +126,11 @@
     disableButtons(false);
   ***REMOVED***;
 
-  var afterSave = function()***REMOVED***
-    $('a.submit').text('Publish');
-  ***REMOVED***;
-
-  var saveChanges = function(isPreview)***REMOVED***
-    var changedRecords = [];
-    window.dataAdapter.getCoverage(2017, function(response)***REMOVED***
-      if(isPreview)***REMOVED***
-        response = window.dataAdapter.getPreviewCoverage();
-      ***REMOVED***
-      _.each(response, function(record)***REMOVED***
-        var id = '#' + record.id,
-            is_active = record.is_active,
-            is_checked =  $(id).prop('checked');
-
-        if (is_active !== is_checked)***REMOVED***
-          var newRecord = ***REMOVED***id : record.id, is_active : is_checked***REMOVED***;
-          changedRecords.push(newRecord);
-        ***REMOVED***
-      ***REMOVED***);
-
-      if(changedRecords.length === 0)***REMOVED***
-        afterSave();
-        return;
-      ***REMOVED***
-
-      if(isPreview)***REMOVED***
-        disablePreviewButton(true);
-        window.dataAdapter.updateCoveragePreview(changedRecords);
-        return;
-      ***REMOVED***
-
-      window.dataAdapter.updateCoverage(changedRecords, afterSave);
-    ***REMOVED***);
+  wireEvents = function()***REMOVED***
+    $('.state-toggle').on('change', handleStateToggle);
+    $('.county-toggle').on('change', handleCountyToggle);
+    $('a.submit').on('click', beforeSave);
+    $('a.preview').on('click', beforeSave);
   ***REMOVED***;
 
   $(document).ready(function() ***REMOVED***
