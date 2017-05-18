@@ -240,19 +240,19 @@
               ***REMOVED***
               if(formData['map_type'] === 'state')***REMOVED***
                 if(_.contains(stf, String(d.id)))***REMOVED***
-                  if(typeof(data[d.id]) === 'undefined')***REMOVED***
-                    tFill = '#fcccff';
-                  ***REMOVED*** else ***REMOVED***
+                  if(color(d.count = data[d.id]))***REMOVED***
                     tFill = color(d.count = data[d.id]);
+                  ***REMOVED*** else ***REMOVED***
+                    tFill = '#fcccff';
                   ***REMOVED***
                 ***REMOVED*** else ***REMOVED***
                   tFill = 'none';
                 ***REMOVED***
               ***REMOVED*** else ***REMOVED***
-                if(typeof(data[d.id]) === 'undefined')***REMOVED***
-                  tFill = '#fcccff';
-                ***REMOVED*** else ***REMOVED***
+                if(color(d.count = data[d.id]))***REMOVED***
                   tFill = color(d.count = data[d.id]);
+                ***REMOVED*** else ***REMOVED***
+                  tFill = '#fcccff';
                 ***REMOVED***
               ***REMOVED***
               return tFill;
@@ -314,7 +314,11 @@
     var control=Alpaca($("#form").get());
     formData = control.getValue();
     currentYear = formData.select_year;
-    window.dataAdapter.getProviderCount(currentYear, drawMap);
+    if(formData['scenario'] && formData['scenario'] === 'hypothetical')***REMOVED***
+      window.dataAdapter.getPreviewProviderCount(drawMap);
+    ***REMOVED*** else ***REMOVED***
+      window.dataAdapter.getProviderCount(currentYear, drawMap);
+    ***REMOVED***
   ***REMOVED***);
 
 
