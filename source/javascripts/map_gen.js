@@ -5,8 +5,8 @@
 //= require _vendor/textures.min
 (function() ***REMOVED***
   // Application code goes here
-  var stateIdx = ['WA', 'MT', 'ID', 'ND', 'MN', 'ME', 'MI', 'WI', 'OR', 'SD', 'NH', 'VT', 'NY', 'WY', 'IA', 'NE', 'MA', 'IL', 'PA', 'CT', 'RI', 'CA', 'UT', 'NV', 'OH', 'IN', 'NY', 'CO', 'WV', 'MO', 'KS', 'DE', 'MD', 'VA', 'KY', 'DC', 'AZ', 'OK', 'NM', 'TN', 'NC', 'TX', 'AR', 'SC', 'AL', 'GA', 'MS', 'LA', 'FL', 'HI', 'AK'];
-  var tester;
+  var stateIdx = ['WA', 'MT', 'ID', 'ND', 'MN', 'ME', 'MI', 'WI', 'OR', 'SD', 'NH', 'VT', 'NY', 'WY', 'IA', 'NE', 'MA', 'IL', 'PA', 'CT', 'RI', 'CA', 'UT', 'NV', 'OH', 'IN', 'NJ', 'CO', 'WV', 'MO', 'KS', 'DE', 'MD', 'VA', 'KY', 'DC', 'AZ', 'OK', 'NM', 'TN', 'NC', 'TX', 'AR', 'SC', 'AL', 'GA', 'MS', 'LA', 'FL', 'HI', 'AK'];
+  var zoomLevels = ***REMOVED***"WA": 0.75, "DE": 0.6, "WI": 0.55, "WV": 0.6, "HI": 0.7, "FL": 0.6, "WY": 0.55, "NH": 0.55, "NJ": 0.6, "NM": 0.55, "TX": 0.6, "LA": 0.6, "NC": 0.85, "ND": 0.75, "NE": 0.8, "TN": 0.9, "NY": 0.65, "PA": 0.7, "CA": 0.6, "NV": 0.6, "CO": 0.6, "AK": 0.6, "AL": 0.6, "AR": 0.6, "VT": 0.55, "IL": 0.6, "GA": 0.6, "IN": 0.55, "IA": 0.7, "OK": 0.8, "AZ": 5.5, "ID": 0.55, "CT": 0.6, "ME": 0.55, "MD": 0.7, "MA": 0.7, "OH": 0.55, "UT": 0.55, "MO": 0.55, "MN": 0.55, "MI": 0.55, "RI": 0.6, "KS": 0.7, "MT": 0.75, "MS": 0.55, "SC": 0.65, "KY": 0.9, "OR": 0.65, "SD": 0.7***REMOVED***;
 
   var svg = d3.select("svg"),
       width = +svg.attr("width"),
@@ -19,7 +19,8 @@
       ***REMOVED***,
       oldFormData = ***REMOVED******REMOVED***,
       currentYear,
-      active = d3.select(null);
+      active = d3.select(null),
+      tester;
 
   var projection = d3.geoAlbersUsa()
       .scale(1000)
@@ -46,7 +47,7 @@
 
   function drawScale()***REMOVED***
     var g = svg.append("g").attr('class', 'scale')
-               .attr('transform', "translate(5,585)");
+               .attr('transform', "translate(5,685)");
 
     g.selectAll("rect")
       .data(color.range().map(function(d) ***REMOVED*** return d; ***REMOVED***))
@@ -74,7 +75,6 @@
         .attr("text-anchor", "middle")
         .attr('font-size', '20px')
         .attr('font-family', 'Nitti')
-        // .attr('-webkit-font-feature-settings', 'tnum')
         .text(function(d) ***REMOVED*** return d; ***REMOVED***);
 
       g.selectAll("line")
@@ -96,7 +96,8 @@
         dy = bounds[1][1] - bounds[0][1],
         x = (bounds[0][0] + bounds[1][0]) / 2,
         y = (bounds[0][1] + bounds[1][1]) / 2,
-        scale = Math.max(1, Math.min(8, 0.6 / Math.max(dx / width, dy / height))),
+        zoomLevel = zoomLevels[formData['state_select']] || 0.6,
+        scale = Math.max(1, Math.min(15, zoomLevel / Math.max(dx / width, dy / height))),
         translate = [width / 2 - scale * x, height / 2 - scale * y];
 
     var transform = d3.zoomIdentity
@@ -151,21 +152,21 @@
 
       console.log(formData);
       svg.html('');
-      d3.select('canvas').attr('width', 900).attr('height', 700);
+      d3.select('canvas').attr('width', 900).attr('height', 800);
       if(formData['image_title'])***REMOVED***
         var titleG = svg.append('g')
                          .attr('font-family', 'Balto')
                          .attr('transform', 'translate(5,25)')
 
-        if(formData['image_title'].length > 33)***REMOVED***
+        if(formData['image_title'].length > 50)***REMOVED***
           var titleArray = [],
               wordArray = formData['image_title'].split(' '),
-              x = Math.ceil(formData['image_title'].length/33),
+              x = Math.ceil(formData['image_title'].length/50),
               count = 0,
               temp = [];
 
           for(i in wordArray)***REMOVED***
-            if(count + wordArray[i].length+1 < 33)***REMOVED***
+            if(count + wordArray[i].length+1 < 50)***REMOVED***
               temp.push(wordArray[i]);
               count += wordArray[i].length;
             ***REMOVED*** else ***REMOVED***
@@ -180,7 +181,7 @@
             var num = parseInt(i);
             titleG.append("text")
                   .attr('class', 'title')
-                  .attr('y', num*32)
+                  .attr('y', num*34)
                   .attr("font-weight", "bold")
                   .attr('font-size', '32px')
                   .text(titleArray[i].join(' '));
@@ -280,7 +281,7 @@
 
         svg.append('g')
             .attr('class', 'vox-logo')
-            .attr('transform', 'translate(798,650)')
+            .attr('transform', 'translate(798,750)')
             .attr('preserveAspectRatio', "none")
             .append('path')
             .attr('fill', '#333')
@@ -293,7 +294,7 @@
                       .attr('font-family', 'Nitti')
                       .attr('font-size', '22px')
                       .attr('fill', '#707070')
-                      .attr('transform', 'translate(5,665)');
+                      .attr('transform', 'translate(5,765)');
 
         info.append('text').html('Source: Robert Wood Johnson Foundation');
         info.append('text')
