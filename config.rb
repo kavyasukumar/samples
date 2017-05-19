@@ -139,6 +139,6 @@ configure :build do
   activate :asset_hash
 
   # Package and compress all our javascripts and styles
-  activate :minify_javascript
+  # activate :minify_javascript
   activate :minify_css
 end
