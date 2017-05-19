@@ -2,6 +2,7 @@
 //= require foundation
 //= require foundation/foundation.accordion
 //= require foundation/foundation.alert
+//= require_tree ./_templates
 
 $(document).foundation();
 
@@ -19,6 +20,26 @@ $(document).foundation();
  */
 
 (function() ***REMOVED***
+  window.commonErrorHandler = function(error)***REMOVED***
+    console.log(error);
+  ***REMOVED***;
+
+  window.commonNotificationHandler = function(text, level)***REMOVED***
+    var template = window.JST['_templates/alert'];
+    var html = template(***REMOVED***text : text, level: level***REMOVED***);
+    var currAlert = $(html);
+    $('.alertHolder').append(currAlert);
+    (function(obj) ***REMOVED***
+      setTimeout(function()***REMOVED***
+       $(obj).fadeOut(300, function()***REMOVED***
+          $(this).remove();
+       ***REMOVED***);
+     ***REMOVED***, 3000);
+   ***REMOVED***)(currAlert);
+
+  ***REMOVED***;
+
+
   $(document).ready(function() ***REMOVED***
     // Initialize lazy load
     $('.lazy').lazyload(***REMOVED***

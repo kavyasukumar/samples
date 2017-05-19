@@ -1,29 +1,10 @@
 //= require _data_adapter
-//= require_tree ./_templates
 //= require _underscore_mixins
 
 /* globals DataAdapter, console, setTimeout */
 
 (function() ***REMOVED***
   var wireEvents; // declaring upfront for linting happiness
-
-  var alertFx = function(text, level)***REMOVED***
-
-    // $('.alert-box').removeClass('success')
-    //                .removeClass('info')
-    //                .removeClass('warning')
-    //                .removeClass('error')
-    //                .addClass(level)
-    //                .html(text)
-    //                .fadeOut()
-    //                .removeClass('hidden')
-    //                .fadeIn();
-    //  setTimeout(function()***REMOVED***
-    //    $('.alert-box').fadeOut(300, function()***REMOVED***
-    //       $('.alert-box').addClass('hidden');
-    //    ***REMOVED***);
-    //  ***REMOVED***, 2000);
-  ***REMOVED***;
 
   var parameterize = function(input)***REMOVED***
     return input.toLowerCase()
@@ -73,18 +54,19 @@
       if(changedRecords.length === 0)***REMOVED***
         afterSave();
         var word = isPreview ? 'save' : 'publish';
-        alertFx('There are no changes to' + word, 'warning');
+        window.commonNotificationHandler('There are no changes to' + word, 'warning');
         return;
       ***REMOVED***
 
       if(isPreview)***REMOVED***
         disablePreviewButton(true);
-        alertFx('Saved data. You may have unpublished changes', 'success');
+        window.dataAdapter.updatePreviewCoverage(changedRecords);
+        window.commonNotificationHandler('Saved data. You may have unpublished changes', 'success');
         return;
       ***REMOVED***
 
       window.dataAdapter.updateCoverage(changedRecords, afterSave);
-      alertFx('Published data.', 'success');
+      window.commonNotificationHandler('Published data.', 'success');
     ***REMOVED***;
 
     if(isPreview)***REMOVED***
@@ -154,7 +136,7 @@
   var discardChanges = function()***REMOVED***
     $('#provider-dash').hide();
     window.dataAdapter.discardPreviewChanges(function()***REMOVED***
-      alertFx('Unpublished changes have been deleted', 'info');
+      window.commonNotificationHandler('Unpublished changes have been deleted', 'info');
       window.dataAdapter.getPreviewCoverage(handleDataFetch);
     ***REMOVED***);
   ***REMOVED***;
