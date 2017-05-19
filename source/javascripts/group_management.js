@@ -8,21 +8,22 @@
   var wireEvents; // declaring upfront for linting happiness
 
   var alertFx = function(text, level)***REMOVED***
-    $('.alert-box').removeClass('success')
-                   .removeClass('info')
-                   .removeClass('warning')
-                   .removeClass('error')
-                   .addClass(level)
-                   .html(text)
-                   .fadeOut()
-                   .removeClass('hidden')
-                   .fadeIn();
-     setTimeout(function()***REMOVED***
-       $('.alert-box').fadeOut(300, function()***REMOVED***
-          $('.alert-box').addClass('hidden');
-       ***REMOVED***);
-     ***REMOVED***, 2000);
-  ***REMOVED***
+
+    // $('.alert-box').removeClass('success')
+    //                .removeClass('info')
+    //                .removeClass('warning')
+    //                .removeClass('error')
+    //                .addClass(level)
+    //                .html(text)
+    //                .fadeOut()
+    //                .removeClass('hidden')
+    //                .fadeIn();
+    //  setTimeout(function()***REMOVED***
+    //    $('.alert-box').fadeOut(300, function()***REMOVED***
+    //       $('.alert-box').addClass('hidden');
+    //    ***REMOVED***);
+    //  ***REMOVED***, 2000);
+  ***REMOVED***;
 
   var parameterize = function(input)***REMOVED***
     return input.toLowerCase()
@@ -109,6 +110,7 @@
   ***REMOVED***;
 
   var handleDataFetch = function (response) ***REMOVED***
+    console.log('refreshing display...');
       var byProvider = _.chain(response)
 	                  .groupBy(function(resp)***REMOVED*** return resp.provider_name; ***REMOVED***)
                     .each(function(val, key, list)***REMOVED***
@@ -152,7 +154,9 @@
 
   var discardChanges = function()***REMOVED***
     window.dataAdapter.discardPreviewChanges(function()***REMOVED***
+      console.log('discarded');
       alertFx('Unpublished changes have been deleted', 'info');
+      window.dataAdapter.getPreviewCoverage(handleDataFetch);
     ***REMOVED***);
   ***REMOVED***;
 
@@ -181,6 +185,9 @@
 
   $(document).ready(function() ***REMOVED***
     window.dataAdapter = window.dataAdapter || DataAdapter.getInstance();
-    window.dataAdapter.getCoverage(2017, handleDataFetch);
+    window.dataAdapter.ready(function()***REMOVED***
+      console.log('database is ready');
+      window.dataAdapter.getPreviewCoverage(handleDataFetch);
+    ***REMOVED***);
   ***REMOVED***);
 ***REMOVED***)();

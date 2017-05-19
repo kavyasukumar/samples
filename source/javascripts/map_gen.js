@@ -307,6 +307,7 @@
     formData = control.getValue();
     currentYear = formData.select_year;
     if(formData['scenario'] && formData['scenario'] === 'hypothetical')***REMOVED***
+      debugger;
       window.dataAdapter.getPreviewProviderCount(drawMap);
     ***REMOVED*** else ***REMOVED***
       window.dataAdapter.getProviderCount(currentYear, drawMap);
