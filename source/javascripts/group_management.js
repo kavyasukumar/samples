@@ -143,25 +143,39 @@
 
   var filterResults = function()***REMOVED***
     var q = $(this)[0].value;
+    console.log(q);
     _.each($('ul.accordion'), function(el)***REMOVED***
    var substrRegex = new RegExp(q, 'i');
      var provider  = $(el).find('a').text();
      if (substrRegex.test(provider))***REMOVED***
           $(el).children('li').removeClass('active');
-			    $(el).removeClass('hide');
+			    $(el).removeClass('provider-hide');
        ***REMOVED*** else ***REMOVED***
-           $(el).addClass('hide');
+           $(el).addClass('provider-hide');
        ***REMOVED***
   ***REMOVED***);
+  ***REMOVED***;
+
+  var filterState = function()***REMOVED***
+    var selectedState = $(this).find(":selected").attr('value');
+    $('.accordion-allstates').addClass('state-hide');
+    $('.table-allstates').addClass('hide');
+    $('.accordion-' + selectedState).removeClass('state-hide');
+    $('.table-' + selectedState).removeClass('hide');
+  ***REMOVED***;
+
+  var wireOneTimeEvents = function()***REMOVED***
+    $('a.submit').on('click', beforeSave);
+    $('a.preview').on('click', beforeSave);
+    $('a.discard').on('click', discardChanges);
+    $('#stateSelector').on('change', filterState);
   ***REMOVED***;
 
   wireEvents = function()***REMOVED***
     $('.state-toggle').on('change', handleStateToggle);
     $('.county-toggle').on('change', handleCountyToggle);
-    $('a.submit').on('click', beforeSave);
-    $('a.preview').on('click', beforeSave);
-    $('a.discard').on('click', discardChanges);
-    $('.search').on('keyup', _.debounce(filterResults,500));
+
+    $('.search').on('keyup', _.debounce(filterResults, 500));
   ***REMOVED***;
 
   $(document).ready(function() ***REMOVED***
@@ -170,5 +184,6 @@
       console.log('database is ready');
       window.dataAdapter.getPreviewCoverage(handleDataFetch);
     ***REMOVED***);
+    wireOneTimeEvents();
   ***REMOVED***);
 ***REMOVED***)();

@@ -8,10 +8,10 @@
   ul.accordion.row***REMOVED***
     margin: auto;
     margin-bottom: 20px;
+    &.state-hide, &.provider-hide***REMOVED***
+      display: none;
+    ***REMOVED***
     li.accordion-navigation***REMOVED***
-      &.hide***REMOVED***
-        display: none;
-      ***REMOVED***
     ***REMOVED***
   ***REMOVED***
 ***REMOVED***

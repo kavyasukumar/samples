@@ -1,6 +1,7 @@
 <% var isFirstItem = true; %>
   <% _.each(data, function(coverage, provider) ***REMOVED*** %>
-    <ul class="accordion row" data-accordion>
+    <ul class="accordion row accordion-allstates <%= _.reduce(_.keys(coverage), function(str, c)***REMOVED*** return str + ' accordion-' + c.toLowerCase();***REMOVED***,'') %>
+    " data-accordion>
       <li class="accordion-navigation">
         <a href="<%= '#' + parameterize(provider) %>">
           <%= provider %>
@@ -12,7 +13,7 @@
          <% ***REMOVED*** %>">
           <% _.each(coverage, function(counties, state) ***REMOVED*** %>
             <% var providerSlug = parameterize(provider); %>
-            <table class="large-12 columns">
+            <table class="large-12 columns <%= 'table-' + state.toLowerCase() %> table-allstates">
               <thead>
                 <tr>
                   <th class="large-10 columns">
