@@ -307,7 +307,6 @@
     formData = control.getValue();
     currentYear = formData.select_year;
     if(formData['scenario'] && formData['scenario'] === 'hypothetical')***REMOVED***
-      debugger;
       window.dataAdapter.getPreviewProviderCount(drawMap);
     ***REMOVED*** else ***REMOVED***
       window.dataAdapter.getProviderCount(currentYear, drawMap);
@@ -331,7 +330,10 @@
      Casey, I refactored the provider count fx. So changed the line below. Also you can directly pass in the fucntion name you want to call. The parameter ('data' in this case) gets automatically assigned.
      One other thing that might possibly affect what you have already done is that Fips codes are now always 5 digits with leading 0's if required. this was done to make things consitent across all data sets we have*/
     currentYear = '2017';
-    window.dataAdapter.getProviderCount(currentYear, drawMap);
+    window.dataAdapter.ready(function()***REMOVED***
+      window.dataAdapter.getProviderCount(currentYear, drawMap);
+    ***REMOVED***);
+
 
     $("#form").alpaca(***REMOVED***
         "schema": ***REMOVED***

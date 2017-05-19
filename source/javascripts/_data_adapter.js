@@ -1,6 +1,6 @@
 //= require _kinto_helper
 
-/* globals KINTO_TOKEN, console, setTimeout, setInterval, clearInterval */
+/* globals KINTO_TOKEN, console, setTimeout, setInterval, clearInterval, STATE_LOOKUP*/
 
 var DataAdapter = (function() ***REMOVED***
   var instance;
@@ -10,7 +10,9 @@ var DataAdapter = (function() ***REMOVED***
     STORES = ['coverage-2017', 'coverage-2017-preview', 'coverage-2016', 'coverage-2015', 'coverage-2014'];
 
   window.localStorage.setItem('kintoToken', KINTO_TOKEN);
-  var _kintoBucket = _kintoBucket || window.getKintoBucket('https://voxmedia-kinto.herokuapp.com/v1', 'vox-aca-dashboard', true);
+  window.setupKinto(***REMOVED***bucket: 'vox-aca-dashboard'***REMOVED***);
+  var _kintoBucket = _kintoBucket || window.getKintoBucket();
+
 
   // indexedDB helpers
   var openDb = function(callBackFunction) ***REMOVED***
@@ -82,7 +84,7 @@ var DataAdapter = (function() ***REMOVED***
     var objectStoreRequest = objectStore.clear();
     objectStoreRequest.onsuccess = function() ***REMOVED***
       callBackFunction();
-    ***REMOVED***
+    ***REMOVED***;
   ***REMOVED***;
 
   var replaceObjects = function(storeName, objects, callBackFunction) ***REMOVED***
@@ -172,7 +174,7 @@ var DataAdapter = (function() ***REMOVED***
 
     var updatePreviewIfnull = function functionName() ***REMOVED***
 
-    ***REMOVED***
+    ***REMOVED***;
 
     // Public properties and methods
     _instance.getCoverage = function(year, callBackFunction) ***REMOVED***
@@ -196,7 +198,6 @@ var DataAdapter = (function() ***REMOVED***
           return;
         ***REMOVED***
         var collection = _kintoBucket.collection(dataKey);
-        var lastMod = getLocalData(dataKey + '-last_modified');
 
         var states = _.keys(STATE_LOOKUP);
         var handleKintoResp = function(response, index) ***REMOVED***
@@ -204,14 +205,14 @@ var DataAdapter = (function() ***REMOVED***
           storeObjects(dataKey, response.data);
 
           var currLastMod = getLocalData(dataKey + '-last_modified');
-          if(response.last_modified > currLastMod)***REMOVED***
+          if (response.last_modified > currLastMod) ***REMOVED***
             setLocalData(dataKey + '-last_modified', response.last_modified);
           ***REMOVED***
 
-          if(index === states.length)***REMOVED***
-            if(year === 2017)***REMOVED***
-              countObjects(dataKey + '-preview', function(count)***REMOVED***
-                if(count === 0)***REMOVED***
+          if (index === states.length) ***REMOVED***
+            if (year === 2017) ***REMOVED***
+              countObjects(dataKey + '-preview', function(count) ***REMOVED***
+                if (count === 0) ***REMOVED***
                   storeObjects(dataKey + '-preview', response.data);
                 ***REMOVED***
               ***REMOVED***);
@@ -223,18 +224,16 @@ var DataAdapter = (function() ***REMOVED***
           console.log(error);
         ***REMOVED***;
         var getRecords = function(ind) ***REMOVED***
-          console.log('requesting ' + states[ind]);
           collection.listRecords(***REMOVED***
-              filters: ***REMOVED***
-                state: states[ind]
-              ***REMOVED***,
-              limit: 1000,
-              pages: Infinity,
-              retry: 4,
-              since: lastMod
-            ***REMOVED***).then(function(resp)***REMOVED***
-              handleKintoResp(resp, ind);
-            ***REMOVED***).catch(handleErr);
+            filters: ***REMOVED***
+              state: states[ind]
+            ***REMOVED***,
+            limit: 1000,
+            pages: Infinity,
+            retry: 4
+          ***REMOVED***).then(function(resp) ***REMOVED***
+            handleKintoResp(resp, ind);
+          ***REMOVED***).catch(handleErr);
         ***REMOVED***;
         for (var i in states) ***REMOVED***
           (function(ind) ***REMOVED***

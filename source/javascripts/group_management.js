@@ -154,7 +154,6 @@
   var discardChanges = function()***REMOVED***
     $('#provider-dash').hide();
     window.dataAdapter.discardPreviewChanges(function()***REMOVED***
-      console.log('discarded');
       alertFx('Unpublished changes have been deleted', 'info');
       window.dataAdapter.getPreviewCoverage(handleDataFetch);
     ***REMOVED***);
