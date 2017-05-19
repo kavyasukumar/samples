@@ -32,71 +32,61 @@
       .translate(0,0)
       .scale(1);
 
-  // var projection = d3.geoMercator()
-  //     .scale(100)
-  //     .translate([width / 2, height / 2]);
-  //
   var path = d3.geoPath()
       .projection(projection);
 
   svg.on("click", stopped, true);
 
-  var x = d3.scaleLinear()
-      .domain([0, 4])
-      .rangeRound([600, 860]);
-  var color = d3.scaleThreshold()
-      .domain(d3.range(0, 4))
-      .range(d3.schemeBlues[5]);
+  var myColors = ['#fff200', '#ddd', '#bed8e9', '#8cafcd', '#5a87b2', '#5a87b2', '#5a87b2', '#5a87b2', '#285f96', '#285f96', '#00377b', '#00377b', '#00377b', '#00377b', '#00377b'];
 
-  // svg
-  //     .call(zoom) // delete this line to disable free zooming
-  //     .call(zoom.transform, initialTransform);
+  var color = d3.scaleOrdinal()
+      .domain(d3.range(0, 15))
+      .range(myColors);
+
 
   function drawScale()***REMOVED***
     var g = svg.append("g").attr('class', 'scale')
-               .attr('transform', "translate(0,25)");
+               .attr('transform', "translate(5,585)");
 
     g.selectAll("rect")
-      .data(color.range().map(function(d) ***REMOVED***
-          d = color.invertExtent(d);
-          if (d[0] == null) d[0] = x.domain()[0];
-          if (d[1] == null) d[1] = x.domain()[1];
-          return d;
-        ***REMOVED***))
+      .data(color.range().map(function(d) ***REMOVED*** return d; ***REMOVED***))
       .enter().append("rect")
-        .attr("height", 8)
-        .attr("x", function(d) ***REMOVED*** return x(d[0]) - 32.5; ***REMOVED***)
-        .attr("width", function(d) ***REMOVED*** return x(d[1]) - x(d[0]); ***REMOVED***)
-        .attr("fill", function(d) ***REMOVED*** return color(d[0]); ***REMOVED***);
+        .attr("height", 20)
+        .attr("x", function(d, i) ***REMOVED*** return i*59; ***REMOVED***)
+        .attr("width", 59)
+        .attr("fill", function(d) ***REMOVED*** return d; ***REMOVED***);
 
     g.append("text")
         .attr("class", "caption")
-        .attr("x", x.range()[0] - 32.5)
-        .attr("y", -6)
-        .attr("fill", "#000")
+        .attr("y", -10)
+        .attr("fill", "#4c4e4d")
         .attr("text-anchor", "start")
-        // .attr("font-weight", "bold")
         .attr('font-size', '22px')
         .attr('font-family', 'Nitti')
         .text("Number of ACA insurers available");
 
-    g.call(d3.axisBottom(x)
-        .tickFormat(function(x, i) ***REMOVED***
-          if(x === 3)***REMOVED***
-            return x + '+';
-          ***REMOVED*** else ***REMOVED***
-            return x;
-          ***REMOVED***
-        ***REMOVED***)
-        .tickPadding(13)
-        .tickSize(0)
-        .tickValues(color.domain()))
-      .select(".domain")
-        .remove();
+      g.selectAll("text")
+        .data([0, 0, 1, 2, 3, 4, 8, 10, 15])
+        .enter().append("text")
+        .attr("x", function(d, i) ***REMOVED*** return d*59; ***REMOVED***)
+        .attr("y", 45)
+        .attr("fill", "#4c4e4d")
+        .attr("text-anchor", "middle")
+        .attr('font-size', '20px')
+        .attr('font-family', 'Nitti')
+        // .attr('-webkit-font-feature-settings', 'tnum')
+        .text(function(d) ***REMOVED*** return d; ***REMOVED***);
 
-    d3.selectAll('.tick')
-      .attr('font-size', '22px')
-      .attr('font-family', 'Nitti');
+      g.selectAll("line")
+        .data([0, 1, 2, 3, 4, 8, 10, 15])
+        .enter().append("line")
+        .attr("x1", function(d, i) ***REMOVED*** return d*59; ***REMOVED***)
+        .attr("x2", function(d, i) ***REMOVED*** return d*59; ***REMOVED***)
+        .attr("y1", 0)
+        .attr("y2", 28)
+        .attr('stroke', '#999')
+        .attr('width', "1px");
+
   ***REMOVED***
 
   function clicked() ***REMOVED***
@@ -106,7 +96,7 @@
         dy = bounds[1][1] - bounds[0][1],
         x = (bounds[0][0] + bounds[1][0]) / 2,
         y = (bounds[0][1] + bounds[1][1]) / 2,
-        scale = Math.max(1, Math.min(8, 0.7 / Math.max(dx / width, dy / height))),
+        scale = Math.max(1, Math.min(8, 0.6 / Math.max(dx / width, dy / height))),
         translate = [width / 2 - scale * x, height / 2 - scale * y];
 
     var transform = d3.zoomIdentity
@@ -161,11 +151,11 @@
 
       console.log(formData);
       svg.html('');
-      d3.select('canvas').attr('width', 900).attr('height', 620);
+      d3.select('canvas').attr('width', 900).attr('height', 700);
       if(formData['image_title'])***REMOVED***
         var titleG = svg.append('g')
                          .attr('font-family', 'Balto')
-                         .attr('transform', 'translate(0,25)')
+                         .attr('transform', 'translate(5,25)')
 
         if(formData['image_title'].length > 33)***REMOVED***
           var titleArray = [],
@@ -173,7 +163,7 @@
               x = Math.ceil(formData['image_title'].length/33),
               count = 0,
               temp = [];
-              
+
           for(i in wordArray)***REMOVED***
             if(count + wordArray[i].length+1 < 33)***REMOVED***
               temp.push(wordArray[i]);
@@ -224,7 +214,9 @@
 
         var stf = [];
         stf = state_fips[formData['state_select']];
-         svg.append("g").attr("class", "counties paths").selectAll("path")
+         svg.append("g").attr("class", "counties paths")
+            .attr('transform', 'translate(0,-40)')
+            .selectAll("path")
             .data(tj)
           .enter().append("path")
             .attr('id', function(d)***REMOVED***
@@ -241,7 +233,7 @@
                   if(color(d.count = data[d.id]))***REMOVED***
                     tFill = color(d.count = data[d.id]);
                   ***REMOVED*** else ***REMOVED***
-                    tFill = '#ccc';
+                    tFill = '#fcccff';
                   ***REMOVED***
                 ***REMOVED*** else ***REMOVED***
                   tFill = 'none';
@@ -250,35 +242,10 @@
                 if(color(d.count = data[d.id]))***REMOVED***
                   tFill = color(d.count = data[d.id]);
                 ***REMOVED*** else ***REMOVED***
-                  tFill = '#ccc';
+                  tFill = '#fcccff';
                 ***REMOVED***
               ***REMOVED***
               return tFill;
-
-              // if(formData['select_year'] === "2017" && formData['election_results'])***REMOVED***
-              //   var lineColor = 'blue';
-              //   console.log(shortFips);
-              //   var electionEntry = _.findWhere(us_election, ***REMOVED***fips: String(shortFips)***REMOVED***);
-              //   console.log(electionEntry)
-              //   if(electionEntry)***REMOVED***
-              //     if(+electionEntry.trump > +electionEntry.clinton)***REMOVED***
-              //       lineColor = 'red';
-              //     ***REMOVED***
-              //   ***REMOVED*** else ***REMOVED***
-              //     lineColor = 'white';
-              //   ***REMOVED***
-              //
-              //   var t = textures.circles()
-              //                   .size(3)
-              //                   .radius(1)
-              //                   .fill(lineColor)
-              //                   .background(tFill);
-              //
-              //   svg.call(t);
-              //   return t.url();
-              // ***REMOVED*** else ***REMOVED***
-              //   return tFill;
-              // ***REMOVED***
 
             ***REMOVED***)
             .attr("d", path)
@@ -290,6 +257,7 @@
             .text(function(d) ***REMOVED*** return d.count; ***REMOVED***);
 
           svg.append("path")
+              .attr('transform', 'translate(0,-40)')
               .datum(topojson.mesh(us, us.objects.states, function(a, b) ***REMOVED*** return a !== b; ***REMOVED***))
               .attr("class", "mesh")
               .attr("d", path)
@@ -312,7 +280,7 @@
 
         svg.append('g')
             .attr('class', 'vox-logo')
-            .attr('transform', 'translate(770,570)')
+            .attr('transform', 'translate(798,650)')
             .attr('preserveAspectRatio', "none")
             .append('path')
             .attr('fill', '#333')
@@ -324,7 +292,8 @@
                       .attr('class', 'info')
                       .attr('font-family', 'Nitti')
                       .attr('font-size', '22px')
-                      .attr('transform', 'translate(0,585)');
+                      .attr('fill', '#707070')
+                      .attr('transform', 'translate(5,665)');
 
         info.append('text').html('Source: Robert Wood Johnson Foundation');
         info.append('text')
@@ -337,7 +306,11 @@
     var control=Alpaca($("#form").get());
     formData = control.getValue();
     currentYear = formData.select_year;
-    window.dataAdapter.getProviderCount(currentYear, drawMap);
+    if(formData['scenario'] && formData['scenario'] === 'hypothetical')***REMOVED***
+      window.dataAdapter.getPreviewProviderCount(drawMap);
+    ***REMOVED*** else ***REMOVED***
+      window.dataAdapter.getProviderCount(currentYear, drawMap);
+    ***REMOVED***
   ***REMOVED***);
 
 
@@ -391,9 +364,6 @@
                   '2017'
                 ]
               ***REMOVED***,
-              "election_results": ***REMOVED***
-                "dependencies": "select_year"
-              ***REMOVED***,
               "scenario_label": ***REMOVED***
                 "dependencies": "select_year",
                 "type": "string",
@@ -431,13 +401,6 @@
               "type": "select",
               "dependencies": ***REMOVED***
                 "map_num": "single"
-              ***REMOVED***
-            ***REMOVED***,
-            "election_results": ***REMOVED***
-              "type": "checkbox",
-              "rightLabel": "Add 2016 election results",
-              "dependencies": ***REMOVED***
-                "select_year": "2017"
               ***REMOVED***
             ***REMOVED***,
             "scenario_label":***REMOVED***
