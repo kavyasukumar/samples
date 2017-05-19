@@ -57,10 +57,7 @@
 
   var saveChanges = function(isPreview)***REMOVED***
     var changedRecords = [];
-    window.dataAdapter.getCoverage(2017, function(response)***REMOVED***
-      if(isPreview)***REMOVED***
-        response = window.dataAdapter.getPreviewCoverageSync();
-      ***REMOVED***
+    var handleChanges = function(response)***REMOVED***
       _.each(response, function(record)***REMOVED***
         var id = '#' + record.id,
             is_active = record.is_active,
@@ -82,13 +79,19 @@
       if(isPreview)***REMOVED***
         disablePreviewButton(true);
         alertFx('Saved data. You may have unpublished changes', 'success');
-        window.dataAdapter.updateCoveragePreview(changedRecords);
+        window.dataAdapter.updatePreviewCoverage(changedRecords);
         return;
       ***REMOVED***
 
       window.dataAdapter.updateCoverage(changedRecords, afterSave);
       alertFx('Published data.', 'success');
-    ***REMOVED***);
+    ***REMOVED***;
+
+    if(isPreview)***REMOVED***
+      window.dataAdapter.getPreviewCoverage(handleChanges);
+    ***REMOVED*** else ***REMOVED***
+      window.dataAdapter.getCoverage(2017, handleChanges);
+    ***REMOVED***
   ***REMOVED***;
 
   var beforeSave = function()***REMOVED***

@@ -16,19 +16,20 @@ var DataAdapter = (function() ***REMOVED***
   window.localStorage.setItem('kintoToken', KINTO_TOKEN);
   var _kintoBucket = _kintoBucket || window.getKintoBucket('https://voxmedia-kinto.herokuapp.com/v1', 'vox-aca-dashboard', true);
 
+  // indexedDB helpers
   var openDb = function() ***REMOVED***
-    console.log("openDb ...");
+    console.log("opening indexed DB...");
     var req = window.indexedDB.open(DB_NAME, DB_VERSION);
     req.onsuccess = function (evt) ***REMOVED***
       db = this.result;
-      console.log("openDb DONE");
+      console.log('opened DB');
     ***REMOVED***;
     req.onerror = function (evt) ***REMOVED***
       console.error("openDb:", evt.target.errorCode);
     ***REMOVED***;
 
     req.onupgradeneeded = function (evt) ***REMOVED***
-      console.log("openDb.onupgradeneeded");
+      console.log("Upgrading db...");
       for (var i in STORES)***REMOVED***
         evt.currentTarget.result.createObjectStore(
          STORES[i], ***REMOVED*** keyPath: 'id' ***REMOVED***);
@@ -41,24 +42,18 @@ var DataAdapter = (function() ***REMOVED***
     return tx.objectStore(storeName);
   ***REMOVED***;
 
-  var storeObjects = function(storeName, objects)***REMOVED***
-    var transaction = db.transaction([storeName], "readwrite");
-    var objectStore = transaction.objectStore(storeName);
+  var storeObjects = function(storeName, objects, callBackFunction)***REMOVED***
+    var objectStore = getObjectStore(storeName, 'readwrite');
       for (var i in objects) ***REMOVED***
         var request = objectStore.add(objects[i]);
-        request.onsuccess = function(event) ***REMOVED***
-          // event.target.result == customerData[i].ssn;
-        ***REMOVED***;
+        request.onsuccess = callBackFunction;
       ***REMOVED***
   ***REMOVED***;
 
-
   var getObjects = function(storeName, success_callback) ***REMOVED***
-   var transaction = db.transaction([storeName], "readwrite");
-   var objectStore = transaction.objectStore(storeName);
+   var objectStore = getObjectStore(storeName, 'readonly');
    var req = objectStore.getAll();
    req.onsuccess = function(evt) ***REMOVED***
-     debugger;
      success_callback(evt.target.result);
    ***REMOVED***;
   ***REMOVED***;
@@ -68,9 +63,7 @@ var DataAdapter = (function() ***REMOVED***
     var transaction = db.transaction([storeName], "readwrite");
 
     // report on the success of opening the transaction
-    transaction.oncomplete = function(event) ***REMOVED***
-      callBackFunction.call(this,event);
-    ***REMOVED***;
+    transaction.oncomplete = callBackFunction;
 
     transaction.onerror = function(event) ***REMOVED***
       console.log(event);
@@ -83,14 +76,34 @@ var DataAdapter = (function() ***REMOVED***
     var objectStoreRequest = objectStore.clear();
   ***REMOVED***;
 
+  var replaceObjects = function(storeName, objects)***REMOVED***
+    clearObjects(storeName, function()***REMOVED***
+      storeObjects(storeName, objects);
+    ***REMOVED***)
+  ***REMOVED***
+
+  var countObjects = function(storeName, callBackFunction)***REMOVED***
+    var objectStore = getObjectStore(storeName, 'readonly');
+    var req = objectStore.count();
+    req.onsuccess = function(evt) ***REMOVED***
+      callBackFunction.call(this, evt.target.result);
+    ***REMOVED***;
+  ***REMOVED***;
+
+  // localStorage helpers
   var setLocalData = function(key, obj)***REMOVED***
     window.localStorage.setItem('vox-' + key, JSON.stringify(obj));
   ***REMOVED***;
 
   var getLocalData = function(key)***REMOVED***
-    return JSON.parse(window.localStorage.getItem('vox-' + key));
+    var val = window.localStorage.getItem('vox-' + key);
+    if(val === 'undefined')***REMOVED***
+      return 0;
+    ***REMOVED***
+    return JSON.parse(val);
   ***REMOVED***;
 
+  // Data helpers
   var hasUpdates = function(dataKey, callBackFunction)***REMOVED***
     var localLastMod = getLocalData(dataKey + '-last_modified');
 
@@ -125,10 +138,9 @@ var DataAdapter = (function() ***REMOVED***
   var init = function() ***REMOVED***
 
     // Private properties and methods
-    var _data = ***REMOVED******REMOVED***,
-      _staleBit = ***REMOVED******REMOVED***;
     var _instance = ***REMOVED******REMOVED***;
 
+    // init indexedDB upfront
     openDb();
 
 
@@ -140,7 +152,18 @@ var DataAdapter = (function() ***REMOVED***
       hasUpdates(dataKey, function(update)***REMOVED***
         if (!update) ***REMOVED***
           console.log('data exists');
-          getObjects(dataKey, callBackFunction);
+          getObjects(dataKey, function(resp)***REMOVED***
+            if(year !== 2017)***REMOVED***
+              callBackFunction.call(this, resp);
+              return;
+            ***REMOVED***
+            countObjects(dataKey + '-preview', function(count)***REMOVED***
+              if(count === 0)***REMOVED***
+                replaceObjects(dataKey + '-preview', resp);
+              ***REMOVED***
+              callBackFunction.call(this, resp);
+            ***REMOVED***);
+          ***REMOVED***);
           return;
         ***REMOVED***
 
@@ -150,8 +173,8 @@ var DataAdapter = (function() ***REMOVED***
           limit: 1000,
           pages: Infinity
         ***REMOVED***).then(function(response) ***REMOVED***
-          storeObjects(dataKey, response.data);
-          storeObjects(dataKey + '-preview', response.data);
+          replaceObjects(dataKey, response.data);
+          replaceObjects(dataKey + '-preview', response.data);
           setLocalData(dataKey + '-last_modified', response.last_modified);
           callBackFunction.call(this, response.data);
         ***REMOVED***).catch(function(error) ***REMOVED***
@@ -173,20 +196,18 @@ var DataAdapter = (function() ***REMOVED***
       currData = mergeData(currData, records);
 
       var batchUpdateFx = function(batch) ***REMOVED***
-        console.log('in batchUpdateFx');
         for (var i = 0; i < subset.length; i++) ***REMOVED***
           batch.updateRecord(subset[i], ***REMOVED*** patch: true ***REMOVED***);
         ***REMOVED***
       ***REMOVED***;
 
       var batchHandleFx = function(response) ***REMOVED***
-        console.log('in batchHandleFx');
+        var dataKey = 'coverage-2017';
         processedCount += chunk;
         if (processedCount >= recordCount) ***REMOVED***
-          setLocalData('coverage-2017', currData);
-          setLocalData('coverage-2017-preview', currData);
-          setLocalData('coverage-2017-last_modified',
-                        response[0].body.data.last_modified);
+          replaceObjects(dataKey, response.data);
+          replaceObjects(dataKey + '-preview', response.data);
+          setLocalData(dataKey + '-last_modified', response.last_modified);
           callBackFunction.call(this);
         ***REMOVED***
       ***REMOVED***;
@@ -225,8 +246,6 @@ var DataAdapter = (function() ***REMOVED***
     ***REMOVED***;
 
     _instance.getPreviewProviderCount = function(callBackFunction) ***REMOVED***
-      var data = getLocalData('coverage-2017-preview');
-
       var rollupFx = function(coverage) ***REMOVED***
         var response = _.chain(coverage)
           .where(***REMOVED***is_active: true***REMOVED***)
@@ -236,45 +255,31 @@ var DataAdapter = (function() ***REMOVED***
           .value();
         callBackFunction.call(this, response);
       ***REMOVED***;
-
-      if(!data)***REMOVED***
-        this.getCoverage(2017, rollupFx);
-      ***REMOVED*** else***REMOVED***
-        rollupFx(data);
-      ***REMOVED***
+      this.getPreviewCoverage(2017, rollupFx);
     ***REMOVED***;
 
-    _instance.updateCoveragePreview = function(records)***REMOVED***
-      var dataKey = 'coverage-2017-preview',
-        currData = getLocalData(dataKey);
-      currData = mergeData(currData, records);
-      setLocalData('coverage-2017-preview', currData);
-    ***REMOVED***;
-
-    _instance.getPreviewCoverageSync = function()***REMOVED***
-      return getLocalData('coverage-2017-preview');
+    _instance.updatePreviewCoverage = function(records)***REMOVED***
+      var dataKey = 'coverage-2017-preview';
+      getObjects(dataKey, function(response)***REMOVED***
+        replaceObjects(dataKey, mergeData(response, records));
+      ***REMOVED***);
     ***REMOVED***;
 
     _instance.getPreviewCoverage = function(callBackFunction)***REMOVED***
-      var data = getLocalData('coverage-2017-preview');
-
-      if(data)***REMOVED***
-        callBackFunction.call(data);
-        return;
-      ***REMOVED***
-
-      this.getCoverage(2017, function(response)***REMOVED***
-        setLocalData('coverage-2017-preview', response);
-        callBackFunction.call(response);
+      getObjects('coverage-2017-preview', function(response)***REMOVED***
+        if(!response.length)***REMOVED***
+          this.dataAdapter.getCoverage(2017, callBackFunction);
+          return;
+        ***REMOVED***
+        callBackFunction.call(this, response);
       ***REMOVED***);
     ***REMOVED***;
 
     _instance.discardPreviewChanges = function(callBackFunction)***REMOVED***
-      clearObjects('coverage-2017-preview', callBackFunction);
       getObjects('coverage-2017', function(response)***REMOVED***
-        storeObjects('coverage-2017-preview', response);
-      ***REMOVED***)
-    ***REMOVED***
+        replaceObjects('coverage-2017-preview', response);
+      ***REMOVED***);
+    ***REMOVED***;
 
     return _instance;
   ***REMOVED***;
