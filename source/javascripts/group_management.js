@@ -80,7 +80,6 @@
       if(isPreview)***REMOVED***
         disablePreviewButton(true);
         alertFx('Saved data. You may have unpublished changes', 'success');
-        window.dataAdapter.updatePreviewCoverage(changedRecords);
         return;
       ***REMOVED***
 
@@ -127,7 +126,7 @@
 
     var template = window.JST['_templates/provider_by_state'];
     var html = template(***REMOVED***data: byProvider, parameterize: parameterize***REMOVED***);
-    $('.body').html(html);
+    $('#provider-dash').html(html).show();
     $(document).foundation('accordion', 'reflow');
     wireEvents();
   ***REMOVED***;
@@ -153,6 +152,7 @@
   ***REMOVED***;
 
   var discardChanges = function()***REMOVED***
+    $('#provider-dash').hide();
     window.dataAdapter.discardPreviewChanges(function()***REMOVED***
       console.log('discarded');
       alertFx('Unpublished changes have been deleted', 'info');

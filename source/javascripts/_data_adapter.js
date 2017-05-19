@@ -1,14 +1,13 @@
 //= require _kinto_helper
-//= require _vendor_extra/kinto-http
 
-/* globals KINTO_TOKEN, console, setInterval, clearInterval */
+/* globals KINTO_TOKEN, console, setTimeout, setInterval, clearInterval */
 
 var DataAdapter = (function() ***REMOVED***
   var instance;
   var db,
-      DB_NAME = 'aca-indexedDB',
-      DB_VERSION = 1,
-      STORES = ['coverage-2017', 'coverage-2017-preview', 'coverage-2016','coverage-2015','coverage-2014'];
+    DB_NAME = 'aca-indexedDB',
+    DB_VERSION = 1,
+    STORES = ['coverage-2017', 'coverage-2017-preview', 'coverage-2016', 'coverage-2015', 'coverage-2014'];
 
   window.localStorage.setItem('kintoToken', KINTO_TOKEN);
   var _kintoBucket = _kintoBucket || window.getKintoBucket('https://voxmedia-kinto.herokuapp.com/v1', 'vox-aca-dashboard', true);
@@ -17,20 +16,22 @@ var DataAdapter = (function() ***REMOVED***
   var openDb = function(callBackFunction) ***REMOVED***
     console.log("opening indexed DB...");
     var req = window.indexedDB.open(DB_NAME, DB_VERSION);
-    req.onsuccess = function (evt) ***REMOVED***
+    req.onsuccess = function(evt) ***REMOVED***
       db = this.result;
       console.log('opened DB');
       callBackFunction.call(this);
     ***REMOVED***;
-    req.onerror = function (evt) ***REMOVED***
+    req.onerror = function(evt) ***REMOVED***
       console.error("openDb:", evt.target.errorCode);
     ***REMOVED***;
 
-    req.onupgradeneeded = function (evt) ***REMOVED***
+    req.onupgradeneeded = function(evt) ***REMOVED***
       console.log("Upgrading db...");
-      for (var i in STORES)***REMOVED***
+      for (var i in STORES) ***REMOVED***
         evt.currentTarget.result.createObjectStore(
-         STORES[i], ***REMOVED*** autoIncrement: true ***REMOVED***);
+          STORES[i], ***REMOVED***
+            keyPath: 'id'
+          ***REMOVED***);
       ***REMOVED***
     ***REMOVED***;
   ***REMOVED***;
@@ -40,31 +41,30 @@ var DataAdapter = (function() ***REMOVED***
     return tx.objectStore(storeName);
   ***REMOVED***;
 
-  var storeObjects = function(storeName, objects, callBackFunction)***REMOVED***
+  var storeObjects = function(storeName, objects, callBackFunction) ***REMOVED***
     var objectStore = getObjectStore(storeName, 'readwrite'),
-        count = 0,
-        total = objects.length;
+      count = 0,
+      total = objects.length;
 
-    var succesHandler = function()***REMOVED***
-      console.log('processed ' + count +' records');
+    var succesHandler = function() ***REMOVED***
       count++;
-      if(count >= total && callBackFunction)***REMOVED***
+      if (count >= total && callBackFunction) ***REMOVED***
         callBackFunction.call(this);
       ***REMOVED***
     ***REMOVED***;
 
     for (var i in objects) ***REMOVED***
-      var request = objectStore.add(objects[i]);
+      var request = objectStore.put(objects[i]);
       request.onsuccess = succesHandler;
     ***REMOVED***
   ***REMOVED***;
 
   var getObjects = function(storeName, success_callback) ***REMOVED***
-   var objectStore = getObjectStore(storeName, 'readonly');
-   var req = objectStore.getAll();
-   req.onsuccess = function(evt) ***REMOVED***
-     success_callback(evt.target.result);
-   ***REMOVED***;
+    var objectStore = getObjectStore(storeName, 'readonly');
+    var req = objectStore.getAll();
+    req.onsuccess = function(evt) ***REMOVED***
+      success_callback(evt.target.result);
+    ***REMOVED***;
   ***REMOVED***;
 
   var clearObjects = function(storeName, callBackFunction) ***REMOVED***
@@ -80,18 +80,18 @@ var DataAdapter = (function() ***REMOVED***
 
     // clear all the data out of the object store
     var objectStoreRequest = objectStore.clear();
-    objectStoreRequest.onsuccess = function()***REMOVED***
+    objectStoreRequest.onsuccess = function() ***REMOVED***
       callBackFunction();
     ***REMOVED***
   ***REMOVED***;
 
-  var replaceObjects = function(storeName, objects, callBackFunction)***REMOVED***
-    clearObjects(storeName, function()***REMOVED***
+  var replaceObjects = function(storeName, objects, callBackFunction) ***REMOVED***
+    clearObjects(storeName, function() ***REMOVED***
       storeObjects(storeName, objects, callBackFunction);
     ***REMOVED***);
   ***REMOVED***;
 
-  var countObjects = function(storeName, callBackFunction)***REMOVED***
+  var countObjects = function(storeName, callBackFunction) ***REMOVED***
     var objectStore = getObjectStore(storeName, 'readonly');
     var req = objectStore.count();
     req.onsuccess = function(evt) ***REMOVED***
@@ -100,45 +100,65 @@ var DataAdapter = (function() ***REMOVED***
   ***REMOVED***;
 
   // localStorage helpers
-  var setLocalData = function(key, obj)***REMOVED***
+  var setLocalData = function(key, obj) ***REMOVED***
     window.localStorage.setItem('vox-' + key, JSON.stringify(obj));
   ***REMOVED***;
 
-  var getLocalData = function(key)***REMOVED***
+  var getLocalData = function(key) ***REMOVED***
     var val = window.localStorage.getItem('vox-' + key);
-    if(val === 'undefined')***REMOVED***
+    if (val === 'undefined') ***REMOVED***
       return 0;
     ***REMOVED***
     return JSON.parse(val);
   ***REMOVED***;
 
   // Data helpers
-  var hasUpdates = function(dataKey, callBackFunction)***REMOVED***
+  var hasUpdates = function(dataKey, callBackFunction) ***REMOVED***
+    // var lastChecked = getLocalData(dataKey + '-lastCheck');
+    // var currTime = Date.now();
+    // if(currTime - lastChecked < 60000)***REMOVED***
+    //     callBackFunction.call(this, false);
+    //     return;
+    // ***REMOVED***
     var localLastMod = getLocalData(dataKey + '-last_modified');
 
-    if(!localLastMod)***REMOVED***
-      callBackFunction.call(this,true);
+    if (!localLastMod) ***REMOVED***
+      callBackFunction.call(this, true);
       return;
     ***REMOVED***
 
-    var serverLastMod = null;
+    var serverLastMod = null,
+      serverTotal = 0;
+
     _kintoBucket.collection(dataKey).listRecords(***REMOVED***
-              since: localLastMod.toString(),
-              limit: 1
-            ***REMOVED***).then(function(resp)***REMOVED***
-                serverLastMod = resp.last_modified;
-                if(serverLastMod > localLastMod)***REMOVED***
-                  callBackFunction.call(this,true);
-                ***REMOVED*** else***REMOVED***
-                    callBackFunction.call(this,false);
-                ***REMOVED***
-              ***REMOVED***);
+      since: localLastMod.toString(),
+      limit: 1
+    ***REMOVED***).then(function(resp) ***REMOVED***
+      serverLastMod = resp.last_modified;
+      if (serverLastMod > localLastMod) ***REMOVED***
+        callBackFunction.call(this, true);
+      ***REMOVED*** else ***REMOVED***
+        _kintoBucket.collection(dataKey).getTotalRecords()
+          .then(function(serverCount) ***REMOVED***
+            serverTotal = serverCount;
+            countObjects(dataKey, function(count) ***REMOVED***
+              var clientTotal = count;
+              if (serverTotal !== clientTotal) ***REMOVED***
+                callBackFunction.call(this, true);
+              ***REMOVED*** else ***REMOVED***
+                callBackFunction.call(this, false);
+              ***REMOVED***
+            ***REMOVED***);
+          ***REMOVED***);
+      ***REMOVED***
+    ***REMOVED***);
   ***REMOVED***;
 
-  var mergeData = function(superset, changeSet)***REMOVED***
-    _.each(changeSet, function(rec)***REMOVED***
-      var idx = _.findIndex(superset, function(d)***REMOVED***
-        return d.id === rec.id;***REMOVED***);
+  var mergeData = function(superset, changeSet) ***REMOVED***
+    _.each(changeSet, function(rec) ***REMOVED***
+      var idx = _.findIndex(superset, function(d) ***REMOVED***
+        return d.id === rec.id;
+      ***REMOVED***);
       superset[idx].is_active = rec.is_active;
     ***REMOVED***);
     return superset;
@@ -148,7 +168,7 @@ var DataAdapter = (function() ***REMOVED***
 
     // Private properties and methods
     var _instance = ***REMOVED******REMOVED***,
-    _databaseReady = false;
+      _databaseReady = false;
 
     var updatePreviewIfnull = function functionName() ***REMOVED***
 
@@ -156,20 +176,18 @@ var DataAdapter = (function() ***REMOVED***
 
     // Public properties and methods
     _instance.getCoverage = function(year, callBackFunction) ***REMOVED***
-      // callBackFunction.call(this, dummy);
-      // return;
       var dataKey = 'coverage-' + year;
-      hasUpdates(dataKey, function(update)***REMOVED***
+      hasUpdates(dataKey, function(update) ***REMOVED***
         if (!update) ***REMOVED***
           console.log('data exists');
-          getObjects(dataKey, function(resp)***REMOVED***
-            if(year !== 2017)***REMOVED***
+          getObjects(dataKey, function(resp) ***REMOVED***
+            if (year !== 2017) ***REMOVED***
               callBackFunction.call(this, resp);
               return;
             ***REMOVED***
-            countObjects(dataKey + '-preview', function(count)***REMOVED***
+            countObjects(dataKey + '-preview', function(count) ***REMOVED***
               console.log(count);
-              if(count === 0)***REMOVED***
+              if (count === 0) ***REMOVED***
                 replaceObjects(dataKey + '-preview', resp);
               ***REMOVED***
               callBackFunction.call(this, resp);
@@ -177,26 +195,54 @@ var DataAdapter = (function() ***REMOVED***
           ***REMOVED***);
           return;
         ***REMOVED***
-
         var collection = _kintoBucket.collection(dataKey);
+        var lastMod = getLocalData(dataKey + '-last_modified');
 
-        collection.listRecords(***REMOVED***
-          limit: 1000,
-          pages: Infinity
-        ***REMOVED***).then(function(response) ***REMOVED***
-          replaceObjects(dataKey, response.data);
-          if(year === 2017)***REMOVED***
-            countObjects(dataKey + '-preview', function(count)***REMOVED***
-              if(count === 0)***REMOVED***
-                replaceObjects(dataKey + '-preview', response.data);
-              ***REMOVED***
-            ***REMOVED***);
+        var states = _.keys(STATE_LOOKUP);
+        var handleKintoResp = function(response, index) ***REMOVED***
+
+          storeObjects(dataKey, response.data);
+
+          var currLastMod = getLocalData(dataKey + '-last_modified');
+          if(response.last_modified > currLastMod)***REMOVED***
+            setLocalData(dataKey + '-last_modified', response.last_modified);
           ***REMOVED***
-          setLocalData(dataKey + '-last_modified', response.last_modified);
-          callBackFunction.call(this, response.data);
-        ***REMOVED***).catch(function(error) ***REMOVED***
+
+          if(index === states.length)***REMOVED***
+            if(year === 2017)***REMOVED***
+              countObjects(dataKey + '-preview', function(count)***REMOVED***
+                if(count === 0)***REMOVED***
+                  storeObjects(dataKey + '-preview', response.data);
+                ***REMOVED***
+              ***REMOVED***);
+            ***REMOVED***
+            callBackFunction.call(this, response.data);
+          ***REMOVED***
+        ***REMOVED***;
+        var handleErr = function(error) ***REMOVED***
           console.log(error);
-        ***REMOVED***);
+        ***REMOVED***;
+        var getRecords = function(ind) ***REMOVED***
+          console.log('requesting ' + states[ind]);
+          collection.listRecords(***REMOVED***
+              filters: ***REMOVED***
+                state: states[ind]
+              ***REMOVED***,
+              limit: 1000,
+              pages: Infinity,
+              retry: 4,
+              since: lastMod
+            ***REMOVED***).then(function(resp)***REMOVED***
+              handleKintoResp(resp, ind);
+            ***REMOVED***).catch(handleErr);
+        ***REMOVED***;
+        for (var i in states) ***REMOVED***
+          (function(ind) ***REMOVED***
+            setTimeout(function() ***REMOVED***
+              getRecords(ind);
+            ***REMOVED***, ind * 500);
+          ***REMOVED***)(i);
+        ***REMOVED***
       ***REMOVED***);
     ***REMOVED***;
 
@@ -205,7 +251,7 @@ var DataAdapter = (function() ***REMOVED***
         collection = _kintoBucket.collection(dataKey),
         recordCount = records.length,
         processedCount = 0,
-        i,j,
+        i, j,
         chunk = 100,
         subset = [],
         currData = getLocalData(dataKey);
@@ -214,7 +260,9 @@ var DataAdapter = (function() ***REMOVED***
 
       var batchUpdateFx = function(batch) ***REMOVED***
         for (var i = 0; i < subset.length; i++) ***REMOVED***
-          batch.updateRecord(subset[i], ***REMOVED*** patch: true ***REMOVED***);
+          batch.updateRecord(subset[i], ***REMOVED***
+            patch: true
+          ***REMOVED***);
         ***REMOVED***
       ***REMOVED***;
 
@@ -233,11 +281,11 @@ var DataAdapter = (function() ***REMOVED***
         console.log(error);
       ***REMOVED***;
 
-      for (i=0,j=records.length; i<j; i+=chunk) ***REMOVED***
-        subset = records.slice(i,i+chunk);
+      for (i = 0, j = records.length; i < j; i += chunk) ***REMOVED***
+        subset = records.slice(i, i + chunk);
         collection.batch(batchUpdateFx)
-                  .then(batchHandleFx)
-                  .catch(errorHandler);
+          .then(batchHandleFx)
+          .catch(errorHandler);
       ***REMOVED***
     ***REMOVED***;
 
@@ -246,7 +294,9 @@ var DataAdapter = (function() ***REMOVED***
         var response;
         if (year === 2017) ***REMOVED***
           response = _.chain(coverage)
-            .where(***REMOVED***is_active: true***REMOVED***)
+            .where(***REMOVED***
+              is_active: true
+            ***REMOVED***)
             .countBy(function(item) ***REMOVED***
               return item.fips_code;
             ***REMOVED***)
@@ -265,7 +315,9 @@ var DataAdapter = (function() ***REMOVED***
     _instance.getPreviewProviderCount = function(callBackFunction) ***REMOVED***
       var rollupFx = function(coverage) ***REMOVED***
         var response = _.chain(coverage)
-          .where(***REMOVED***is_active: true***REMOVED***)
+          .where(***REMOVED***
+            is_active: true
+          ***REMOVED***)
           .countBy(function(item) ***REMOVED***
             return item.fips_code;
           ***REMOVED***)
@@ -275,16 +327,16 @@ var DataAdapter = (function() ***REMOVED***
       this.getPreviewCoverage(rollupFx);
     ***REMOVED***;
 
-    _instance.updatePreviewCoverage = function(records)***REMOVED***
+    _instance.updatePreviewCoverage = function(records) ***REMOVED***
       var dataKey = 'coverage-2017-preview';
-      getObjects(dataKey, function(response)***REMOVED***
-        replaceObjects(dataKey, mergeData(response, records));
+      getObjects(dataKey, function(response) ***REMOVED***
+        storeObjects(dataKey, mergeData(response, records));
       ***REMOVED***);
     ***REMOVED***;
 
-    _instance.getPreviewCoverage = function(callBackFunction)***REMOVED***
-      getObjects('coverage-2017-preview', function(response)***REMOVED***
-        if(!response.length)***REMOVED***
+    _instance.getPreviewCoverage = function(callBackFunction) ***REMOVED***
+      getObjects('coverage-2017-preview', function(response) ***REMOVED***
+        if (!response.length) ***REMOVED***
           this.dataAdapter.getCoverage(2017, callBackFunction);
           return;
         ***REMOVED***
@@ -292,17 +344,17 @@ var DataAdapter = (function() ***REMOVED***
       ***REMOVED***);
     ***REMOVED***;
 
-    _instance.discardPreviewChanges = function(callBackFunction)***REMOVED***
-      getObjects('coverage-2017', function(response)***REMOVED***
+    _instance.discardPreviewChanges = function(callBackFunction) ***REMOVED***
+      getObjects('coverage-2017', function(response) ***REMOVED***
         replaceObjects('coverage-2017-preview', response, callBackFunction);
       ***REMOVED***);
     ***REMOVED***;
 
-    _instance.ready = function(callBackFunction)***REMOVED***
+    _instance.ready = function(callBackFunction) ***REMOVED***
       var intervalFx;
-      intervalFx = setInterval(function()***REMOVED***
+      intervalFx = setInterval(function() ***REMOVED***
         console.log('waiting for database...');
-        if(_databaseReady)***REMOVED***
+        if (_databaseReady) ***REMOVED***
           callBackFunction.call(this);
           clearInterval(intervalFx);
         ***REMOVED***
@@ -310,7 +362,7 @@ var DataAdapter = (function() ***REMOVED***
     ***REMOVED***;
 
 
-    openDb(function()***REMOVED***
+    openDb(function() ***REMOVED***
       _databaseReady = true;
     ***REMOVED***);
 
