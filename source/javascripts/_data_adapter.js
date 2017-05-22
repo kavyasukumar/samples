@@ -199,6 +199,7 @@ var DataAdapter = (function() ***REMOVED***
           ***REMOVED***);
           return;
         ***REMOVED***
+        console.log('Refreshing data...');
         var collection = _kintoBucket.collection(dataKey);
 
         var states = _.keys(STATE_LOOKUP);
@@ -359,7 +360,7 @@ var DataAdapter = (function() ***REMOVED***
           callBackFunction.call(this);
           clearInterval(intervalFx);
         ***REMOVED***
-      ***REMOVED***, 300);
+      ***REMOVED***, 3000);
     ***REMOVED***;
 
 
