@@ -174,10 +174,6 @@ var DataAdapter = (function() ***REMOVED***
     var _instance = ***REMOVED******REMOVED***,
       _databaseReady = false;
 
-    var updatePreviewIfnull = function functionName() ***REMOVED***
-
-    ***REMOVED***;
-
     // Public properties and methods
     _instance.getCoverage = function(year, callBackFunction) ***REMOVED***
       var dataKey = 'coverage-' + year;
