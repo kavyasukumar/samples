@@ -203,6 +203,7 @@ var DataAdapter = (function() ***REMOVED***
         var collection = _kintoBucket.collection(dataKey);
 
         var states = _.keys(STATE_LOOKUP);
+
         var handleKintoResp = function(response, index) ***REMOVED***
 
           storeObjects(dataKey, response.data);
@@ -211,21 +212,18 @@ var DataAdapter = (function() ***REMOVED***
           if (response.last_modified > currLastMod) ***REMOVED***
             setLocalData(dataKey + '-last_modified', response.last_modified);
           ***REMOVED***
-
-          if (index === states.length) ***REMOVED***
+          if (index === states.length - 1) ***REMOVED***
             if (year === 2017) ***REMOVED***
-              countObjects(dataKey + '-preview', function(count) ***REMOVED***
-                if (count === 0) ***REMOVED***
-                  storeObjects(dataKey + '-preview', response.data);
-                ***REMOVED***
-              ***REMOVED***);
+              storeObjects(dataKey + '-preview', response.data);
             ***REMOVED***
             callBackFunction.call(this, response.data);
           ***REMOVED***
         ***REMOVED***;
+
         var handleErr = function(error) ***REMOVED***
           console.log(error);
         ***REMOVED***;
+
         var getRecords = function(ind) ***REMOVED***
           collection.listRecords(***REMOVED***
             filters: ***REMOVED***
@@ -238,6 +236,7 @@ var DataAdapter = (function() ***REMOVED***
             handleKintoResp(resp, ind);
           ***REMOVED***).catch(handleErr);
         ***REMOVED***;
+
         var fetchState = function(ind) ***REMOVED***
           setTimeout(function() ***REMOVED***
             getRecords(ind);
