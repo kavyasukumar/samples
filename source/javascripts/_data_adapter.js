@@ -238,12 +238,13 @@ var DataAdapter = (function() ***REMOVED***
             handleKintoResp(resp, ind);
           ***REMOVED***).catch(handleErr);
         ***REMOVED***;
+        var fetchState = function(ind) ***REMOVED***
+          setTimeout(function() ***REMOVED***
+            getRecords(ind);
+          ***REMOVED***, ind * 500);
+        ***REMOVED***;
         for (var i in states) ***REMOVED***
-          (function(ind) ***REMOVED***
-            setTimeout(function() ***REMOVED***
-              getRecords(ind);
-            ***REMOVED***, ind * 500);
-          ***REMOVED***)(i);
+          fetchState(i);
         ***REMOVED***
       ***REMOVED***);
     ***REMOVED***;
@@ -363,7 +364,6 @@ var DataAdapter = (function() ***REMOVED***
         ***REMOVED***
       ***REMOVED***, 3000);
     ***REMOVED***;
-
 
     openDb(function() ***REMOVED***
       _databaseReady = true;
