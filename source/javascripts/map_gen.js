@@ -324,6 +324,10 @@
     if(formData['map_type'] === 'state')***REMOVED***
       tName = formData['state_select']+'_'+currentYear;
     ***REMOVED***
+    console.log(formData['scenario'])
+    if(formData['scenario'] === 'hypothetical')***REMOVED***
+      tName += '_selected';
+    ***REMOVED***
     var flapjack = Pancake("svg-map");
     flapjack.download(tName+'_providers.png');
   ***REMOVED***);
