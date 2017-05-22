@@ -10,7 +10,9 @@ var DataAdapter = (function() ***REMOVED***
     STORES = ['coverage-2017', 'coverage-2017-preview', 'coverage-2016', 'coverage-2015', 'coverage-2014'];
 
   window.localStorage.setItem('kintoToken', KINTO_TOKEN);
-  window.setupKinto(***REMOVED***bucket: 'vox-aca-dashboard'***REMOVED***);
+  window.setupKinto(***REMOVED***
+    bucket: 'vox-aca-dashboard'
+  ***REMOVED***);
   var _kintoBucket = _kintoBucket || window.getKintoBucket();
 
 
