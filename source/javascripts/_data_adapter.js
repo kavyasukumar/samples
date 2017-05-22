@@ -357,6 +357,7 @@ var DataAdapter = (function() ***REMOVED***
       intervalFx = setInterval(function() ***REMOVED***
         console.log('waiting for database...');
         if (_databaseReady) ***REMOVED***
+          console.log('database is ready.');
           callBackFunction.call(this);
           clearInterval(intervalFx);
         ***REMOVED***
