@@ -3,7 +3,7 @@
     <ul class="accordion row accordion-allstates <%= _.reduce(_.keys(coverage), function(str, c)***REMOVED*** return str + ' accordion-' + c.toLowerCase();***REMOVED***,'') %>
     " data-accordion>
       <li class="accordion-navigation">
-        <a href="<%= '#' + parameterize(provider) %>">
+        <a href="<%= '#' + parameterize(provider) %>" class="icon-something">
           <%= provider %>
         </a>
         <div id="<%= parameterize(provider) %>" class="content row

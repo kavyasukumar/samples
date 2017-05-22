@@ -1,26 +1,78 @@
-#intro***REMOVED***
+#intro ***REMOVED***
   padding-top: 6rem;
 ***REMOVED***
+
 #provider-dash ***REMOVED***
   table.columns ***REMOVED***
     padding: 0;
+
+    td.switch,
+    th.switch ***REMOVED***
+      width: 5rem;
+      padding-left: 1rem;
+    ***REMOVED***
+
+    th ***REMOVED***
+      margin-bottom: 0;
+
+      h3 ***REMOVED***
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        display: inline-block;
+        margin-top: 0.5rem;
+      ***REMOVED***
+    ***REMOVED***
   ***REMOVED***
-  ul.accordion.row***REMOVED***
-    margin: auto;
-    margin-bottom: 20px;
-    &.state-hide, &.provider-hide***REMOVED***
+
+  ul.accordion.row ***REMOVED***
+    margin: auto auto 20px;
+
+    &.provider-hide,
+    &.state-hide ***REMOVED***
       display: none;
     ***REMOVED***
-    li.accordion-navigation***REMOVED***
+
+    li.accordion-navigation ***REMOVED***
+      a ***REMOVED***
+        font-size: 1.5rem;
+      ***REMOVED***
+
+      a:before ***REMOVED***
+        content: '\e805';
+        font-family: "fontello";
+        font-style: normal;
+        font-weight: normal;
+        speak: none;
+        display: inline-block;
+        font-size: 1em;
+        text-decoration: inherit;
+        width: 1.5em;
+        margin-right: 0.2em;
+        text-align: center;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1.1em;
+        margin-left: 0.2em;
+      ***REMOVED***
+      /* '' */
+      &.active a:before ***REMOVED***
+        content: '\e804';
+      ***REMOVED***
+      /* '' */
     ***REMOVED***
   ***REMOVED***
 ***REMOVED***
 
-#controls***REMOVED***
-  a.button***REMOVED***
+#controls ***REMOVED***
+  #searchDiv ***REMOVED***
+    padding-right: 0;
+  ***REMOVED***
+
+  a.button ***REMOVED***
     margin-left: 24px;
   ***REMOVED***
-  a.discard***REMOVED***
+
+  a.discard ***REMOVED***
     display: block;
     padding: 1rem 1.25rem 0 0;
     font-size: 1.2rem;
@@ -28,6 +80,6 @@
   ***REMOVED***
 ***REMOVED***
 
-div.alert-box.hidden***REMOVED***
+div.alert-box.hidden ***REMOVED***
   display: none;
 ***REMOVED***

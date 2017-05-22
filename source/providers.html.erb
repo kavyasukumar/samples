@@ -16,13 +16,17 @@
   </section>
   <section id='controls'>
     <div class="row">
-      <select id="stateSelector">
+      <select id="stateSelector" class="large-6 columns">
         <option default value="allstates">All states</option>
         <% data.state_lookup.each do |state, name| %>
-         <option value="<%= state.parameterize %>"><%= name %></option>
-       <% end %>
+        <option value="<%= state.parameterize %>"><%= name %></option>
+        <% end %>
       </select>
-      <input class="search large-6 columns" type="text" placeholder="Filter by provider name">
+      <div id="searchDiv" class="large-6 columns">
+        <input class="search" type="text" placeholder="Filter by provider name">
+      </div>
+    </div>
+    <div class="row">
       <a href="#" class="large-3 columns button right submit disabled">Save & Publish</a>
       <a href="#" class="button right preview disabled">Save</a>
       <a href="#" class="left discard">Discard unpublished changes</a>
