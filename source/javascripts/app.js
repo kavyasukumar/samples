@@ -30,7 +30,7 @@ $(document).foundation();
     var currAlert = $(html);
     $('.alertHolder').append(currAlert);
     (function(obj) ***REMOVED***
-      setTimeout(function()***REMOVED***
+      window.setTimeout(function()***REMOVED***
        $(obj).fadeOut(300, function()***REMOVED***
           $(this).remove();
        ***REMOVED***);

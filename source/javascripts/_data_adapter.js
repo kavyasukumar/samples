@@ -1,6 +1,6 @@
 //= require _kinto_helper
 
-/* globals KINTO_TOKEN, console, setTimeout, setInterval, clearInterval, STATE_LOOKUP*/
+/* globals KINTO_TOKEN, STATE_LOOKUP*/
 
 var DataAdapter = (function() ***REMOVED***
   var instance;
@@ -168,6 +168,12 @@ var DataAdapter = (function() ***REMOVED***
     return superset;
   ***REMOVED***;
 
+  var handleErr = function(error) ***REMOVED***
+    window.commonErrorHandler(error);
+    window.commonNotificationHandler(error);
+    throw error;
+  ***REMOVED***;
+
   var init = function() ***REMOVED***
 
     // Private properties and methods
@@ -214,10 +220,6 @@ var DataAdapter = (function() ***REMOVED***
             ***REMOVED***
             callBackFunction.call(this, response.data);
           ***REMOVED***
-        ***REMOVED***;
-
-        var handleErr = function(error) ***REMOVED***
-          console.log(error);
         ***REMOVED***;
 
         var getRecords = function(ind) ***REMOVED***
@@ -275,15 +277,11 @@ var DataAdapter = (function() ***REMOVED***
         ***REMOVED***
       ***REMOVED***;
 
-      var errorHandler = function(error) ***REMOVED***
-        console.log(error);
-      ***REMOVED***;
-
       for (i = 0, j = records.length; i < j; i += chunk) ***REMOVED***
         subset = records.slice(i, i + chunk);
         collection.batch(batchUpdateFx)
           .then(batchHandleFx)
-          .catch(errorHandler);
+          .catch(handleErr);
       ***REMOVED***
     ***REMOVED***;
 
