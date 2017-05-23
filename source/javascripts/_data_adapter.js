@@ -161,6 +161,7 @@ var DataAdapter = (function() ***REMOVED***
 
   var mergeData = function(superset, changeSet) ***REMOVED***
     _.each(changeSet, function(rec) ***REMOVED***
+      debugger;
       var idx = _.findIndex(superset, function(d) ***REMOVED***
         return d.id === rec.id;
       ***REMOVED***);
@@ -184,7 +185,6 @@ var DataAdapter = (function() ***REMOVED***
     _instance.getCoverage = function(year) ***REMOVED***
       return new Promise(function(resolve, reject) ***REMOVED***
         try ***REMOVED***
-          debugger;
           var dataKey = 'coverage-' + year;
 
           hasUpdates(dataKey).then(function(update) ***REMOVED***
@@ -223,12 +223,12 @@ var DataAdapter = (function() ***REMOVED***
                 ***REMOVED***
 
                 if (response.last_modified > currLastMod) ***REMOVED***
-                  currLastMod = response.last_modified
+                  currLastMod = response.last_modified;
                   setLocalData(dataKey + '-last_modified', currLastMod);
                 ***REMOVED***
               ***REMOVED***
               resolve(unifiedResp);
-            ***REMOVED***
+            ***REMOVED***;
 
             var fetchState = function(ind) ***REMOVED***
               setTimeout(function() ***REMOVED***
@@ -263,16 +263,13 @@ var DataAdapter = (function() ***REMOVED***
     ***REMOVED***;
 
   _instance.updateCoverage = function(records, callBackFunction) ***REMOVED***
+    return new Promise(function(resolve, reject) ***REMOVED***
     var dataKey = 'coverage-2017',
       collection = _kintoBucket.collection(dataKey),
       recordCount = records.length,
-      processedCount = 0,
-      i, j,
       chunk = 100,
       subset = [],
-      currData = getLocalData(dataKey);
-
-    currData = mergeData(currData, records);
+      promises =[];
 
     var batchUpdateFx = function(batch) ***REMOVED***
       for (var i = 0; i < subset.length; i++) ***REMOVED***
@@ -282,23 +279,44 @@ var DataAdapter = (function() ***REMOVED***
       ***REMOVED***
     ***REMOVED***;
 
-    var batchHandleFx = function(response) ***REMOVED***
-      var dataKey = 'coverage-2017';
-      processedCount += chunk;
-      if (processedCount >= recordCount) ***REMOVED***
-        storeObjects(dataKey, response.data);
-        storeObjects(dataKey + '-preview', response.data);
-        setLocalData(dataKey + '-last_modified', response.last_modified);
-        callBackFunction.call(this);
+    var batchErrHandle = function(err)***REMOVED***
+      handleErr(err);
+      reject(err);
+    ***REMOVED***;
+
+    var batchHandleFx = function(responses) ***REMOVED***
+      try***REMOVED***
+          var dataKey = 'coverage-2017',
+              currLastMod = getLocalData(dataKey + '-last_modified'),
+              unifiedResp = [];
+          for (var i in responses[0])***REMOVED***
+            var response = responses[0][i];
+            unifiedResp.push(response.body.data);
+            if (response.headers.ETag > currLastMod) ***REMOVED***
+              currLastMod = response.headers.ETag;
+              setLocalData(dataKey + '-last_modified', currLastMod);
+            ***REMOVED***
+          ***REMOVED***
+          storeObjects(dataKey, unifiedResp)
+            .catch(batchErrHandle);
+          storeObjects(dataKey + '-preview', unifiedResp)
+            .catch(batchErrHandle);
+          resolve();
+      ***REMOVED*** catch(err)***REMOVED***
+        batchErrHandle(err);
       ***REMOVED***
     ***REMOVED***;
 
-    for (i = 0, j = records.length; i < j; i += chunk) ***REMOVED***
+    for (i = 0; i < records.length; i += chunk) ***REMOVED***
       subset = records.slice(i, i + chunk);
-      collection.batch(batchUpdateFx)
-        .then(batchHandleFx)
-        .catch(handleErr);
-    ***REMOVED***
+      promises.push(collection.batch(batchUpdateFx));
+      if(i >= records.length - chunk)***REMOVED***
+        Promise.all(promises)
+          .then(batchHandleFx)
+          .catch(batchErrHandle);
+        ***REMOVED***
+      ***REMOVED***
+    ***REMOVED***);
   ***REMOVED***;
 
   _instance.getProviderCount = function(year) ***REMOVED***

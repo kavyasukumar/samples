@@ -60,19 +60,23 @@
 
       if(isPreview)***REMOVED***
         disablePreviewButton(true);
-        window.dataAdapter.updatePreviewCoverage(changedRecords);
-        window.commonNotificationHandler('Saved data. You may have unpublished changes', 'success');
+        window.dataAdapter.updatePreviewCoverage(changedRecords)
+          .then(function()***REMOVED***
+            window.commonNotificationHandler('Saved data. You may have unpublished changes', 'success');
+          ***REMOVED***);
         return;
       ***REMOVED***
-
-      window.dataAdapter.updateCoverage(changedRecords, afterSave);
-      window.commonNotificationHandler('Published data.', 'success');
+      window.dataAdapter.updateCoverage(changedRecords)
+        .then(function()***REMOVED***
+          afterSave();
+          window.commonNotificationHandler('Published data.', 'success');
+        ***REMOVED***);
     ***REMOVED***;
 
     if(isPreview)***REMOVED***
-      window.dataAdapter.getPreviewCoverage(handleChanges);
+      window.dataAdapter.getPreviewCoverage().then(handleChanges);
     ***REMOVED*** else ***REMOVED***
-      window.dataAdapter.getCoverage(2017, handleChanges);
+      window.dataAdapter.getCoverage(2017).then(handleChanges);
     ***REMOVED***
   ***REMOVED***;
 
