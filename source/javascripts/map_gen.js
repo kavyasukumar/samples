@@ -132,6 +132,7 @@
   ***REMOVED***
 
   function drawMap(data)***REMOVED***
+    d3.select('#loading-animation').style('display', 'none');
     console.log('draw map!');
     if(formData === oldFormData)***REMOVED***
       return;
@@ -272,9 +273,6 @@
           ***REMOVED***
           if(formData['map_type'] === 'state')***REMOVED***
             tester = topojson.feature(us, us.objects.states).features[_.indexOf(stateIdx, formData['state_select'])];
-            // if(formData['state_select'] === 'AK')***REMOVED***
-            //   tester = topojson.feature(us, us.objects.states).features[51];
-            // ***REMOVED***
             d3.selectAll('.counties').attr('stroke', 'none').attr('fill', 'none');
             clicked();
           ***REMOVED*** else ***REMOVED***
@@ -312,6 +310,7 @@
     formData.select_year = '2017';
     currentYear = formData.select_year;
     if(formData['scenario'] && formData['scenario'] === 'hypothetical')***REMOVED***
+      d3.select('#loading-animation').style('display', 'block');
       window.dataAdapter.getPreviewProviderCount()
         .then(drawMap)
         .catch(function(err)***REMOVED***
