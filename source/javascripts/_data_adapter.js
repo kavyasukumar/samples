@@ -291,8 +291,9 @@ var DataAdapter = (function() ***REMOVED***
             for (var i in responses[0]) ***REMOVED***
               var response = responses[0][i];
               unifiedResp.push(response.body.data);
-              if (response.headers.ETag > currLastMod) ***REMOVED***
-                currLastMod = response.headers.ETag;
+              var myLastMod = response.headers.ETag.replace(/"/g,"");
+              if (myLastMod > currLastMod) ***REMOVED***
+                currLastMod = myLastMod;
                 setLocalData(dataKey + '-last_modified', currLastMod);
               ***REMOVED***
             ***REMOVED***
@@ -306,7 +307,7 @@ var DataAdapter = (function() ***REMOVED***
           ***REMOVED***
         ***REMOVED***;
 
-        for (i = 0; i < records.length; i += chunk) ***REMOVED***
+        for (var i = 0; i < records.length; i += chunk) ***REMOVED***
           subset = records.slice(i, i + chunk);
           promises.push(collection.batch(batchUpdateFx));
           if (i >= records.length - chunk) ***REMOVED***
