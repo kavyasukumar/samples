@@ -33,8 +33,22 @@
     disableSaveButton(state);
   ***REMOVED***;
 
+  var showLoadingSplash = function(msg)***REMOVED***
+    $('#provider-dash').fadeOut(500, function()***REMOVED***
+      $('#load-msg').html(msg);
+      $('#loading-animation').show();
+    ***REMOVED***);
+  ***REMOVED***;
+
+  var hideLoadingSplash = function(msg)***REMOVED***
+    $('#loading-animation').fadeOut(500, function()***REMOVED***
+      $('#provider-dash').show();
+    ***REMOVED***);
+  ***REMOVED***;
+
   var afterSave = function()***REMOVED***
     $('a.submit').text('Save & Publish');
+    hideLoadingSplash();
   ***REMOVED***;
 
   var saveChanges = function(isPreview)***REMOVED***
@@ -86,7 +100,8 @@
     ***REMOVED***
     var preview = $(this).hasClass('preview');
     if(!preview)***REMOVED***
-      $('a.submit').text('publising...');
+      showLoadingSplash('Publishing changes...');
+      $('a.submit').text('publishing...');
       disableButtons(true);
     ***REMOVED*** else ***REMOVED***
       disablePreviewButton(true);
@@ -96,6 +111,7 @@
 
   var handleDataFetch = function (response) ***REMOVED***
     console.log('refreshing display...');
+    hideLoadingSplash();
       var byProvider = _.chain(response)
 	                  .groupBy(function(resp)***REMOVED*** return resp.provider_name; ***REMOVED***)
                     .each(function(val, key, list)***REMOVED***
