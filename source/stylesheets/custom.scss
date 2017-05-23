@@ -141,3 +141,76 @@ button ***REMOVED***
   stroke-linecap: round;
   stroke-linejoin: round;
 ***REMOVED***
+
+#loading-animation***REMOVED***
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 275px auto;
+  height: 100px;
+  .animation-container***REMOVED***
+    width: 70px;
+  ***REMOVED***
+  span***REMOVED***
+    font-size: 40px;
+  ***REMOVED***
+***REMOVED***
+
+.loader,
+.loader:before,
+.loader:after ***REMOVED***
+  background: $body-font-color;
+  -webkit-animation: load1 1.5s infinite ease-in-out;
+  animation: load1 1.5s infinite ease-in-out;
+  width: 1em;
+  height: 4em;
+***REMOVED***
+.loader ***REMOVED***
+  color: $body-font-color;
+  text-indent: -9999em;
+  position: relative;
+  font-size: 11px;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+***REMOVED***
+.loader:before,
+.loader:after ***REMOVED***
+  position: absolute;
+  top: 0;
+  content: '';
+***REMOVED***
+.loader:before ***REMOVED***
+  left: -1.75em;
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+***REMOVED***
+.loader:after ***REMOVED***
+  left: 1.75em;
+***REMOVED***
+@-webkit-keyframes load1 ***REMOVED***
+  0%,
+  80%,
+  100% ***REMOVED***
+    box-shadow: 0 0;
+    height: 4em;
+  ***REMOVED***
+  40% ***REMOVED***
+    box-shadow: 0 -2em;
+    height: 5em;
+  ***REMOVED***
+***REMOVED***
+@keyframes load1 ***REMOVED***
+  0%,
+  80%,
+  100% ***REMOVED***
+    box-shadow: 0 0;
+    height: 4em;
+  ***REMOVED***
+  40% ***REMOVED***
+    box-shadow: 0 -2em;
+    height: 5em;
+  ***REMOVED***
+***REMOVED***
