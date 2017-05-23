@@ -141,7 +141,7 @@ var DataAdapter = (function() ***REMOVED***
           _kintoBucket.collection(dataKey).getTotalRecords()
             .then(function(serverCount) ***REMOVED***
               serverTotal = serverCount;
-              countObjects(dataKey, function(count) ***REMOVED***
+              countObjects(dataKey).then(function(count) ***REMOVED***
                 var clientTotal = count;
                 if (serverTotal !== clientTotal) ***REMOVED***
                   resolve(true);
@@ -184,6 +184,7 @@ var DataAdapter = (function() ***REMOVED***
     _instance.getCoverage = function(year) ***REMOVED***
       return new Promise(function(resolve, reject) ***REMOVED***
         try ***REMOVED***
+          debugger;
           var dataKey = 'coverage-' + year;
 
           hasUpdates(dataKey).then(function(update) ***REMOVED***
@@ -300,48 +301,76 @@ var DataAdapter = (function() ***REMOVED***
     ***REMOVED***
   ***REMOVED***;
 
-  _instance.getProviderCount = function(year, callBackFunction) ***REMOVED***
-    this.getCoverage(year, function(coverage) ***REMOVED***
-      var response;
-      if (year === 2017) ***REMOVED***
-        response = _.chain(coverage)
-          .where(***REMOVED***
-            is_active: true
-          ***REMOVED***)
-          .countBy(function(item) ***REMOVED***
-            return item.fips_code;
-          ***REMOVED***)
-          .value();
-      ***REMOVED*** else ***REMOVED***
-        response = _.chain(coverage)
-          .countBy(function(item) ***REMOVED***
-            return item.fips_code;
-          ***REMOVED***)
-          .value();
-      ***REMOVED***
-      callBackFunction.call(this, response);
+  _instance.getProviderCount = function(year) ***REMOVED***
+      // promise binding needs some rethinking
+      var thisObj = this;
+      return new Promise(function(resolve, reject) ***REMOVED***
+        thisObj.getCoverage(year).then(function(coverage) ***REMOVED***
+          console.log('getting provider count...');
+          var response;
+          if (year === 2017) ***REMOVED***
+            response = _.chain(coverage)
+              .where(***REMOVED***
+                is_active: true
+              ***REMOVED***)
+              .countBy(function(item) ***REMOVED***
+                return item.fips_code;
+              ***REMOVED***)
+              .value();
+          ***REMOVED*** else ***REMOVED***
+            response = _.chain(coverage)
+              .countBy(function(item) ***REMOVED***
+                return item.fips_code;
+              ***REMOVED***)
+              .value();
+          ***REMOVED***
+          resolve(response);
+        ***REMOVED***).catch(function(err)***REMOVED***
+          handleErr(err);
+          reject(err);
+        ***REMOVED***);
     ***REMOVED***);
   ***REMOVED***;
 
-  _instance.getPreviewProviderCount = function(callBackFunction) ***REMOVED***
-    var rollupFx = function(coverage) ***REMOVED***
-      var response = _.chain(coverage)
-        .where(***REMOVED***
-          is_active: true
-        ***REMOVED***)
-        .countBy(function(item) ***REMOVED***
-          return item.fips_code;
-        ***REMOVED***)
-        .value();
-      callBackFunction.call(this, response);
-    ***REMOVED***;
-    this.getPreviewCoverage(rollupFx);
+  _instance.getPreviewProviderCount = function() ***REMOVED***
+    var thisObj = this;
+    return new Promise(function(resolve, reject)***REMOVED***
+      var rollupFx = function(coverage) ***REMOVED***
+        try***REMOVED***
+          var response = _.chain(coverage)
+            .where(***REMOVED***
+              is_active: true
+            ***REMOVED***)
+            .countBy(function(item) ***REMOVED***
+              return item.fips_code;
+            ***REMOVED***)
+            .value();
+          resolve(response);
+        ***REMOVED*** catch (err)***REMOVED***
+          handleErr(err);
+          reject(err);
+        ***REMOVED***
+      ***REMOVED***;
+      thisObj.getPreviewCoverage()
+        .then(rollupFx)
+        .catch(function(err)***REMOVED***
+          handleErr(err);
+          reject(err);
+        ***REMOVED***);
+    ***REMOVED***);
   ***REMOVED***;
 
   _instance.updatePreviewCoverage = function(records) ***REMOVED***
-    var dataKey = 'coverage-2017-preview';
-    getObjects(dataKey, function(response) ***REMOVED***
-      storeObjects(dataKey, mergeData(response, records));
+    return new Promise(function(resolve, reject)***REMOVED***
+      var dataKey = 'coverage-2017-preview';
+      getObjects(dataKey).then(function(response) ***REMOVED***
+        storeObjects(dataKey, mergeData(response, records)).then(function()***REMOVED***
+          resolve();
+        ***REMOVED***);
+      ***REMOVED***).catch(function(err)***REMOVED***
+        handleErr(err);
+        reject(err);
+      ***REMOVED***);
     ***REMOVED***);
   ***REMOVED***;
 
@@ -351,18 +380,36 @@ var DataAdapter = (function() ***REMOVED***
         if (!response.length) ***REMOVED***
           this.dataAdapter.getCoverage(2017).then(function(resp)***REMOVED***
             resolve(resp);
+          ***REMOVED***).catch(function(err)***REMOVED***
+            handleErr(err);
+            reject(err);
           ***REMOVED***);
           return;
         ***REMOVED***
         resolve(response);
+      ***REMOVED***).catch(function(err)***REMOVED***
+        handleErr(err);
+        reject(err);
       ***REMOVED***);
     ***REMOVED***);
   ***REMOVED***;
 
-  _instance.discardPreviewChanges = function(callBackFunction) ***REMOVED***
-    getObjects('coverage-2017', function(response) ***REMOVED***
-      storeObjects('coverage-2017-preview', response, callBackFunction);
+  _instance.discardPreviewChanges = function() ***REMOVED***
+    return new Promise(function(resolve, reject)***REMOVED***
+    getObjects('coverage-2017').then(function(response) ***REMOVED***
+      storeObjects('coverage-2017-preview', response)
+        .then(function()***REMOVED***
+          resolve();
+        ***REMOVED***)
+        .catch(function(err)***REMOVED***
+          handleErr(err);
+          reject(err);
+        ***REMOVED***);
+    ***REMOVED***).catch(function(err)***REMOVED***
+      handleErr(err);
+      reject(err);
     ***REMOVED***);
+  ***REMOVED***);
   ***REMOVED***;
 
   _instance.ready = function() ***REMOVED***

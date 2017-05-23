@@ -135,10 +135,11 @@
 
   var discardChanges = function()***REMOVED***
     $('#provider-dash').hide();
-    window.dataAdapter.discardPreviewChanges(function()***REMOVED***
-      window.commonNotificationHandler('Unpublished changes have been deleted', 'info');
-      window.dataAdapter.getPreviewCoverage(handleDataFetch);
-    ***REMOVED***);
+    window.dataAdapter.discardPreviewChanges()
+      .then(function()***REMOVED***
+        window.commonNotificationHandler('Unpublished changes have been deleted', 'info');
+        window.dataAdapter.getPreviewCoverage().then(handleDataFetch);
+      ***REMOVED***);
   ***REMOVED***;
 
   var filterResults = function()***REMOVED***
