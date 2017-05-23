@@ -180,10 +180,11 @@
 
   $(document).ready(function() ***REMOVED***
     window.dataAdapter = window.dataAdapter || DataAdapter.getInstance();
-    window.dataAdapter.ready(function()***REMOVED***
-      console.log('database is ready');
-      window.dataAdapter.getPreviewCoverage(handleDataFetch);
-    ***REMOVED***);
+    window.dataAdapter.ready()
+      .then(function()***REMOVED***
+        console.log('database is ready');
+        window.dataAdapter.getPreviewCoverage().then(handleDataFetch);
+      ***REMOVED***);
     wireOneTimeEvents();
   ***REMOVED***);
 ***REMOVED***)();
