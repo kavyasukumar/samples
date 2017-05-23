@@ -186,73 +186,77 @@ var DataAdapter = (function() ***REMOVED***
         try ***REMOVED***
           var dataKey = 'coverage-' + year;
 
-          hasUpdates(dataKey, function(update) ***REMOVED***
+          hasUpdates(dataKey).then(function(update) ***REMOVED***
             if (!update) ***REMOVED***
               console.log('data exists');
-              getObjects(dataKey, function(resp) ***REMOVED***
-                if (year !== 2017) ***REMOVED***
-                  Promise.resolve(resp);
+              getObjects(dataKey).then(function(resp) ***REMOVED***
+                if (year === 2017) ***REMOVED***
+                countObjects(dataKey + '-preview')
+                  .then(function(count) ***REMOVED***
+                    if (count === 0) ***REMOVED***
+                      console.log('Storing data in preview');
+                      storeObjects(dataKey + '-preview', resp);
+                    ***REMOVED***
+                  ***REMOVED***);
                 ***REMOVED***
-                countObjects(dataKey + '-preview', function(count) ***REMOVED***
-                  console.log(count);
-                  if (count === 0) ***REMOVED***
-                    storeObjects(dataKey + '-preview', resp);
-                  ***REMOVED***
-                  resolve(resp);
-                ***REMOVED***);
+                resolve(resp);
               ***REMOVED***);
               return;
             ***REMOVED***
             console.log('Refreshing data...');
             var collection = _kintoBucket.collection(dataKey);
 
-            var states = _.keys(STATE_LOOKUP);
+            var states = _.keys(STATE_LOOKUP),
+                promises = [];
 
-            var handleKintoResp = function(response, index) ***REMOVED***
+            var handleKintoResp = function(responses) ***REMOVED***
+              var currLastMod = getLocalData(dataKey + '-last_modified'),
+                  unifiedResp = [];
+              for (var i in responses)***REMOVED***
+                var response = responses[i];
+                unifiedResp = _.union(unifiedResp, response.data);
+                storeObjects(dataKey, response.data);
 
-              storeObjects(dataKey, response.data);
+                if (year === 2017) ***REMOVED***
+                  storeObjects(dataKey + '-preview', response.data);
+                ***REMOVED***
 
-              var currLastMod = getLocalData(dataKey + '-last_modified');
-              if (response.last_modified > currLastMod) ***REMOVED***
-                setLocalData(dataKey + '-last_modified', response.last_modified);
+                if (response.last_modified > currLastMod) ***REMOVED***
+                  currLastMod = response.last_modified
+                  setLocalData(dataKey + '-last_modified', currLastMod);
+                ***REMOVED***
               ***REMOVED***
-              if (year === 2017) ***REMOVED***
-                storeObjects(dataKey + '-preview', response.data);
-              ***REMOVED***
-              if (parseInt(index) === states.length - 1) ***REMOVED***
-                console.log('going to resolve');
-                resolve(response.data);
-              ***REMOVED***
-            ***REMOVED***;
-
-            var getRecords = function(ind) ***REMOVED***
-              collection.listRecords(***REMOVED***
-                filters: ***REMOVED***
-                  state: states[ind]
-                ***REMOVED***,
-                limit: 1000,
-                pages: Infinity,
-                retry: 4
-              ***REMOVED***).then(function(resp) ***REMOVED***
-                handleKintoResp(resp, ind);
-              ***REMOVED***).catch(function(err) ***REMOVED***
-                handleErr(err);
-                reject(err);
-              ***REMOVED***);
-            ***REMOVED***;
+              resolve(unifiedResp);
+            ***REMOVED***
 
             var fetchState = function(ind) ***REMOVED***
               setTimeout(function() ***REMOVED***
-                getRecords(ind);
-              ***REMOVED***, ind * 500);
+                promises.push(collection.listRecords(***REMOVED***
+                  filters: ***REMOVED***
+                    state: states[ind]
+                  ***REMOVED***,
+                  limit: 1000,
+                  pages: Infinity,
+                  retry: 4
+                ***REMOVED***));
+                if(parseInt(ind) === states.length - 1)***REMOVED***
+                  Promise.all(promises)
+                    .then(handleKintoResp)
+                    .catch(function(err) ***REMOVED***
+                      handleErr(err);
+                      reject(err);
+                    ***REMOVED***);
+                ***REMOVED***
+              ***REMOVED***, ind * 300);
             ***REMOVED***;
+
             for (var i in states) ***REMOVED***
               fetchState(i);
             ***REMOVED***
           ***REMOVED***);
-        ***REMOVED*** catch (ex) ***REMOVED***
-          console.log('error');
-          reject(ex);
+        ***REMOVED*** catch (err) ***REMOVED***
+          handleErr(err);
+          reject(err);
         ***REMOVED***
       ***REMOVED***);
     ***REMOVED***;
@@ -343,7 +347,7 @@ var DataAdapter = (function() ***REMOVED***
 
   _instance.getPreviewCoverage = function() ***REMOVED***
     return new Promise(function(resolve, reject)***REMOVED***
-      getObjects('coverage-2017-preview', function(response) ***REMOVED***
+      getObjects('coverage-2017-preview').then(function(response) ***REMOVED***
         if (!response.length) ***REMOVED***
           this.dataAdapter.getCoverage(2017).then(function(resp)***REMOVED***
             resolve(resp);
