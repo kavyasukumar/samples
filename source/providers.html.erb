@@ -2,36 +2,8 @@
 <%=partial 'partials/nav' %>
 <article class="article" role="article">
   <div class="alertHolder"></div>
-  <section id="intro" class="row">
-    <h2>Update coverage data</h2>
-    <p>
-      Use the toggles below to update coverage at the state or county level.
-    </p>
-    <p>
-      To update coverage temporarily to generate map previews, click save button and go to the maps page. Make sure to discard the changes once it is no longer needed.
-    </p>
-    <p>
-      If you wish to make the changes permanent, click the publish button.
-    </p>
-  </section>
-  <section id='controls'>
-    <div class="row">
-      <select id="stateSelector" class="large-6 columns">
-        <option default value="allstates">All states</option>
-        <% data.state_lookup.each do |state, name| %>
-        <option value="<%= state.parameterize %>"><%= name %></option>
-        <% end %>
-      </select>
-      <div id="searchDiv" class="large-6 columns">
-        <input class="search" type="text" placeholder="Filter by provider name">
-      </div>
-    </div>
-    <div class="row">
-      <a href="#" class="large-3 columns button right submit disabled">Save & Publish</a>
-      <a href="#" class="button right preview disabled">Save</a>
-      <a href="#" class="left discard">Discard unpublished changes</a>
-    </div>
-  </section>
+  <%=partial 'partials/provider-intro' %>
+  <%=partial 'partials/provider-controls' %>
   <section id="provider-dash" class="body"></section>
   <%=partial 'partials/loader' %>
 </article>
