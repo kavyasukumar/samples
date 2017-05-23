@@ -91,7 +91,7 @@ var DataAdapter = (function() ***REMOVED***
     ***REMOVED***);
   ***REMOVED***;
 
-  var countObjects = function(storeName, callBackFunction) ***REMOVED***
+  var countObjects = function(storeName) ***REMOVED***
     return new Promise(function(resolve,reject)***REMOVED***
       var objectStore = getObjectStore(storeName, 'readonly');
       var req = objectStore.count();
@@ -118,44 +118,44 @@ var DataAdapter = (function() ***REMOVED***
   ***REMOVED***;
 
   // Data helpers
-  var hasUpdates = function(dataKey, callBackFunction) ***REMOVED***
-    // var lastChecked = getLocalData(dataKey + '-lastCheck');
-    // var currTime = Date.now();
-    // if(currTime - lastChecked < 60000)***REMOVED***
-    //     callBackFunction.call(this, false);
-    //     return;
-    // ***REMOVED***
-    var localLastMod = getLocalData(dataKey + '-last_modified');
+  var hasUpdates = function(dataKey) ***REMOVED***
+    return new Promise(function(resolve, reject) ***REMOVED***
+      var localLastMod = getLocalData(dataKey + '-last_modified');
 
-    if (!localLastMod) ***REMOVED***
-      callBackFunction.call(this, true);
-      return;
-    ***REMOVED***
-
-    var serverLastMod = null,
-      serverTotal = 0;
-
-    _kintoBucket.collection(dataKey).listRecords(***REMOVED***
-      since: localLastMod.toString(),
-      limit: 1
-    ***REMOVED***).then(function(resp) ***REMOVED***
-      serverLastMod = resp.last_modified;
-      if (serverLastMod > localLastMod) ***REMOVED***
-        callBackFunction.call(this, true);
-      ***REMOVED*** else ***REMOVED***
-        _kintoBucket.collection(dataKey).getTotalRecords()
-          .then(function(serverCount) ***REMOVED***
-            serverTotal = serverCount;
-            countObjects(dataKey, function(count) ***REMOVED***
-              var clientTotal = count;
-              if (serverTotal !== clientTotal) ***REMOVED***
-                callBackFunction.call(this, true);
-              ***REMOVED*** else ***REMOVED***
-                callBackFunction.call(this, false);
-              ***REMOVED***
-            ***REMOVED***);
-          ***REMOVED***);
+      if (!localLastMod) ***REMOVED***
+        resolve(true);
+        return;
       ***REMOVED***
+
+      var serverLastMod = null,
+        serverTotal = 0;
+
+      _kintoBucket.collection(dataKey).listRecords(***REMOVED***
+        since: localLastMod.toString(),
+        limit: 1
+      ***REMOVED***).then(function(resp) ***REMOVED***
+        serverLastMod = resp.last_modified;
+        if (serverLastMod > localLastMod) ***REMOVED***
+          resolve(true);
+        ***REMOVED*** else ***REMOVED***
+          _kintoBucket.collection(dataKey).getTotalRecords()
+            .then(function(serverCount) ***REMOVED***
+              serverTotal = serverCount;
+              countObjects(dataKey, function(count) ***REMOVED***
+                var clientTotal = count;
+                if (serverTotal !== clientTotal) ***REMOVED***
+                  resolve(true);
+                ***REMOVED*** else ***REMOVED***
+                  resolve(false);
+                ***REMOVED***
+              ***REMOVED***);
+            ***REMOVED***).catch(function(err)***REMOVED***
+              reject(err);
+            ***REMOVED***);
+        ***REMOVED***
+      ***REMOVED***).catch(function(err)***REMOVED***
+        reject(err);
+      ***REMOVED***);
     ***REMOVED***);
   ***REMOVED***;
 
@@ -185,6 +185,7 @@ var DataAdapter = (function() ***REMOVED***
       return new Promise(function(resolve, reject) ***REMOVED***
         try ***REMOVED***
           var dataKey = 'coverage-' + year;
+
           hasUpdates(dataKey, function(update) ***REMOVED***
             if (!update) ***REMOVED***
               console.log('data exists');
