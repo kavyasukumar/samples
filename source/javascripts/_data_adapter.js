@@ -18,7 +18,7 @@ var DataAdapter = (function() ***REMOVED***
 
   // indexedDB helpers
   var openDb = function() ***REMOVED***
-  return new Promise(function(resolve, reject) ***REMOVED***
+    return new Promise(function(resolve, reject) ***REMOVED***
       console.log("opening indexed DB...");
       var req = window.indexedDB.open(DB_NAME, DB_VERSION);
       req.onsuccess = function(evt) ***REMOVED***
@@ -47,62 +47,61 @@ var DataAdapter = (function() ***REMOVED***
     return tx.objectStore(storeName);
   ***REMOVED***;
 
-  var storeObjects = function(storeName, objects, callBackFunction) ***REMOVED***
-    var objectStore = getObjectStore(storeName, 'readwrite'),
-      count = 0,
-      total = objects.length;
+  var storeObject = function(store, obj)***REMOVED***
+    return new Promise(function(resolve, reject)***REMOVED***
+      var req = store.put(obj);
 
-    var succesHandler = function() ***REMOVED***
-      count++;
-      if (count >= total && callBackFunction) ***REMOVED***
-        callBackFunction.call(this);
+      req.onsuccess = function()***REMOVED***
+        resolve();
+      ***REMOVED***;
+
+      req.onerror = function(error)***REMOVED***
+        reject(error);
+      ***REMOVED***;
+    ***REMOVED***);
+  ***REMOVED***;
+
+  var storeObjects = function(storeName, objects) ***REMOVED***
+    return new Promise(function(resolve,reject)***REMOVED***
+      var objectStore = getObjectStore(storeName, 'readwrite'),
+          promises = [];
+
+      for (var i in objects) ***REMOVED***
+        promises.push(storeObject(objectStore, objects[i]));
       ***REMOVED***
-    ***REMOVED***;
 
-    for (var i in objects) ***REMOVED***
-      var request = objectStore.put(objects[i]);
-      request.onsuccess = succesHandler;
-    ***REMOVED***
+      Promise.all(promises).then(function()***REMOVED***
+        resolve();
+      ***REMOVED***).catch(function(error)***REMOVED***
+        reject(error);
+      ***REMOVED***);
+    ***REMOVED***);
   ***REMOVED***;
 
-  var getObjects = function(storeName, success_callback) ***REMOVED***
-    var objectStore = getObjectStore(storeName, 'readonly');
-    var req = objectStore.getAll();
-    req.onsuccess = function(evt) ***REMOVED***
-      success_callback(evt.target.result);
-    ***REMOVED***;
-  ***REMOVED***;
-
-  var clearObjects = function(storeName, callBackFunction) ***REMOVED***
-    // open a read/write db transaction, ready for clearing the data
-    var transaction = db.transaction([storeName], "readwrite");
-
-    transaction.onerror = function(event) ***REMOVED***
-      console.log(event);
-    ***REMOVED***;
-
-    // create an object store on the transaction
-    var objectStore = transaction.objectStore(storeName);
-
-    // clear all the data out of the object store
-    var objectStoreRequest = objectStore.clear();
-    objectStoreRequest.onsuccess = function() ***REMOVED***
-      callBackFunction();
-    ***REMOVED***;
-  ***REMOVED***;
-
-  var replaceObjects = function(storeName, objects, callBackFunction) ***REMOVED***
-    clearObjects(storeName, function() ***REMOVED***
-      storeObjects(storeName, objects, callBackFunction);
+  var getObjects = function(storeName) ***REMOVED***
+    return new Promise(function(resolve,reject)***REMOVED***
+      var objectStore = getObjectStore(storeName, 'readonly');
+      var req = objectStore.getAll();
+      req.onsuccess = function(evt) ***REMOVED***
+        resolve(evt.target.result);
+      ***REMOVED***;
+      req.onerror = function(err)***REMOVED***
+        resolve(err);
+      ***REMOVED***;
     ***REMOVED***);
   ***REMOVED***;
 
   var countObjects = function(storeName, callBackFunction) ***REMOVED***
-    var objectStore = getObjectStore(storeName, 'readonly');
-    var req = objectStore.count();
-    req.onsuccess = function(evt) ***REMOVED***
-      callBackFunction.call(this, evt.target.result);
-    ***REMOVED***;
+    return new Promise(function(resolve,reject)***REMOVED***
+      var objectStore = getObjectStore(storeName, 'readonly');
+      var req = objectStore.count();
+      req.onsuccess = function(evt) ***REMOVED***
+        resolve(evt.target.result);
+      ***REMOVED***;
+      req.onerror = function(err)***REMOVED***
+        resolve(err);
+      ***REMOVED***;
+    ***REMOVED***);
   ***REMOVED***;
 
   // localStorage helpers
@@ -196,7 +195,7 @@ var DataAdapter = (function() ***REMOVED***
                 countObjects(dataKey + '-preview', function(count) ***REMOVED***
                   console.log(count);
                   if (count === 0) ***REMOVED***
-                    replaceObjects(dataKey + '-preview', resp);
+                    storeObjects(dataKey + '-preview', resp);
                   ***REMOVED***
                   resolve(resp);
                 ***REMOVED***);
@@ -281,8 +280,8 @@ var DataAdapter = (function() ***REMOVED***
       var dataKey = 'coverage-2017';
       processedCount += chunk;
       if (processedCount >= recordCount) ***REMOVED***
-        replaceObjects(dataKey, response.data);
-        replaceObjects(dataKey + '-preview', response.data);
+        storeObjects(dataKey, response.data);
+        storeObjects(dataKey + '-preview', response.data);
         setLocalData(dataKey + '-last_modified', response.last_modified);
         callBackFunction.call(this);
       ***REMOVED***
@@ -357,7 +356,7 @@ var DataAdapter = (function() ***REMOVED***
 
   _instance.discardPreviewChanges = function(callBackFunction) ***REMOVED***
     getObjects('coverage-2017', function(response) ***REMOVED***
-      replaceObjects('coverage-2017-preview', response, callBackFunction);
+      storeObjects('coverage-2017-preview', response, callBackFunction);
     ***REMOVED***);
   ***REMOVED***;
 
