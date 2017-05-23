@@ -185,11 +185,21 @@
     $('.table-' + selectedState).removeClass('hide');
   ***REMOVED***;
 
+  var scrollHandler = function()***REMOVED***
+    if ($(window).scrollTop() > $('#provider-dash').offset().top) ***REMOVED***
+        var left = $('.accordion').offset().left +'px';
+        $('#buttonBar').addClass('sticky').css('left',left);
+      ***REMOVED*** else ***REMOVED***
+        $('#buttonBar').removeClass('sticky');
+      ***REMOVED***
+  ***REMOVED***;
+
   var wireOneTimeEvents = function()***REMOVED***
     $('a.submit').on('click', beforeSave);
     $('a.preview').on('click', beforeSave);
     $('a.discard').on('click', discardChanges);
     $('#stateSelector').on('change', filterState);
+    $(window).scroll(_.throttle(scrollHandler, 200));
   ***REMOVED***;
 
   wireEvents = function()***REMOVED***
@@ -207,5 +217,6 @@
         window.dataAdapter.getPreviewCoverage().then(handleDataFetch);
       ***REMOVED***);
     wireOneTimeEvents();
+    scrollHandler();
   ***REMOVED***);
 ***REMOVED***)();
