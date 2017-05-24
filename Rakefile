@@ -115,6 +115,8 @@ task :import_2017_coverage do
 
   uploaded = 0
   failed = 0
+  # remove all providers not on market
+  insurance_hash.select! ***REMOVED***|h| h['market'] == 'on_market'***REMOVED***
   insurance_hash.each_slice(100) do |row_group|
     batch_req = kinto_client.create_batch_request
     row_group.each do |row|
