@@ -254,7 +254,7 @@
             ***REMOVED***)
             .attr("d", path)
             .attr("stroke", function(d)***REMOVED***
-              if(d.count)***REMOVED*** return '#fff'; ***REMOVED***
+              if(d.count || _.contains(stf, String(d.id)))***REMOVED*** return '#fff'; ***REMOVED***
             ***REMOVED***)
             .attr('stroke-width', '0.5px')
           .append("title")
