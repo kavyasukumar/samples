@@ -56,11 +56,20 @@ nav ***REMOVED***
 
 button ***REMOVED***
   background-color: $gray;
-  // color: $white;
   color: $dark;
   border-radius: 3px;
   padding: 10px;
-  margin: 20px 20px 0 0;
+  margin: 20px 5px 0 0;
+  &:hover***REMOVED***
+    background-color: darken($gray, 4%);
+    color: #222222;
+  ***REMOVED***
+  &#form-submit***REMOVED***
+    background-color: #5996AD;
+    &:hover***REMOVED***
+      background-color: darken(#5996AD, 4%);
+    ***REMOVED***
+  ***REMOVED***
 ***REMOVED***
 
 .alpaca-field-radio ***REMOVED***
@@ -72,6 +81,9 @@ button ***REMOVED***
   width: 50%;
   background-color: #EFEFEF;
   overflow: auto;
+  &:hover***REMOVED***
+    background-color: darken(#EFEFEF, 4%);
+  ***REMOVED***
 ***REMOVED***
 
 .radio.alpaca-control label span ***REMOVED***
@@ -95,9 +107,8 @@ button ***REMOVED***
 ***REMOVED***
 
 .radio.alpaca-control input:checked + span ***REMOVED***
-  background-color: $gray;
+  background-color: #ccc;
   border: 1px solid $gray;
-  // color:#F7F7F7;
 ***REMOVED***
 
 .form-group ***REMOVED***
