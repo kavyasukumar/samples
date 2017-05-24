@@ -26,6 +26,29 @@
 $dark: #222222;
 $gray: #999999;
 
+nav.tab-bar***REMOVED***
+  h1, h4***REMOVED***
+    font-weight: normal;
+  ***REMOVED***
+  ul li***REMOVED***
+    padding: 0 20px;
+    border-left: 1px solid transparentize($white, .7);
+    margin: 0px;
+    height: 45px;
+    &:first-of-type***REMOVED***
+      margin-right: -4px;
+    ***REMOVED***
+    &.active***REMOVED***
+      -webkit-box-shadow: inset 0px -5px 0px 0px #4f7177;
+      -moz-box-shadow: inset 0px -5px 0px 0px #4f7177;
+      box-shadow: inset 0px -5px 0px 0px #4f7177;
+      h4***REMOVED***
+        font-weight: bold;
+      ***REMOVED***
+    ***REMOVED***
+  ***REMOVED***
+***REMOVED***
+
 #svg-map ***REMOVED***
   margin: 20px 0;
 ***REMOVED***
