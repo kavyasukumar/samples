@@ -38,10 +38,11 @@
 
   svg.on("click", stopped, true);
 
-  var myColors = ['#fff200', '#ddd', '#bed8e9', '#8cafcd', '#5a87b2', '#5a87b2', '#5a87b2', '#5a87b2', '#285f96', '#285f96', '#00377b', '#00377b', '#00377b', '#00377b', '#00377b'];
+  // var myColors = ['#fff200', '#ddd', '#bed8e9', '#8cafcd', '#5a87b2', '#5a87b2', '#5a87b2', '#5a87b2', '#285f96', '#285f96', '#00377b', '#00377b', '#00377b', '#00377b', '#00377b'];
+  var myColors = ['#fff200', '#ddd', '#bed8e9', '#8cafcd', '#5a87b2', '#5a87b2', '#285f96', '#285f96', '#00377b', '#00377b'];
 
   var color = d3.scaleOrdinal()
-      .domain(d3.range(0, 15))
+      .domain(d3.range(0, 9))
       .range(myColors);
 
 
@@ -67,23 +68,27 @@
         .text("Number of ACA insurers available");
 
       g.selectAll("text")
-        .data([0, 0, 1, 2, 3, 4, 8, 10, 15])
+        .data([0, 0, 1, 2, 3, 4, 6, 8, 10])
         .enter().append("text")
         .attr("x", function(d, i) ***REMOVED*** return d*59; ***REMOVED***)
         .attr("y", 45)
         .attr("fill", "#4c4e4d")
+        .attr('class', 'value')
         .attr("text-anchor", "middle")
         .attr('font-size', '20px')
         .attr('font-family', 'Nitti')
         .text(function(d) ***REMOVED*** return d; ***REMOVED***);
 
       g.selectAll("line")
-        .data([0, 1, 2, 3, 4, 8, 10, 15])
+        .data([0, 1, 2, 3, 4, 6, 8, 10])
         .enter().append("line")
         .attr("x1", function(d, i) ***REMOVED*** return d*59; ***REMOVED***)
         .attr("x2", function(d, i) ***REMOVED*** return d*59; ***REMOVED***)
         .attr("y1", 0)
         .attr("y2", 28)
+        .attr('value', function(d)***REMOVED***
+          return d;
+        ***REMOVED***)
         .attr('stroke', '#999')
         .attr('width', "1px");
 
@@ -99,8 +104,6 @@
         zoomLevel = zoomLevels[formData['state_select']] || 0.6,
         scale = Math.max(1, Math.min(15, zoomLevel / Math.max(dx / width, dy / height))),
         translate = [width / 2 - scale * x, height / 2 - scale * y];
-
-        console.log(_.keys(zoomLevels).length, zoomLevel);
 
     var transform = d3.zoomIdentity
       .translate(translate[0], translate[1])
@@ -211,6 +214,8 @@
           .defer(d3.json, "https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/us.json")
           .await(ready);
 
+      var largest = 0;
+
       function ready(error, us) ***REMOVED***
         console.log('ready');
         var tj = topojson.feature(us, us.objects.counties).features;
@@ -231,6 +236,9 @@
               ***REMOVED***
               if(formData['map_type'] === 'state')***REMOVED***
                 if(_.contains(stf, String(d.id)))***REMOVED***
+                  if(data[d.id] > largest)***REMOVED***
+                    largest = data[d.id];
+                  ***REMOVED***
                   if(color(d.count = data[d.id]))***REMOVED***
                     tFill = color(d.count = data[d.id]);
                   ***REMOVED*** else ***REMOVED***
@@ -240,6 +248,9 @@
                   tFill = 'none';
                 ***REMOVED***
               ***REMOVED*** else ***REMOVED***
+                if(data[d.id] > largest)***REMOVED***
+                  largest = data[d.id];
+                ***REMOVED***
                 if(color(d.count = data[d.id]))***REMOVED***
                   tFill = color(d.count = data[d.id]);
                 ***REMOVED*** else ***REMOVED***
@@ -280,6 +291,21 @@
           ***REMOVED*** else ***REMOVED***
             d3.selectAll('.counties').attr('stroke', '#ccc').attr('fill', '#ccc');
           ***REMOVED***
+          $('.scale rect').each(function(i)***REMOVED***
+            if(i > largest)***REMOVED***
+              $(this).hide();
+            ***REMOVED***
+          ***REMOVED***);
+          $('.scale .value').each(function()***REMOVED***
+            if(parseInt($(this).html()) > largest+1)***REMOVED***
+              $(this).hide();
+            ***REMOVED***
+          ***REMOVED***);
+          $('.scale line').each(function(i)***REMOVED***
+            if(parseInt($(this).attr('value')) > largest+1)***REMOVED***
+              $(this).hide();
+            ***REMOVED***
+          ***REMOVED***);
         ***REMOVED***
 
         svg.append('g')
