@@ -78,6 +78,19 @@ var DataAdapter = (function() ***REMOVED***
     ***REMOVED***);
   ***REMOVED***;
 
+  var clearObjects = function(storeName) ***REMOVED***
+    return new Promise(function(resolve, reject) ***REMOVED***
+      var objectStore = getObjectStore(storeName, 'readwrite');
+      var req = objectStore.clear();
+      req.onsuccess = function(evt) ***REMOVED***
+        resolve();
+      ***REMOVED***;
+      req.onerror = function(err) ***REMOVED***
+        reject(err);
+      ***REMOVED***;
+    ***REMOVED***);
+  ***REMOVED***;
+
   var getObjects = function(storeName) ***REMOVED***
     return new Promise(function(resolve, reject) ***REMOVED***
       var objectStore = getObjectStore(storeName, 'readonly');
@@ -86,7 +99,7 @@ var DataAdapter = (function() ***REMOVED***
         resolve(evt.target.result);
       ***REMOVED***;
       req.onerror = function(err) ***REMOVED***
-        resolve(err);
+        reject(err);
       ***REMOVED***;
     ***REMOVED***);
   ***REMOVED***;
@@ -207,21 +220,24 @@ var DataAdapter = (function() ***REMOVED***
             var handleKintoResp = function(responses) ***REMOVED***
               var currLastMod = getLocalData(dataKey + '-last_modified'),
                 unifiedResp = [];
-              for (var i in responses) ***REMOVED***
-                var response = responses[i];
-                unifiedResp = _.union(unifiedResp, response.data);
-                storeObjects(dataKey, response.data);
+              clearObjects(dataKey).then(function()***REMOVED***
+                for (var i in responses) ***REMOVED***
+                  var response = responses[i];
+                  unifiedResp = _.union(unifiedResp, response.data);
+                  storeObjects(dataKey, response.data);
 
+                  if (response.last_modified > currLastMod) ***REMOVED***
+                    currLastMod = response.last_modified;
+                    setLocalData(dataKey + '-last_modified', currLastMod);
+                  ***REMOVED***
+                ***REMOVED***
                 if (year === 2017) ***REMOVED***
-                  storeObjects(dataKey + '-preview', response.data);
+                  clearObjects(dataKey + '-preview').then(function()***REMOVED***
+                    storeObjects(dataKey + '-preview', unifiedResp);
+                  ***REMOVED***);
                 ***REMOVED***
-
-                if (response.last_modified > currLastMod) ***REMOVED***
-                  currLastMod = response.last_modified;
-                  setLocalData(dataKey + '-last_modified', currLastMod);
-                ***REMOVED***
-              ***REMOVED***
-              resolve(unifiedResp);
+                resolve(unifiedResp);
+              ***REMOVED***);              
             ***REMOVED***;
 
             var fetchState = function(ind) ***REMOVED***
