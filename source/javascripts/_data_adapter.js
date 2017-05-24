@@ -134,14 +134,12 @@ var DataAdapter = (function() ***REMOVED***
         since: localLastMod.toString(),
         limit: 1
       ***REMOVED***).then(function(resp) ***REMOVED***
-        console.log('we are here?');
         serverLastMod = resp.last_modified;
         if (serverLastMod > localLastMod) ***REMOVED***
           resolve(true);
         ***REMOVED*** else ***REMOVED***
           _kintoBucket.collection(dataKey).getTotalRecords()
             .then(function(serverCount) ***REMOVED***
-              console.log('we are here?');
               serverTotal = serverCount;
               countObjects(dataKey).then(function(count) ***REMOVED***
                 var clientTotal = count;
@@ -156,7 +154,6 @@ var DataAdapter = (function() ***REMOVED***
             ***REMOVED***);
         ***REMOVED***
       ***REMOVED***).catch(function(err) ***REMOVED***
-        console.log('did we get here?');
         reject(err);
       ***REMOVED***);
     ***REMOVED***);
