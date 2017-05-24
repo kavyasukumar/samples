@@ -168,38 +168,6 @@ task :shard_election_results do
   puts "Done!"
 end
 
-desc 'Import provider colection'
-task :import_providers do
-  excel_file =  './original_data/RWJF/carriersbycounty2017.xlsx'
-  insurance_hash = excel_to_hash excel_file
-
- providers = insurance_hash.collect ***REMOVED*** |x| ***REMOVED*** 'provider_id' => x['issuer_id'],
-                                            'provider_name' => x['carrier'],
-                                            'group_name' => x['carrier'],
-                                            'group_id' => x['issuer_id'],
-                                            'state' => x['state']
-                                          ***REMOVED***
-                                    ***REMOVED***.uniq
-  bucket = kinto_bucket(datastore_config['bucket'])
-  collection = bucket.collection('provider-groups')
-
-  puts 'Deleting existing records...'
-  # need a while loop because only a 1000 records get deleted at a time
-  collection.delete_records while !collection.count_records.zero?
-
-  uploaded = 0
-  providers.each_slice(100) do |row_group|
-    batch_req = kinto_client.create_batch_request
-    row_group.each do |row|
-      batch_req.add_request(collection.create_record_request row)
-    end
-    batch_req.send
-    uploaded += row_group.count
-    print "\rUploaded #***REMOVED***uploaded***REMOVED*** of #***REMOVED***providers.count***REMOVED*** records"
-  end
-  print "\n"
-end
-
 desc 'Import coverage history'
 task :import_coverage_history do
   cont = yes?('This will delete all existing records for 2017. Continue?')
