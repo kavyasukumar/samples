@@ -12,6 +12,11 @@
       .replace(/\s/g, '-');
   ***REMOVED***;
 
+  var handleErrors = function(err)***REMOVED***
+    window.commonNotificationHandler(err, 'alert');
+    $('article').html("<p class='error row'><span>An error occurred. Try again later.</span></p>");    
+  ***REMOVED***;
+
   var disableSaveButton = function(state) ***REMOVED***
     if (state) ***REMOVED***
       $('a.submit').addClass('disabled', state);
@@ -49,10 +54,18 @@
   var afterSave = function() ***REMOVED***
     $('a.submit').text('Save & Publish');
     hideLoadingSplash();
+    disableButtons(false);
   ***REMOVED***;
 
   var saveChanges = function(isPreview) ***REMOVED***
     var changedRecords = [];
+    var postSave = function()***REMOVED***
+      afterSave();
+      var previewMsg = 'Saved data. You may have unpublished changes.',
+          pubMsg = 'Published data.',
+          msg = isPreview ? previewMsg : pubMsg;
+      window.commonNotificationHandler(msg, 'success');
+    ***REMOVED***;
     var handleChanges = function(response) ***REMOVED***
       _.each(response, function(record) ***REMOVED***
         var id = '#' + record.id,
@@ -71,43 +84,36 @@
       if (changedRecords.length === 0) ***REMOVED***
         afterSave();
         var word = isPreview ? 'save' : 'publish';
-        window.commonNotificationHandler('There are no changes to' + word, 'warning');
+        window.commonNotificationHandler('There are no changes to ' + word, 'warning');
         return;
       ***REMOVED***
 
       if (isPreview) ***REMOVED***
-        disablePreviewButton(true);
         window.dataAdapter.updatePreviewCoverage(changedRecords)
-          .then(function() ***REMOVED***
-            window.commonNotificationHandler('Saved data. You may have unpublished changes', 'success');
-          ***REMOVED***);
-        return;
-      ***REMOVED***
+          .then(postSave)
+          .catch(handleErrors);
+      ***REMOVED*** else ***REMOVED***
       window.dataAdapter.updateCoverage(changedRecords)
-        .then(function() ***REMOVED***
-          afterSave();
-          window.commonNotificationHandler('Published data.', 'success');
-        ***REMOVED***);
+        .then(postSave)
+        .catch(handleErrors);
+      ***REMOVED***
     ***REMOVED***;
 
     if (isPreview) ***REMOVED***
       window.dataAdapter.getPreviewCoverage().then(handleChanges);
     ***REMOVED*** else ***REMOVED***
-      window.dataAdapter.getCoverage(2017).then(handleChanges);
+      window.dataAdapter.getCoverage(2017)
+        .then(handleChanges)
+        .catch(handleErrors);
     ***REMOVED***
   ***REMOVED***;
 
   var beforeSave = function() ***REMOVED***
-    if ($(this).hasClass('disabled')) ***REMOVED***
-      return;
-    ***REMOVED***
     var preview = $(this).hasClass('preview');
+    disableButtons(true);
     if (!preview) ***REMOVED***
       showLoadingSplash('Publishing changes...');
       $('a.submit').text('publishing...');
-      disableButtons(true);
-    ***REMOVED*** else ***REMOVED***
-      disablePreviewButton(true);
     ***REMOVED***
     saveChanges(preview);
   ***REMOVED***;
@@ -148,7 +154,6 @@
       targetClass = '.' + id + '-input',
       val = $(this).prop('checked');
     $(targetClass).prop('checked', val);
-    disableButtons(false);
   ***REMOVED***;
 
   var handleCountyToggle = function() ***REMOVED***
@@ -160,16 +165,17 @@
       stateToggle = '#' + $(this).data('stateToggleId');
 
     $(stateToggle).prop('checked', checkedState);
-    disableButtons(false);
   ***REMOVED***;
 
   var discardChanges = function() ***REMOVED***
     $('#provider-dash').hide();
     window.dataAdapter.discardPreviewChanges()
       .then(function() ***REMOVED***
-        window.commonNotificationHandler('Unpublished changes have been deleted', 'info');
-        window.dataAdapter.getPreviewCoverage().then(handleDataFetch);
-      ***REMOVED***);
+        window.commonNotificationHandler('Unpublished changes have been deleted', 'success');
+        window.dataAdapter.getPreviewCoverage()
+          .then(handleDataFetch)
+          .catch(handleErrors);
+      ***REMOVED***).catch(handleErrors);
   ***REMOVED***;
 
   var filterResults = function() ***REMOVED***
@@ -224,8 +230,11 @@
     window.dataAdapter.ready()
       .then(function() ***REMOVED***
         console.log('database is ready');
-        window.dataAdapter.getPreviewCoverage().then(handleDataFetch);
-      ***REMOVED***);
+        window.dataAdapter.getPreviewCoverage()
+          .then(handleDataFetch)
+          .catch(handleErrors);
+        $('#controls').show();
+      ***REMOVED***).catch(handleErrors);
     wireOneTimeEvents();
     scrollHandler();
   ***REMOVED***);

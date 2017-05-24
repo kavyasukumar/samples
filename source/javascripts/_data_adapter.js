@@ -134,12 +134,14 @@ var DataAdapter = (function() ***REMOVED***
         since: localLastMod.toString(),
         limit: 1
       ***REMOVED***).then(function(resp) ***REMOVED***
+        console.log('we are here?');
         serverLastMod = resp.last_modified;
         if (serverLastMod > localLastMod) ***REMOVED***
           resolve(true);
         ***REMOVED*** else ***REMOVED***
           _kintoBucket.collection(dataKey).getTotalRecords()
             .then(function(serverCount) ***REMOVED***
+              console.log('we are here?');
               serverTotal = serverCount;
               countObjects(dataKey).then(function(count) ***REMOVED***
                 var clientTotal = count;
@@ -154,6 +156,7 @@ var DataAdapter = (function() ***REMOVED***
             ***REMOVED***);
         ***REMOVED***
       ***REMOVED***).catch(function(err) ***REMOVED***
+        console.log('did we get here?');
         reject(err);
       ***REMOVED***);
     ***REMOVED***);
@@ -167,11 +170,6 @@ var DataAdapter = (function() ***REMOVED***
       superset[idx].is_active = rec.is_active;
     ***REMOVED***);
     return superset;
-  ***REMOVED***;
-
-  var handleErr = function(error) ***REMOVED***
-    window.commonErrorHandler(error);
-    window.commonNotificationHandler(error);
   ***REMOVED***;
 
   var init = function() ***REMOVED***
@@ -243,7 +241,7 @@ var DataAdapter = (function() ***REMOVED***
                   Promise.all(promises)
                     .then(handleKintoResp)
                     .catch(function(err) ***REMOVED***
-                      handleErr(err);
+                      window.commonErrorHandler(err);
                       reject(err);
                     ***REMOVED***);
                 ***REMOVED***
@@ -253,9 +251,12 @@ var DataAdapter = (function() ***REMOVED***
             for (var i in states) ***REMOVED***
               fetchState(i);
             ***REMOVED***
+          ***REMOVED***).catch(function(err)***REMOVED***
+            window.commonErrorHandler(err);
+            reject(err);
           ***REMOVED***);
         ***REMOVED*** catch (err) ***REMOVED***
-          handleErr(err);
+          window.commonErrorHandler(err);
           reject(err);
         ***REMOVED***
       ***REMOVED***);
@@ -279,7 +280,7 @@ var DataAdapter = (function() ***REMOVED***
         ***REMOVED***;
 
         var batchErrHandle = function(err) ***REMOVED***
-          handleErr(err);
+          window.commonErrorHandler(err);
           reject(err);
         ***REMOVED***;
 
@@ -344,7 +345,7 @@ var DataAdapter = (function() ***REMOVED***
           ***REMOVED***
           resolve(response);
         ***REMOVED***).catch(function(err) ***REMOVED***
-          handleErr(err);
+          window.commonErrorHandler(err);
           reject(err);
         ***REMOVED***);
       ***REMOVED***);
@@ -365,14 +366,14 @@ var DataAdapter = (function() ***REMOVED***
               .value();
             resolve(response);
           ***REMOVED*** catch (err) ***REMOVED***
-            handleErr(err);
+            window.commonErrorHandler(err);
             reject(err);
           ***REMOVED***
         ***REMOVED***;
         thisObj.getPreviewCoverage()
           .then(rollupFx)
           .catch(function(err) ***REMOVED***
-            handleErr(err);
+            window.commonErrorHandler(err);
             reject(err);
           ***REMOVED***);
       ***REMOVED***);
@@ -386,7 +387,7 @@ var DataAdapter = (function() ***REMOVED***
             resolve();
           ***REMOVED***);
         ***REMOVED***).catch(function(err) ***REMOVED***
-          handleErr(err);
+          window.commonErrorHandler(err);
           reject(err);
         ***REMOVED***);
       ***REMOVED***);
@@ -399,14 +400,14 @@ var DataAdapter = (function() ***REMOVED***
             this.dataAdapter.getCoverage(2017).then(function(resp) ***REMOVED***
               resolve(resp);
             ***REMOVED***).catch(function(err) ***REMOVED***
-              handleErr(err);
+              window.commonErrorHandler(err);
               reject(err);
             ***REMOVED***);
             return;
           ***REMOVED***
           resolve(response);
         ***REMOVED***).catch(function(err) ***REMOVED***
-          handleErr(err);
+          window.commonErrorHandler(err);
           reject(err);
         ***REMOVED***);
       ***REMOVED***);
@@ -420,11 +421,11 @@ var DataAdapter = (function() ***REMOVED***
               resolve();
             ***REMOVED***)
             .catch(function(err) ***REMOVED***
-              handleErr(err);
+              window.commonErrorHandler(err);
               reject(err);
             ***REMOVED***);
         ***REMOVED***).catch(function(err) ***REMOVED***
-          handleErr(err);
+          window.commonErrorHandler(err);
           reject(err);
         ***REMOVED***);
       ***REMOVED***);

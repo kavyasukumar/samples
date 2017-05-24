@@ -1,3 +1,13 @@
+article .error***REMOVED***
+  color: white;
+  padding-top: 50px;
+  font-size: 2rem;
+  margin: auto;
+  text-align: center;
+  span***REMOVED***
+    background-color: red;
+  ***REMOVED***
+***REMOVED***
 #intro ***REMOVED***
   padding-top: 6rem;
 ***REMOVED***
@@ -94,6 +104,11 @@
   ***REMOVED***
 ***REMOVED***
 
-div.alert-box.hidden ***REMOVED***
-  display: none;
+.alertHolder***REMOVED***
+  position: absolute;
+  width: 100%;
+  .alert-box***REMOVED***
+    padding: 0 14px;
+    height:1.7rem;
+  ***REMOVED***
 ***REMOVED***
