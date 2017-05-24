@@ -14,7 +14,7 @@
 
   var handleErrors = function(err)***REMOVED***
     window.commonNotificationHandler(err, 'alert');
-    $('article').html("<p class='error row'><span>An error occurred. Try again later.</span></p>");    
+    $('article').html("<p class='error row'><span>An error occurred. Try again later.</span></p>");
   ***REMOVED***;
 
   var disableSaveButton = function(state) ***REMOVED***
@@ -203,7 +203,7 @@
 
   var scrollHandler = function() ***REMOVED***
     if ($(window).scrollTop() > $('#provider-dash').offset().top) ***REMOVED***
-      var left = $('.accordion').offset().left + 'px';
+      var left = $('#intro h2').offset().left + 'px';
       $('#buttonBar').addClass('sticky').css('left', left);
     ***REMOVED*** else ***REMOVED***
       $('#buttonBar').removeClass('sticky');
