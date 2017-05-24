@@ -6,7 +6,7 @@
 (function() ***REMOVED***
   // Application code goes here
   var stateIdx = ['WA', 'MT', 'ID', 'ND', 'MN', 'ME', 'MI', 'WI', 'OR', 'SD', 'NH', 'VT', 'NY', 'WY', 'IA', 'NE', 'MA', 'IL', 'PA', 'CT', 'RI', 'CA', 'UT', 'NV', 'OH', 'IN', 'NJ', 'CO', 'WV', 'MO', 'KS', 'DE', 'MD', 'VA', 'KY', 'DC', 'AZ', 'OK', 'NM', 'TN', 'NC', 'TX', 'AR', 'SC', 'AL', 'GA', 'MS', 'LA', 'FL', 'HI', 'AK'];
-  var zoomLevels = ***REMOVED***"WA": 0.75, "DE": 0.6, "WI": 0.55, "WV": 0.6, "HI": 0.7, "FL": 0.6, "WY": 0.55, "NH": 0.55, "NJ": 0.6, "NM": 0.55, "TX": 0.6, "LA": 0.6, "NC": 0.85, "ND": 0.75, "NE": 0.8, "TN": 0.9, "NY": 0.65, "PA": 0.7, "CA": 0.6, "NV": 0.6, "CO": 0.6, "AK": 0.6, "AL": 0.6, "AR": 0.6, "VT": 0.55, "IL": 0.6, "GA": 0.6, "IN": 0.55, "IA": 0.7, "OK": 0.8, "AZ": .55, "ID": 0.55, "CT": 0.6, "ME": 0.55, "MD": 0.7, "MA": 0.7, "OH": 0.55, "UT": 0.55, "MO": 0.55, "MN": 0.55, "MI": 0.55, "RI": 0.6, "KS": 0.7, "MT": 0.75, "MS": 0.55, "SC": 0.65, "KY": 0.9, "OR": 0.65, "SD": 0.7, "AK": 0.9***REMOVED***;
+  var zoomLevels = ***REMOVED***"WA": 0.75, "DE": 0.6, "WI": 0.55, "WV": 0.6, "HI": 0.7, "FL": 0.6, "WY": 0.55, "NH": 0.55, "NJ": 0.6, "NM": 0.55, "TX": 0.6, "LA": 0.6, "NC": 0.85, "ND": 0.75, "NE": 0.8, "TN": 0.9, "NY": 0.65, "PA": 0.7, "CA": 0.6, "NV": 0.6, "CO": 0.6, "AL": 0.6, "AR": 0.6, "VT": 0.55, "IL": 0.6, "GA": 0.6, "IN": 0.55, "IA": 0.7, "OK": 0.8, "AZ": 0.55, "ID": 0.55, "CT": 0.6, "ME": 0.55, "MD": 0.7, "MA": 0.7, "OH": 0.55, "UT": 0.55, "MO": 0.55, "MN": 0.55, "MI": 0.55, "RI": 0.6, "KS": 0.7, "MT": 0.75, "MS": 0.55, "SC": 0.65, "KY": 0.9, "OR": 0.65, "SD": 0.7, "AK": 0.9***REMOVED***;
 
   var svg = d3.select("svg"),
       width = +svg.attr("width"),
@@ -99,6 +99,8 @@
         zoomLevel = zoomLevels[formData['state_select']] || 0.6,
         scale = Math.max(1, Math.min(15, zoomLevel / Math.max(dx / width, dy / height))),
         translate = [width / 2 - scale * x, height / 2 - scale * y];
+
+        console.log(_.keys(zoomLevels).length, zoomLevel);
 
     var transform = d3.zoomIdentity
       .translate(translate[0], translate[1])
