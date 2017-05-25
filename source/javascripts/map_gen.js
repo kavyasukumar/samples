@@ -61,7 +61,7 @@
     g.append("text")
         .attr("class", "caption")
         .attr("y", -10)
-        .attr("fill", "#4c4e4d")
+        .attr("fill", "#777777")
         .attr("text-anchor", "start")
         .attr('font-size', '22px')
         .attr('font-family', 'Nitti')
@@ -72,7 +72,7 @@
         .enter().append("text")
         .attr("x", function(d, i) ***REMOVED*** return d*59; ***REMOVED***)
         .attr("y", 45)
-        .attr("fill", "#4c4e4d")
+        .attr("fill", "#777777")
         .attr('class', 'value')
         .attr("text-anchor", "middle")
         .attr('font-size', '20px')
@@ -158,7 +158,6 @@
 
       console.log(formData);
       svg.html('');
-      d3.select('canvas').attr('width', 900).attr('height', 800);
       if(formData['image_title'])***REMOVED***
         var titleG = svg.append('g')
                          .attr('font-family', 'Balto')
@@ -190,6 +189,7 @@
                   .attr('y', num*34)
                   .attr("font-weight", "bold")
                   .attr('font-size', '32px')
+                  .attr('fill', '#474747')
                   .text(titleArray[i].join(' '));
           ***REMOVED***
         ***REMOVED*** else ***REMOVED***
@@ -198,6 +198,7 @@
                 .attr('y', 25)
                 .attr("font-weight", "bold")
                 .attr('font-size', '32px')
+                .attr('fill', '#474747')
                 .text(formData['image_title']);
         ***REMOVED***
 
@@ -313,16 +314,15 @@
             .attr('transform', 'translate(798,750)')
             .attr('preserveAspectRatio', "none")
             .append('path')
-            .attr('fill', '#333')
-            .attr('d', "M42.47,1.28h1.31l0.15-.62H27.45l-0.15.62h2.39c2.08,0,3.78,1.46,3.78,4.32a16.55,16.55,0,0,1-1.85,6.24L20.9,35.5,18.28,4.75C18,2.36,19.28,1.28,22,1.28h1.54l0.15-.62H0.4l-0.23.62H1.63c1.85,0,2.54,1.16,2.7,3.31L8.49,44.36h9.79L34.69,9.61C37.23,4.44,39.85,1.28,42.47,1.28ZM40.55,44.52c-1.46,0-2.39-.46-2.39-2.93,0-3.08,1.16-9.17,2.39-14.72C40.7,29.41,42.47,32,45.09,32a11.54,11.54,0,0,0,1.7-.15C44.32,42.36,43.4,44.52,40.55,44.52Zm46.7-20.88a5.17,5.17,0,0,0,5.09-5.47A4.17,4.17,0,0,0,88,13.84c-4.55,0-6.7,3.62-10.48,10.25-0.77-4.16-2.7-9.56-7.48-9.56-5.39,0-11.64,7.71-17.34,12.48-2.62,2.23-5.47,3.62-7.78,3.62S41.16,28.26,41.16,24c1.7-6.94,2.54-8.71,5.16-8.71,1.77,0,2.54,1,2.54,3.08A56.78,56.78,0,0,1,47.41,29c2.54-.77,6.4-4,9.63-7.48A11,11,0,0,0,46.4,14.69C36.62,14.69,28,23.48,28,33.34c0,6.78,4.85,11.94,12.41,11.94,12.48,0,17.72-10.79,17.72-18.34,0-1.08-.08-1.85-0.15-2.85C59.89,22,62.36,20,64.36,20c2.31,0,4.16,5.78,5.93,14.49-1.62,1.77-3.24,5.16-4,5.78-0.31-3.08-2.39-5-5.09-5-3.08,0-5.16,2.93-5.16,5.39a4.37,4.37,0,0,0,4.47,4.62c5.32,0,6.78-5,10.1-9.48,1,4.78,3.39,9.48,7.48,9.48,4.85,0,9.32-4.16,11.64-7.09l-0.46-.69c-1.46,1.46-2.93,2.39-4.62,2.39-3,0-5.16-6.47-6.78-14.33,1-1.31,2.54-4.7,3.62-5.93A6.35,6.35,0,0,0,87.25,23.63Z")
-            .attr('fill', '#000');
+            .attr('fill', '#474747')
+            .attr('d', "M42.47,1.28h1.31l0.15-.62H27.45l-0.15.62h2.39c2.08,0,3.78,1.46,3.78,4.32a16.55,16.55,0,0,1-1.85,6.24L20.9,35.5,18.28,4.75C18,2.36,19.28,1.28,22,1.28h1.54l0.15-.62H0.4l-0.23.62H1.63c1.85,0,2.54,1.16,2.7,3.31L8.49,44.36h9.79L34.69,9.61C37.23,4.44,39.85,1.28,42.47,1.28ZM40.55,44.52c-1.46,0-2.39-.46-2.39-2.93,0-3.08,1.16-9.17,2.39-14.72C40.7,29.41,42.47,32,45.09,32a11.54,11.54,0,0,0,1.7-.15C44.32,42.36,43.4,44.52,40.55,44.52Zm46.7-20.88a5.17,5.17,0,0,0,5.09-5.47A4.17,4.17,0,0,0,88,13.84c-4.55,0-6.7,3.62-10.48,10.25-0.77-4.16-2.7-9.56-7.48-9.56-5.39,0-11.64,7.71-17.34,12.48-2.62,2.23-5.47,3.62-7.78,3.62S41.16,28.26,41.16,24c1.7-6.94,2.54-8.71,5.16-8.71,1.77,0,2.54,1,2.54,3.08A56.78,56.78,0,0,1,47.41,29c2.54-.77,6.4-4,9.63-7.48A11,11,0,0,0,46.4,14.69C36.62,14.69,28,23.48,28,33.34c0,6.78,4.85,11.94,12.41,11.94,12.48,0,17.72-10.79,17.72-18.34,0-1.08-.08-1.85-0.15-2.85C59.89,22,62.36,20,64.36,20c2.31,0,4.16,5.78,5.93,14.49-1.62,1.77-3.24,5.16-4,5.78-0.31-3.08-2.39-5-5.09-5-3.08,0-5.16,2.93-5.16,5.39a4.37,4.37,0,0,0,4.47,4.62c5.32,0,6.78-5,10.1-9.48,1,4.78,3.39,9.48,7.48,9.48,4.85,0,9.32-4.16,11.64-7.09l-0.46-.69c-1.46,1.46-2.93,2.39-4.62,2.39-3,0-5.16-6.47-6.78-14.33,1-1.31,2.54-4.7,3.62-5.93A6.35,6.35,0,0,0,87.25,23.63Z");
 
         var dt = moment(new Date()).format('MMM D, YYYY');
         var info = svg.append('g')
                       .attr('class', 'info')
                       .attr('font-family', 'Nitti')
                       .attr('font-size', '22px')
-                      .attr('fill', '#707070')
+                      .attr('fill', '#777777')
                       .attr('transform', 'translate(5,765)');
 
         info.append('text').html('Source: Robert Wood Johnson Foundation');
@@ -357,6 +357,7 @@
 
 
   d3.select("#save").on("click", function()***REMOVED***
+    d3.select('canvas').attr('width', 900).attr('height', 800);
     var tName = currentYear;
     if(formData['map_type'] === 'state')***REMOVED***
       tName = formData['state_select']+'_'+currentYear;
@@ -372,9 +373,6 @@
   $(document).ready(function() ***REMOVED***
     window.dataAdapter = window.dataAdapter || DataAdapter.getInstance();
 
-    /* TODO: REMOVE THIS COMMENT.
-     Casey, I refactored the provider count fx. So changed the line below. Also you can directly pass in the fucntion name you want to call. The parameter ('data' in this case) gets automatically assigned.
-     One other thing that might possibly affect what you have already done is that Fips codes are now always 5 digits with leading 0's if required. this was done to make things consitent across all data sets we have*/
     currentYear = '2017';
     window.dataAdapter.ready()
     .then(function()***REMOVED***
