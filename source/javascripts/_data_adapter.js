@@ -91,6 +91,19 @@ var DataAdapter = (function() ***REMOVED***
     ***REMOVED***);
   ***REMOVED***;
 
+  var replaceObjects = function(storeName, objects)***REMOVED***
+    return new Promise(function(resolve, reject) ***REMOVED***
+      clearObjects(storeName).then(function()***REMOVED***
+        storeObjects(storeName, objects)
+        .then(resolve)
+        .catch(function(err) ***REMOVED***
+          window.commonErrorHandler(err);
+          reject(err);
+        ***REMOVED***);
+      ***REMOVED***)
+    ***REMOVED***);
+  ***REMOVED***
+
   var getObjects = function(storeName) ***REMOVED***
     return new Promise(function(resolve, reject) ***REMOVED***
       var objectStore = getObjectStore(storeName, 'readonly');
@@ -198,7 +211,7 @@ var DataAdapter = (function() ***REMOVED***
             if (!update) ***REMOVED***
               console.log('data exists');
               getObjects(dataKey).then(function(resp) ***REMOVED***
-                if (year === 2017) ***REMOVED***
+                if (parseInt(year) === 2017) ***REMOVED***
                   countObjects(dataKey + '-preview')
                     .then(function(count) ***REMOVED***
                       if (count === 0) ***REMOVED***
@@ -231,13 +244,17 @@ var DataAdapter = (function() ***REMOVED***
                     setLocalData(dataKey + '-last_modified', currLastMod);
                   ***REMOVED***
                 ***REMOVED***
-                if (year === 2017) ***REMOVED***
-                  clearObjects(dataKey + '-preview').then(function()***REMOVED***
-                    storeObjects(dataKey + '-preview', unifiedResp);
+                if (parseInt(year) === 2017) ***REMOVED***
+                  replaceObjects(dataKey + '-preview', unifiedResp).then(function()***REMOVED***
+                    resolve(unifiedResp);
+                  ***REMOVED***).catch(function(err)***REMOVED***
+                    window.commonErrorHandler(err);
+                    reject(err);
                   ***REMOVED***);
+                ***REMOVED*** else ***REMOVED***
+                  resolve(unifiedResp);
                 ***REMOVED***
-                resolve(unifiedResp);
-              ***REMOVED***);              
+              ***REMOVED***);
             ***REMOVED***;
 
             var fetchState = function(ind) ***REMOVED***
@@ -340,7 +357,7 @@ var DataAdapter = (function() ***REMOVED***
         thisObj.getCoverage(year).then(function(coverage) ***REMOVED***
           console.log('getting provider count...');
           var response;
-          if (year === 2017) ***REMOVED***
+          if (parseInt(year) === 2017) ***REMOVED***
             response = _.chain(coverage)
               .where(***REMOVED***
                 is_active: true
@@ -396,13 +413,13 @@ var DataAdapter = (function() ***REMOVED***
       return new Promise(function(resolve, reject) ***REMOVED***
         var dataKey = 'coverage-2017-preview';
         getObjects(dataKey).then(function(response) ***REMOVED***
-          storeObjects(dataKey, mergeData(response, records)).then(function() ***REMOVED***
-            resolve();
+           storeObjects(dataKey, mergeData(response, records)).then(function() ***REMOVED***
+             resolve();
+           ***REMOVED***);
+         ***REMOVED***).catch(function(err) ***REMOVED***
+            window.commonErrorHandler(err);
+            reject(err);
           ***REMOVED***);
-        ***REMOVED***).catch(function(err) ***REMOVED***
-          window.commonErrorHandler(err);
-          reject(err);
-        ***REMOVED***);
       ***REMOVED***);
     ***REMOVED***;
 
@@ -428,19 +445,12 @@ var DataAdapter = (function() ***REMOVED***
 
     _instance.discardPreviewChanges = function() ***REMOVED***
       return new Promise(function(resolve, reject) ***REMOVED***
-        getObjects('coverage-2017').then(function(response) ***REMOVED***
-          storeObjects('coverage-2017-preview', response)
-            .then(function() ***REMOVED***
-              resolve();
-            ***REMOVED***)
-            .catch(function(err) ***REMOVED***
-              window.commonErrorHandler(err);
-              reject(err);
-            ***REMOVED***);
-        ***REMOVED***).catch(function(err) ***REMOVED***
-          window.commonErrorHandler(err);
-          reject(err);
-        ***REMOVED***);
+        clearObjects('coverage-2017-preview')
+          .then(resolve)
+          .catch(function(err) ***REMOVED***
+            window.commonErrorHandler(err);
+            reject(err);
+          ***REMOVED***);
       ***REMOVED***);
     ***REMOVED***;
 
