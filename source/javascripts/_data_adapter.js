@@ -245,6 +245,13 @@ var DataAdapter = (function() ***REMOVED***
                   ***REMOVED***
                 ***REMOVED***
                 if (parseInt(year) === 2017) ***REMOVED***
+                  countObjects(dataKey + '-preview')
+                    .then(function(count) ***REMOVED***
+                      if (count !== 0) ***REMOVED***
+                        var msg = 'Newer version of data found. Discarded preview';
+                        window.commonNotificationHandler(msg, 'warning');
+                      ***REMOVED***
+                    ***REMOVED***);
                   replaceObjects(dataKey + '-preview', unifiedResp).then(function()***REMOVED***
                     resolve(unifiedResp);
                   ***REMOVED***).catch(function(err)***REMOVED***

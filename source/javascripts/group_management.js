@@ -39,15 +39,24 @@
   ***REMOVED***;
 
   var showLoadingSplash = function(msg) ***REMOVED***
-    $('#provider-dash').fadeOut(500, function() ***REMOVED***
+    $('#provider-dash').stop().fadeOut(500, function() ***REMOVED***
       $('#load-msg').html(msg);
-      $('#loading-animation').show();
+      $('#loading-animation')
+        .stop()
+        .css('opacity', '1')
+        .show();
+
+        console.log('done showing');
     ***REMOVED***);
   ***REMOVED***;
 
   var hideLoadingSplash = function(msg) ***REMOVED***
-    $('#loading-animation').fadeOut(500, function() ***REMOVED***
-      $('#provider-dash').show();
+    $('#loading-animation').stop().fadeOut(500, function() ***REMOVED***
+      $('#provider-dash')
+        .stop()
+        .css('opacity', '1')
+        .show();
+        console.log('done hiding');
     ***REMOVED***);
   ***REMOVED***;
 
@@ -100,7 +109,9 @@
     ***REMOVED***;
 
     if (isPreview) ***REMOVED***
-      window.dataAdapter.getPreviewCoverage().then(handleChanges);
+      window.dataAdapter.getPreviewCoverage()
+        .then(handleChanges)
+        .catch(handleErrors);
     ***REMOVED*** else ***REMOVED***
       window.dataAdapter.getCoverage(2017)
         .then(handleChanges)
@@ -114,6 +125,8 @@
     if (!preview) ***REMOVED***
       showLoadingSplash('Publishing changes...');
       $('a.submit').text('publishing...');
+    ***REMOVED*** else ***REMOVED***
+      showLoadingSplash('Saving changes locally...');
     ***REMOVED***
     saveChanges(preview);
   ***REMOVED***;
@@ -168,7 +181,7 @@
   ***REMOVED***;
 
   var discardChanges = function() ***REMOVED***
-    $('#provider-dash').hide();
+    showLoadingSplash('Discarding local changes...');
     window.dataAdapter.discardPreviewChanges()
       .then(function() ***REMOVED***
         window.commonNotificationHandler('Unpublished changes have been deleted', 'success');
@@ -180,7 +193,6 @@
 
   var filterResults = function() ***REMOVED***
     var q = $(this)[0].value;
-    console.log(q);
     _.each($('ul.accordion'), function(el) ***REMOVED***
       var substrRegex = new RegExp(q, 'i');
       var provider = $(el).find('a').text();
