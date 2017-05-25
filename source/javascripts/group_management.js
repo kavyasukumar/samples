@@ -12,7 +12,7 @@
       .replace(/\s/g, '-');
   ***REMOVED***;
 
-  var handleErrors = function(err)***REMOVED***
+  var handleErrors = function(err) ***REMOVED***
     window.commonNotificationHandler(err, 'alert');
     $('article').html("<p class='error row'><span>An error occurred. Try again later.</span></p>");
   ***REMOVED***;
@@ -46,7 +46,7 @@
         .css('opacity', '1')
         .show();
 
-        console.log('done showing');
+      console.log('done showing');
     ***REMOVED***);
   ***REMOVED***;
 
@@ -56,7 +56,7 @@
         .stop()
         .css('opacity', '1')
         .show();
-        console.log('done hiding');
+      console.log('done hiding');
     ***REMOVED***);
   ***REMOVED***;
 
@@ -68,11 +68,11 @@
 
   var saveChanges = function(isPreview) ***REMOVED***
     var changedRecords = [];
-    var postSave = function()***REMOVED***
+    var postSave = function() ***REMOVED***
       afterSave();
       var previewMsg = 'Saved data. You may have unpublished changes.',
-          pubMsg = 'Published data.',
-          msg = isPreview ? previewMsg : pubMsg;
+        pubMsg = 'Published data.',
+        msg = isPreview ? previewMsg : pubMsg;
       window.commonNotificationHandler(msg, 'success');
     ***REMOVED***;
     var handleChanges = function(response) ***REMOVED***
@@ -102,9 +102,9 @@
           .then(postSave)
           .catch(handleErrors);
       ***REMOVED*** else ***REMOVED***
-      window.dataAdapter.updateCoverage(changedRecords)
-        .then(postSave)
-        .catch(handleErrors);
+        window.dataAdapter.updateCoverage(changedRecords)
+          .then(postSave)
+          .catch(handleErrors);
       ***REMOVED***
     ***REMOVED***;
 

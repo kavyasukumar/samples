@@ -45,7 +45,7 @@ $(document).foundation();
 
   $(document).ready(function() ***REMOVED***
     var tabs = $('nav li');
-    if(window.location.pathname.match('providers'))***REMOVED***
+    if (window.location.pathname.match('providers')) ***REMOVED***
       console.log('yes providers');
       $(tabs[1]).addClass('active');
     ***REMOVED*** else ***REMOVED***

@@ -92,15 +92,15 @@ var DataAdapter = (function() ***REMOVED***
     ***REMOVED***);
   ***REMOVED***;
 
-  var replaceObjects = function(storeName, objects)***REMOVED***
+  var replaceObjects = function(storeName, objects) ***REMOVED***
     return new Promise(function(resolve, reject) ***REMOVED***
-      clearObjects(storeName).then(function()***REMOVED***
+      clearObjects(storeName).then(function() ***REMOVED***
         storeObjects(storeName, objects)
-        .then(resolve)
-        .catch(function(err) ***REMOVED***
-          window.commonErrorHandler(err);
-          reject(err);
-        ***REMOVED***);
+          .then(resolve)
+          .catch(function(err) ***REMOVED***
+            window.commonErrorHandler(err);
+            reject(err);
+          ***REMOVED***);
       ***REMOVED***);
     ***REMOVED***);
   ***REMOVED***;
@@ -147,7 +147,7 @@ var DataAdapter = (function() ***REMOVED***
   // Data helpers
   var hasUpdates = function(dataKey) ***REMOVED***
     return new Promise(function(resolve, reject) ***REMOVED***
-      if(isDataStale)***REMOVED***
+      if (isDataStale) ***REMOVED***
         resolve(true);
         return;
       ***REMOVED***
@@ -238,7 +238,7 @@ var DataAdapter = (function() ***REMOVED***
             var handleKintoResp = function(responses) ***REMOVED***
               var currLastMod = getLocalData(dataKey + '-last_modified'),
                 unifiedResp = [];
-              clearObjects(dataKey).then(function()***REMOVED***
+              clearObjects(dataKey).then(function() ***REMOVED***
                 for (var i in responses) ***REMOVED***
                   var response = responses[i];
                   unifiedResp = _.union(unifiedResp, response.data);
@@ -257,10 +257,10 @@ var DataAdapter = (function() ***REMOVED***
                         window.commonNotificationHandler(msg, 'warning');
                       ***REMOVED***
                     ***REMOVED***);
-                  replaceObjects(dataKey + '-preview', unifiedResp).then(function()***REMOVED***
+                  replaceObjects(dataKey + '-preview', unifiedResp).then(function() ***REMOVED***
                     isDataStale = false;
                     resolve(unifiedResp);
-                  ***REMOVED***).catch(function(err)***REMOVED***
+                  ***REMOVED***).catch(function(err) ***REMOVED***
                     window.commonErrorHandler(err);
                     reject(err);
                   ***REMOVED***);
@@ -295,7 +295,7 @@ var DataAdapter = (function() ***REMOVED***
             for (var i in states) ***REMOVED***
               fetchState(i);
             ***REMOVED***
-          ***REMOVED***).catch(function(err)***REMOVED***
+          ***REMOVED***).catch(function(err) ***REMOVED***
             window.commonErrorHandler(err);
             reject(err);
           ***REMOVED***);
@@ -336,7 +336,7 @@ var DataAdapter = (function() ***REMOVED***
             for (var i in responses[0]) ***REMOVED***
               var response = responses[0][i];
               unifiedResp.push(response.body.data);
-              var myLastMod = response.headers.ETag.replace(/"/g,"");
+              var myLastMod = response.headers.ETag.replace(/"/g, "");
               if (myLastMod > currLastMod) ***REMOVED***
                 currLastMod = myLastMod;
                 setLocalData(dataKey + '-last_modified', currLastMod);
@@ -427,19 +427,19 @@ var DataAdapter = (function() ***REMOVED***
       return new Promise(function(resolve, reject) ***REMOVED***
         var dataKey = 'coverage-2017-preview';
         getObjects(dataKey).then(function(response) ***REMOVED***
-           storeObjects(dataKey, mergeData(response, records)).then(function() ***REMOVED***
-             resolve();
-           ***REMOVED***);
-         ***REMOVED***).catch(function(err) ***REMOVED***
-            window.commonErrorHandler(err);
-            reject(err);
+          storeObjects(dataKey, mergeData(response, records)).then(function() ***REMOVED***
+            resolve();
           ***REMOVED***);
+        ***REMOVED***).catch(function(err) ***REMOVED***
+          window.commonErrorHandler(err);
+          reject(err);
+        ***REMOVED***);
       ***REMOVED***);
     ***REMOVED***;
 
     _instance.getPreviewCoverage = function() ***REMOVED***
       return new Promise(function(resolve, reject) ***REMOVED***
-        if(isDataStale)***REMOVED***
+        if (isDataStale) ***REMOVED***
           this.dataAdapter.getCoverage(2017).then(resolve);
           return;
         ***REMOVED***
@@ -469,10 +469,10 @@ var DataAdapter = (function() ***REMOVED***
 
     _instance.ready = function() ***REMOVED***
       return new Promise(function(resolve, reject) ***REMOVED***
-        openDb().then(function()***REMOVED***
-          hasUpdates('coverage-2017').then(function(update)***REMOVED***
-              isDataStale = update;
-              resolve();
+        openDb().then(function() ***REMOVED***
+          hasUpdates('coverage-2017').then(function(update) ***REMOVED***
+            isDataStale = update;
+            resolve();
           ***REMOVED***);
         ***REMOVED***).catch(function(err) ***REMOVED***
           window.commonErrorHandler(err);
