@@ -5,6 +5,7 @@
 var DataAdapter = (function() ***REMOVED***
   var instance;
   var db,
+    isDataStale = false,
     DB_NAME = 'aca-indexedDB',
     DB_VERSION = 1,
     STORES = ['coverage-2017', 'coverage-2017-preview', 'coverage-2016', 'coverage-2015', 'coverage-2014'];
@@ -100,9 +101,9 @@ var DataAdapter = (function() ***REMOVED***
           window.commonErrorHandler(err);
           reject(err);
         ***REMOVED***);
-      ***REMOVED***)
+      ***REMOVED***);
     ***REMOVED***);
-  ***REMOVED***
+  ***REMOVED***;
 
   var getObjects = function(storeName) ***REMOVED***
     return new Promise(function(resolve, reject) ***REMOVED***
@@ -146,6 +147,10 @@ var DataAdapter = (function() ***REMOVED***
   // Data helpers
   var hasUpdates = function(dataKey) ***REMOVED***
     return new Promise(function(resolve, reject) ***REMOVED***
+      if(isDataStale)***REMOVED***
+        resolve(true);
+        return;
+      ***REMOVED***
       var localLastMod = getLocalData(dataKey + '-last_modified');
 
       if (!localLastMod) ***REMOVED***
@@ -248,17 +253,19 @@ var DataAdapter = (function() ***REMOVED***
                   countObjects(dataKey + '-preview')
                     .then(function(count) ***REMOVED***
                       if (count !== 0) ***REMOVED***
-                        var msg = 'Newer version of data found. Discarded preview';
+                        var msg = 'Newer version of data found. Discarded old data to avoid conflicts';
                         window.commonNotificationHandler(msg, 'warning');
                       ***REMOVED***
                     ***REMOVED***);
                   replaceObjects(dataKey + '-preview', unifiedResp).then(function()***REMOVED***
+                    isDataStale = false;
                     resolve(unifiedResp);
                   ***REMOVED***).catch(function(err)***REMOVED***
                     window.commonErrorHandler(err);
                     reject(err);
                   ***REMOVED***);
                 ***REMOVED*** else ***REMOVED***
+                  isDataStale = false;
                   resolve(unifiedResp);
                 ***REMOVED***
               ***REMOVED***);
@@ -432,14 +439,13 @@ var DataAdapter = (function() ***REMOVED***
 
     _instance.getPreviewCoverage = function() ***REMOVED***
       return new Promise(function(resolve, reject) ***REMOVED***
+        if(isDataStale)***REMOVED***
+          this.dataAdapter.getCoverage(2017).then(resolve);
+          return;
+        ***REMOVED***
         getObjects('coverage-2017-preview').then(function(response) ***REMOVED***
           if (!response.length) ***REMOVED***
-            this.dataAdapter.getCoverage(2017).then(function(resp) ***REMOVED***
-              resolve(resp);
-            ***REMOVED***).catch(function(err) ***REMOVED***
-              window.commonErrorHandler(err);
-              reject(err);
-            ***REMOVED***);
+            this.dataAdapter.getCoverage(2017).then(resolve);
             return;
           ***REMOVED***
           resolve(response);
@@ -462,7 +468,17 @@ var DataAdapter = (function() ***REMOVED***
     ***REMOVED***;
 
     _instance.ready = function() ***REMOVED***
-      return openDb();
+      return new Promise(function(resolve, reject) ***REMOVED***
+        openDb().then(function()***REMOVED***
+          hasUpdates('coverage-2017').then(function(update)***REMOVED***
+              isDataStale = update;
+              resolve();
+          ***REMOVED***);
+        ***REMOVED***).catch(function(err) ***REMOVED***
+          window.commonErrorHandler(err);
+          reject(err);
+        ***REMOVED***);
+      ***REMOVED***);
     ***REMOVED***;
 
     return _instance;
