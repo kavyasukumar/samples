@@ -158,7 +158,6 @@
 
       console.log(formData);
       svg.html('');
-      d3.select('canvas').attr('width', 900).attr('height', 800);
       if(formData['image_title'])***REMOVED***
         var titleG = svg.append('g')
                          .attr('font-family', 'Balto')
@@ -358,6 +357,7 @@
 
 
   d3.select("#save").on("click", function()***REMOVED***
+    d3.select('canvas').attr('width', 900).attr('height', 800);
     var tName = currentYear;
     if(formData['map_type'] === 'state')***REMOVED***
       tName = formData['state_select']+'_'+currentYear;
@@ -373,9 +373,6 @@
   $(document).ready(function() ***REMOVED***
     window.dataAdapter = window.dataAdapter || DataAdapter.getInstance();
 
-    /* TODO: REMOVE THIS COMMENT.
-     Casey, I refactored the provider count fx. So changed the line below. Also you can directly pass in the fucntion name you want to call. The parameter ('data' in this case) gets automatically assigned.
-     One other thing that might possibly affect what you have already done is that Fips codes are now always 5 digits with leading 0's if required. this was done to make things consitent across all data sets we have*/
     currentYear = '2017';
     window.dataAdapter.ready()
     .then(function()***REMOVED***
