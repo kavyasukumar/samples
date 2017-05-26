@@ -268,7 +268,11 @@
             ***REMOVED***)
             .attr("d", path)
             .attr("stroke", function(d)***REMOVED***
-              if(data[d.id] || _.contains(stf, String(d.id)))***REMOVED*** return '#fff'; ***REMOVED***
+              if(formData['map_type'] === 'state')***REMOVED***
+                if(_.contains(stf, String(d.id)))***REMOVED*** return '#fff'; ***REMOVED***
+              ***REMOVED*** else ***REMOVED***
+                if(data[d.id])***REMOVED*** return '#fff'; ***REMOVED***
+              ***REMOVED***
             ***REMOVED***)
             .attr('stroke-width', '0.5px')
           .append("title")
