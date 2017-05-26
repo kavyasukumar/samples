@@ -22,9 +22,10 @@
       active = d3.select(null),
       tester;
 
-  var projection = d3.geoAlbersUsa()
-      .scale(1000)
-      .translate([width / 2, height / 2]);
+  // var projection = d3.geoAlbersUsa()
+  //     .scale(1000)
+  //     .translate([width / 2, height / 2]);
+  var projection = null;
 
   var zoom = d3.zoom()
       .on("zoom", zoomed);
@@ -149,11 +150,11 @@
                         .scale(800)
                         .translate([width / 2, height / 2]);
       ***REMOVED*** else ***REMOVED***
-        projection = d3.geoAlbersUsa()
-                        .scale(1000)
-                        .translate([width / 2, height / 2]);
+        // projection = d3.geoAlbersUsa()
+        //                 .scale(1000)
+        //                 .translate([width / 2, height / 2]);
+        projection = null;
       ***REMOVED***
-
       path.projection(projection);
 
       console.log(formData);
@@ -211,9 +212,16 @@
 
       drawScale();
 
-      d3.queue()
-          .defer(d3.json, "https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/us.json")
-          .await(ready);
+      if(formData['map_type'] === 'state' && formData['state_select'] !== 'AK')***REMOVED***
+        d3.queue()
+            .defer(d3.json, "https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/us.json")
+            .await(ready);
+      ***REMOVED*** else ***REMOVED***
+        d3.queue()
+            .defer(d3.json, "https://d3js.org/us-10m.v1.json")
+            .await(ready);
+      ***REMOVED***
+
 
       var largest = 0;
 
@@ -225,7 +233,7 @@
         var stf = [];
         stf = state_fips[formData['state_select']];
          svg.append("g").attr("class", "counties paths")
-            .attr('transform', 'translate(0,-40)')
+            .attr('transform', 'translate(30,90) scale(.85)')
             .selectAll("path")
             .data(tj)
           .enter().append("path")
@@ -279,7 +287,7 @@
             .text(function(d) ***REMOVED*** return d.count; ***REMOVED***);
 
           svg.append("path")
-              .attr('transform', 'translate(0,-40)')
+              .attr('transform', 'translate(30,90) scale(.85)')
               .datum(topojson.mesh(us, us.objects.states, function(a, b) ***REMOVED*** return a !== b; ***REMOVED***))
               .attr("class", "mesh")
               .attr("d", path)
@@ -292,7 +300,11 @@
             d3.selectAll('.mesh').style('display', 'block');
           ***REMOVED***
           if(formData['map_type'] === 'state')***REMOVED***
-            tester = topojson.feature(us, us.objects.states).features[_.indexOf(stateIdx, formData['state_select'])];
+            if(formData['state_select'] === 'AK')***REMOVED***
+              tester = topojson.feature(us, us.objects.states).features[26];
+            ***REMOVED*** else ***REMOVED***
+              tester = topojson.feature(us, us.objects.states).features[_.indexOf(stateIdx, formData['state_select'])];
+            ***REMOVED***
             d3.selectAll('.counties').attr('stroke', 'none').attr('fill', 'none');
             clicked();
           ***REMOVED*** else ***REMOVED***
