@@ -70,7 +70,7 @@
     var changedRecords = [];
     var postSave = function() ***REMOVED***
       afterSave();
-      var previewMsg = 'Saved data. You may have unpublished changes.',
+      var previewMsg = 'Saved data temporarily. Publish the changes to update permanently.',
         pubMsg = 'Published data.',
         msg = isPreview ? previewMsg : pubMsg;
       window.commonNotificationHandler(msg, 'success');
