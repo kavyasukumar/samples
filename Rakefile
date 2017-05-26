@@ -121,6 +121,12 @@ task :import_2017_coverage do
     batch_req = kinto_client.create_batch_request
     row_group.each do |row|
       row['fips_code'] = row['fips_code'].to_s.rjust(5, '0')
+      # Avoiding data mismatch from AK's changed county name
+      # See https://www.census.gov/geo/reference/county-changes.html
+      if row['fips_code'] == '02270' do
+        row['fips_code'] = '02158'
+        row['county_name'] = 'Kusilvak'
+      end
       row['provider_name'] = row.delete 'carrier'
       row['provider_id'] = row.delete 'issuer_id'
       row['is_active'] = true
