@@ -192,17 +192,23 @@
   ***REMOVED***;
 
   var filterResults = function() ***REMOVED***
-    var q = $(this)[0].value;
+    $('#search-err-msg').hide();
+    var q = $(this)[0].value,
+        matched = false;
     _.each($('ul.accordion'), function(el) ***REMOVED***
       var substrRegex = new RegExp(q, 'i');
       var provider = $(el).find('a').text();
       if (substrRegex.test(provider)) ***REMOVED***
+        matched = true;
         $(el).children('li').removeClass('active');
         $(el).removeClass('provider-hide');
       ***REMOVED*** else ***REMOVED***
         $(el).addClass('provider-hide');
       ***REMOVED***
     ***REMOVED***);
+    if(!matched)***REMOVED***
+      $('#search-err-msg').show();
+    ***REMOVED***
   ***REMOVED***;
 
   var filterState = function() ***REMOVED***

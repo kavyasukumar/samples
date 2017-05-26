@@ -1,18 +1,18 @@
 <% var isFirstItem = true; %>
-  <% _.each(data, function(coverage, provider) ***REMOVED*** %>
-    <ul class="accordion row accordion-allstates <%= _.reduce(_.keys(coverage), function(str, c)***REMOVED*** return str + ' accordion-' + c.toLowerCase();***REMOVED***,'') %>
-    " data-accordion>
-      <li class="accordion-navigation">
-        <a href="<%= '#' + parameterize(provider) %>" class="icon-something">
-          <%= provider %>
-        </a>
-        <div id="<%= parameterize(provider) %>" class="content row
-        <% if(isFirstItem)***REMOVED*** %>
-          <% isFirstItem = false; %>
-           active
-         <% ***REMOVED*** %>">
-          <% _.each(coverage, function(counties, state) ***REMOVED*** %>
-            <% var providerSlug = parameterize(provider); %>
+<% _.each(data, function(coverage, provider) ***REMOVED*** %>
+  <ul class="accordion row accordion-allstates <%= _.reduce(_.keys(coverage), function(str, c)***REMOVED*** return str + ' accordion-' + c.toLowerCase();***REMOVED***,'') %>
+  " data-accordion>
+    <li class="accordion-navigation">
+      <a href="<%= '#' + parameterize(provider) %>" class="icon-something">
+        <%= provider %>
+      </a>
+      <div id="<%= parameterize(provider) %>" class="content row
+      <% if(isFirstItem)***REMOVED*** %>
+        <% isFirstItem = false; %>
+         active
+       <% ***REMOVED*** %>">
+        <% _.each(coverage, function(counties, state) ***REMOVED*** %>
+          <% var providerSlug = parameterize(provider); %>
             <table class="large-12 columns <%= 'table-' + state.toLowerCase() %> table-allstates">
               <thead>
                 <tr>
@@ -32,12 +32,8 @@
                       <%= val.county_name %>
                     </td>
                     <td class="switch tiny">
-                      <input id="<%= val.id %>"
-                             class="<%= state + '-' + providerSlug + '-toggle-input' %> county-toggle" data-state-toggle-id="<%= state + '-' + providerSlug + '-toggle' %>"
-                             type="checkbox"
-                             <% if(val.is_active)***REMOVED*** %>
-                               checked
-                             <% ***REMOVED*** %>>
+                      <input id="<%= val.id %>" class="<%= state + '-' + providerSlug + '-toggle-input' %> county-toggle" data-state-toggle-id="<%= state + '-' + providerSlug + '-toggle' %>" type="checkbox" <% if(val.is_active)***REMOVED*** %> checked
+                      <% ***REMOVED*** %>>
                         <label for="<%= val.id %>"></label>
                     </td>
                   </tr>
@@ -46,6 +42,7 @@
             </table>
             <% ***REMOVED***) %>
               </div>
-      </li>
-    </ul>
-    <% ***REMOVED***) %>
+    </li>
+  </ul>
+<% ***REMOVED***) %>
+<p id="search-err-msg" class="row hide">No providers matched the search query.</p>
