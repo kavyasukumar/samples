@@ -240,10 +240,11 @@
                   if(data[d.id] > largest)***REMOVED***
                     largest = data[d.id];
                   ***REMOVED***
-                  if(color(d.count = data[d.id]))***REMOVED***
-                    tFill = color(d.count = data[d.id]);
+                  if(data[d.id])***REMOVED***
+                    // tFill = color(d.count = data[d.id]);
+                    tFill = myColors[data[d.id]];
                   ***REMOVED*** else ***REMOVED***
-                    tFill = '#fcccff';
+                    tFill = '#fff200';
                   ***REMOVED***
                 ***REMOVED*** else ***REMOVED***
                   tFill = 'none';
@@ -252,21 +253,22 @@
                 if(data[d.id] > largest)***REMOVED***
                   largest = data[d.id];
                 ***REMOVED***
-                if(color(d.count = data[d.id]))***REMOVED***
-                  tFill = color(d.count = data[d.id]);
+                if(data[d.id])***REMOVED***
+                  // tFill = color(d.count = data[d.id]);
+                  tFill = myColors[data[d.id]];
                 ***REMOVED*** else ***REMOVED***
-                  tFill = '#fcccff';
+                  tFill = '#fff200';
                 ***REMOVED***
               ***REMOVED***
               return tFill;
 
             ***REMOVED***)
             .attr('id', function(d)***REMOVED***
-              return 'f_'+d.id;
+              return 'f_'+d.id+' '+data[d.id];
             ***REMOVED***)
             .attr("d", path)
             .attr("stroke", function(d)***REMOVED***
-              if(d.count || _.contains(stf, String(d.id)))***REMOVED*** return '#fff'; ***REMOVED***
+              if(data[d.id] || _.contains(stf, String(d.id)))***REMOVED*** return '#fff'; ***REMOVED***
             ***REMOVED***)
             .attr('stroke-width', '0.5px')
           .append("title")
