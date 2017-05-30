@@ -123,7 +123,7 @@ task :import_2017_coverage do
       row['fips_code'] = row['fips_code'].to_s.rjust(5, '0')
       # Avoiding data mismatch from AK's changed county name
       # See https://www.census.gov/geo/reference/county-changes.html
-      if row['fips_code'] == '02270' do
+      if row['fips_code'] == '02270'
         row['fips_code'] = '02158'
         row['county_name'] = 'Kusilvak'
       end
