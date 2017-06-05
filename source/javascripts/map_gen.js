@@ -48,6 +48,17 @@
 
 
   function drawScale()***REMOVED***
+
+  svg.append("text")
+        .attr("class", "caption")
+        .attr("x", 4)
+        .attr("y", 678)
+        .attr("fill", "#777777")
+        .attr("text-anchor", "start")
+        .attr('font-size', '22px')
+        .attr('font-family', 'Nitti')
+        .text("Number of ACA insurers available");
+
     var g = svg.append("g").attr('class', 'scale')
                .attr('transform', "translate(5,685)");
 
@@ -58,15 +69,6 @@
         .attr("x", function(d, i) ***REMOVED*** return i*59; ***REMOVED***)
         .attr("width", 59)
         .attr("fill", function(d) ***REMOVED*** return d; ***REMOVED***);
-
-    g.append("text")
-        .attr("class", "caption")
-        .attr("y", -10)
-        .attr("fill", "#777777")
-        .attr("text-anchor", "start")
-        .attr('font-size', '22px')
-        .attr('font-family', 'Nitti')
-        .text("Number of ACA insurers available");
 
       g.selectAll("text")
         .data([0, 0, 1, 2, 3, 4, 6, 8, 10])
@@ -228,6 +230,7 @@
 
 
       var largest = 0;
+      var smallest = 10;
 
       function ready(error, us) ***REMOVED***
         console.log('ready');
@@ -252,6 +255,9 @@
                   if(data[d.id] > largest)***REMOVED***
                     largest = data[d.id];
                   ***REMOVED***
+                  if(data[d.id] < smallest || typeof data[d.id] === 'undefined')***REMOVED***
+                    smallest = data[d.id];
+                  ***REMOVED***
                   if(data[d.id])***REMOVED***
                     tFill = myColors[data[d.id]];
                   ***REMOVED*** else ***REMOVED***
@@ -266,6 +272,9 @@
                 ***REMOVED***
                 if(data[d.id] > largest)***REMOVED***
                   largest = data[d.id];
+                ***REMOVED***
+                if(data[d.id] < smallest || typeof data[d.id] === 'undefined')***REMOVED***
+                  smallest = data[d.id];
                 ***REMOVED***
                 if(data[d.id])***REMOVED***
                   tFill = myColors[data[d.id]];
@@ -315,21 +324,39 @@
           ***REMOVED*** else ***REMOVED***
             d3.selectAll('.counties').attr('stroke', '#ccc').attr('fill', '#ccc');
           ***REMOVED***
+          if(typeof smallest === 'undefined')***REMOVED***
+            smallest = 0;
+          ***REMOVED***
+          if(smallest === 5 || smallest === 7 || smallest === 9)***REMOVED***
+            smallest -= 1;
+          ***REMOVED***
+          if(largest === 4 || largest === 6 || largest === 8)***REMOVED***
+            largest += 1;
+          ***REMOVED***
+          // console.log(smallest, largest);
           $('.scale rect').each(function(i)***REMOVED***
-            if(i > largest)***REMOVED***
+            if(i > largest || i < smallest)***REMOVED***
               $(this).hide();
             ***REMOVED***
           ***REMOVED***);
           $('.scale .value').each(function()***REMOVED***
-            if(parseInt($(this).html()) > largest+1)***REMOVED***
+            var it = parseInt($(this).html());
+            if(it > largest+1 || it < smallest)***REMOVED***
               $(this).hide();
             ***REMOVED***
           ***REMOVED***);
           $('.scale line').each(function(i)***REMOVED***
-            if(parseInt($(this).attr('value')) > largest+1)***REMOVED***
+            var it = parseInt($(this).attr('value'));
+            if(it > largest+1 || it < smallest)***REMOVED***
               $(this).hide();
             ***REMOVED***
           ***REMOVED***);
+
+          if(smallest > 0)***REMOVED***
+            var left = (smallest*59)-5;
+            d3.selectAll('.scale').attr('transform', "translate(-"+left+",685)");
+          ***REMOVED***
+
         ***REMOVED***
 
         svg.append('g')
