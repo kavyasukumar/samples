@@ -20,7 +20,8 @@
       oldFormData = ***REMOVED******REMOVED***,
       currentYear,
       active = d3.select(null),
-      tester;
+      tester,
+      countyCount;
 
   // var projection = d3.geoAlbersUsa()
   //     .scale(1000)
@@ -45,6 +46,18 @@
   var color = d3.scaleOrdinal()
       .domain(d3.range(0, 9))
       .range(myColors);
+
+  function dictIt(num)***REMOVED***
+    if(typeof num === 'undefined')***REMOVED***
+      countyCount['0'] += 1;
+    ***REMOVED*** else if(num === 1) ***REMOVED***
+      countyCount['1'] += 1;
+    ***REMOVED*** else if(num === 2) ***REMOVED***
+      countyCount['2'] += 1;
+    ***REMOVED*** else ***REMOVED***
+      countyCount['3'] += 1;
+    ***REMOVED***
+  ***REMOVED***
 
 
   function drawScale()***REMOVED***
@@ -231,6 +244,12 @@
 
       var largest = 0;
       var smallest = 10;
+      countyCount = ***REMOVED***
+        '0': 0,
+        '1': 0,
+        '2': 0,
+        '3': 0
+      ***REMOVED***
 
       function ready(error, us) ***REMOVED***
         console.log('ready');
@@ -258,6 +277,7 @@
                   if(data[d.id] < smallest || typeof data[d.id] === 'undefined')***REMOVED***
                     smallest = data[d.id];
                   ***REMOVED***
+                  dictIt(data[d.id]);
                   if(data[d.id])***REMOVED***
                     tFill = myColors[data[d.id]];
                   ***REMOVED*** else ***REMOVED***
@@ -276,6 +296,7 @@
                 if(data[d.id] < smallest || typeof data[d.id] === 'undefined')***REMOVED***
                   smallest = data[d.id];
                 ***REMOVED***
+                dictIt(data[d.id]);
                 if(data[d.id])***REMOVED***
                   tFill = myColors[data[d.id]];
                 ***REMOVED*** else ***REMOVED***
@@ -334,6 +355,9 @@
             largest += 1;
           ***REMOVED***
           // console.log(smallest, largest);
+          _.each(countyCount, function(v, k)***REMOVED***
+            d3.select('#counties-'+k).html(v);
+          ***REMOVED***)
           $('.scale rect').each(function(i)***REMOVED***
             if(i > largest || i < smallest)***REMOVED***
               $(this).hide();

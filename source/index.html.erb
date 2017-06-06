@@ -14,6 +14,35 @@
   <div id="form"></div>
   <button id="form-submit">Submit</button>
   <button id="save">Save image</button>
+  <div class="stats">
+    <!-- <h1>Number of insurers per county:</h1> -->
+    <table>
+      <thead>
+        <tr>
+          <th>Insurers</th>
+          <th>Number of counties</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>0</td>
+          <td id='counties-0'></td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td id='counties-1'></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td id='counties-2'></td>
+        </tr>
+        <tr>
+          <td>3+</td>
+          <td id='counties-3'></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <%= javascript_include_tag  'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.8/handlebars.min.js' %>
