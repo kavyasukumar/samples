@@ -66,7 +66,7 @@
     .domain(d3.range(0, 9))
     .range(myColors);
 
-  function addToHash(hashObj, key, val) ***REMOVED***
+  var addToHash = function(hashObj, key, val) ***REMOVED***
     if (!val) ***REMOVED***
       return;
     ***REMOVED***
@@ -75,9 +75,9 @@
       return;
     ***REMOVED***
     hashObj[key] += val;
-  ***REMOVED***
+  ***REMOVED***;
 
-  function rollupCounts(count, fips) ***REMOVED***
+  var rollupCounts = function(count, fips) ***REMOVED***
     if (typeof count === 'undefined') ***REMOVED***
       count = 0;
     ***REMOVED*** else if (count > 2) ***REMOVED***
@@ -87,9 +87,9 @@
       subscribeVal = SUBSCRIBERS[fips] && SUBSCRIBERS[fips].subscribers;
     addToHash(countyCount, key, 1);
     addToHash(subscriberCount, key, subscribeVal);
-  ***REMOVED***
+  ***REMOVED***;
 
-  function drawScale() ***REMOVED***
+  var drawScale = function() ***REMOVED***
     svg.append("text")
       .attr("class", "caption")
       .attr("x", 4)
@@ -149,9 +149,9 @@
       ***REMOVED***)
       .attr('stroke', '#999')
       .attr('width', "1px");
-  ***REMOVED***
+  ***REMOVED***;
 
-  function clicked() ***REMOVED***
+  var clicked = function() ***REMOVED***
     var bounds = path.bounds(tester),
       dx = bounds[1][0] - bounds[0][0],
       dy = bounds[1][1] - bounds[0][1],
@@ -172,18 +172,18 @@
     d3.selectAll('.counties').transition()
       .duration(750)
       .call(zoom.transform, transform);
-  ***REMOVED***
+  ***REMOVED***;
 
-  function reset() ***REMOVED***
+  var reset = function() ***REMOVED***
     active.classed("active", false);
     active = d3.select(null);
 
     svg.transition()
       .duration(750)
       .call(zoom.transform, initialTransform);
-  ***REMOVED***
+  ***REMOVED***;
 
-  function updateTable()***REMOVED***
+  var updateTable = function()***REMOVED***
     for (var idx = 0; idx <= 3; idx++) ***REMOVED***
       var key = idx.toString();
       d3.select('#counties-' + idx)
@@ -197,9 +197,9 @@
           .html('No Data');
       ***REMOVED***
     ***REMOVED***
-  ***REMOVED***
+  ***REMOVED***;
 
-  function drawMap(data) ***REMOVED***
+  var drawMap = function(data) ***REMOVED***
     var dt = moment(new Date()).format('MMM D, YYYY'),
         largest = 0,
         smallest = 10;
@@ -216,7 +216,7 @@
       '3': 0
     ***REMOVED***;
 
-    function ready(error, us) ***REMOVED***
+    var ready = function(error, us) ***REMOVED***
       console.log('ready');
       var tj = topojson.feature(us, us.objects.counties).features;
       if (error) ***REMOVED***
@@ -355,7 +355,7 @@
         d3.selectAll('.scale').attr('transform', "translate(-" + left + ",685)");
       ***REMOVED***
 
-    ***REMOVED***
+    ***REMOVED***;
 
     d3.select('#loading-animation').style('display', 'none');
     console.log('draw map!');
@@ -456,7 +456,7 @@
     info.append('text')
       .attr('y', 25)
       .html('As of ' + dt);
-  ***REMOVED***
+  ***REMOVED***;
 
   $('#form-submit').on('click', function() ***REMOVED***
     var control = new Alpaca($("#form").get());
