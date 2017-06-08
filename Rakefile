@@ -226,6 +226,11 @@ task :add_pop_data do
                             'subscribers' => r['Plan_Selections'].to_i
                           ***REMOVED***]
                       ***REMOVED***.to_h
+  # Avoiding data mismatch from AK's changed county name
+  # See https://www.census.gov/geo/reference/county-changes.html
+  pop_hash['02158'] = pop_hash.delete '02270' unless pop_hash['02270'].nil?
+  pop_hash['02158']['county'] = 'Kusilvak' unless pop_hash['02158'].nil?
+
   puts 'Writing as JSON hash...'
   require 'fileutils'
   File.open('./data/subscribers.json', 'w') do |file|
