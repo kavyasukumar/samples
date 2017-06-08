@@ -183,6 +183,22 @@
       .call(zoom.transform, initialTransform);
   ***REMOVED***
 
+  function updateTable()***REMOVED***
+    for (var idx = 0; idx <= 3; idx++) ***REMOVED***
+      var key = idx.toString();
+      d3.select('#counties-' + idx)
+        .html(formatComma(countyCount[key]));
+
+      if(formData['map_type'] !== 'state' || _.contains(subScriberDataStates,formData['state_select'])) ***REMOVED***
+        d3.select('#subscribers-' + idx)
+          .html(formatComma(subscriberCount[key]));
+      ***REMOVED*** else ***REMOVED***
+        d3.select('#subscribers-' + idx)
+          .html('No Data');
+      ***REMOVED***
+    ***REMOVED***
+  ***REMOVED***
+
   function drawMap(data) ***REMOVED***
     var dt = moment(new Date()).format('MMM D, YYYY'),
         largest = 0,
@@ -314,19 +330,7 @@
         largest += 1;
       ***REMOVED***
       // console.log(smallest, largest);
-      for (var idx = 0; idx <= 3; idx++) ***REMOVED***
-        var key = idx.toString();
-        d3.select('#counties-' + idx)
-          .html(formatComma(countyCount[key]));
-
-        if(formData['map_type'] !== 'state' || _.contains(subScriberDataStates,formData['state_select'])) ***REMOVED***
-          d3.select('#subscribers-' + idx)
-            .html(formatComma(subscriberCount[key]));
-        ***REMOVED*** else ***REMOVED***
-          d3.select('#subscribers-' + idx)
-            .html('No Data');
-        ***REMOVED***
-      ***REMOVED***
+      updateTable();
 
       $('.scale rect').each(function(i) ***REMOVED***
         if (i > largest || i < smallest) ***REMOVED***
