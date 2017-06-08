@@ -214,3 +214,22 @@ task :import_coverage_history do
     puts "\rUploaded #***REMOVED***uploaded***REMOVED*** records with #***REMOVED***failed***REMOVED*** failures"
   end
 end
+
+desc 'Add population data as JSON'
+task :add_pop_data do
+  puts 'Reading CSV...'
+  pop_hash = CSV.read('./original_data/HHS/planSelections.csv',
+                      :headers => true)
+                .map ***REMOVED***|r| [r['FIPS'].to_s.rjust(5, '0'),
+                            ***REMOVED***'county' => r['County'],
+                            'state' => r['State'],
+                            'subscribers' => r['Plan_Selections'].to_i
+                          ***REMOVED***]
+                      ***REMOVED***.to_h
+  puts 'Writing as JSON hash...'
+  require 'fileutils'
+  File.open('./data/subscribers.json', 'w') do |file|
+    file.write pop_hash.to_json
+  end
+  puts 'Done!'
+end
