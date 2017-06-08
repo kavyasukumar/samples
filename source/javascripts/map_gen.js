@@ -1,4 +1,4 @@
-/* globals DataAdapter, Alpaca, SUBSCRIBERS, Pancake, topojson, moment */
+/* globals Alpaca, Pancake, topojson, moment */
 
 //= require _data_adapter
 //= require _vendor_extra/moment
@@ -267,7 +267,7 @@
         if (error) throw error;
 
         var stf = [];
-        stf = state_fips[formData['state_select']];
+        stf = STATE_FIPS[formData['state_select']];
          svg.append("g").attr("class", "counties paths")
             .attr('transform', 'translate(30,90) scale(.85)')
             .selectAll("path")

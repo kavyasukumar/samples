@@ -1,8 +1,6 @@
 //= require _data_adapter
 //= require _underscore_mixins
 
-/* globals DataAdapter, console, setTimeout */
-
 (function() ***REMOVED***
   var wireEvents; // declaring upfront for linting happiness
 
