@@ -1,4 +1,5 @@
-/* globals DataAdapter, Alpaca */
+/* globals DataAdapter, Alpaca, SUBSCRIBERS, Pancake, topojson, moment */
+
 //= require _data_adapter
 //= require _vendor_extra/moment
 //= require _vendor/pancake.stack
@@ -21,12 +22,15 @@
       currentYear,
       active = d3.select(null),
       tester,
-      countyCount;
+      countyCount = ***REMOVED******REMOVED***,
+      subscriberCount = ***REMOVED******REMOVED***;
 
   // var projection = d3.geoAlbersUsa()
   //     .scale(1000)
   //     .translate([width / 2, height / 2]);
   var projection = null;
+
+  var formatComma = d3.format(",");
 
   var zoom = d3.zoom()
       .on("zoom", zoomed);
@@ -47,18 +51,28 @@
       .domain(d3.range(0, 9))
       .range(myColors);
 
-  function dictIt(num)***REMOVED***
-    if(typeof num === 'undefined')***REMOVED***
-      countyCount['0'] += 1;
-    ***REMOVED*** else if(num === 1) ***REMOVED***
-      countyCount['1'] += 1;
-    ***REMOVED*** else if(num === 2) ***REMOVED***
-      countyCount['2'] += 1;
-    ***REMOVED*** else ***REMOVED***
-      countyCount['3'] += 1;
+  function addToHash(hashObj, key, val)***REMOVED***
+    if(!val)***REMOVED***
+      return;
     ***REMOVED***
+    if(!hashObj[key])***REMOVED***
+      hashObj[key] = val;
+      return;
+    ***REMOVED***
+    hashObj[key] += val;
   ***REMOVED***
 
+  function rollupCounts(count, fips)***REMOVED***
+    if(typeof count === 'undefined')***REMOVED***
+      count = 0;
+    ***REMOVED*** else if (count > 2)***REMOVED***
+      count = 3;
+    ***REMOVED***
+    var key = count.toString(),
+        subscribeVal = SUBSCRIBERS[fips] && SUBSCRIBERS[fips].subscribers;
+    addToHash(countyCount, key, 1);
+    addToHash(subscriberCount, key, subscribeVal);
+  ***REMOVED***
 
   function drawScale()***REMOVED***
 
@@ -181,7 +195,7 @@
       if(formData['image_title'])***REMOVED***
         var titleG = svg.append('g')
                          .attr('font-family', 'Balto')
-                         .attr('transform', 'translate(5,25)')
+                         .attr('transform', 'translate(5,25)');
 
         if(formData['image_title'].length > 50)***REMOVED***
           var titleArray = [],
@@ -190,7 +204,7 @@
               count = 0,
               temp = [];
 
-          for(i in wordArray)***REMOVED***
+          for(var i in wordArray)***REMOVED***
             if(count + wordArray[i].length+1 < 50)***REMOVED***
               temp.push(wordArray[i]);
               count += wordArray[i].length;
@@ -244,12 +258,8 @@
 
       var largest = 0;
       var smallest = 10;
-      countyCount = ***REMOVED***
-        '0': 0,
-        '1': 0,
-        '2': 0,
-        '3': 0
-      ***REMOVED***
+      countyCount = ***REMOVED***'0': 0, '1' : 0, '2' : 0, '3' : 0***REMOVED***;
+      subscriberCount = ***REMOVED***'0': 0, '1' : 0, '2' : 0, '3' : 0***REMOVED***;
 
       function ready(error, us) ***REMOVED***
         console.log('ready');
@@ -277,7 +287,7 @@
                   if(data[d.id] < smallest || typeof data[d.id] === 'undefined')***REMOVED***
                     smallest = data[d.id];
                   ***REMOVED***
-                  dictIt(data[d.id]);
+                  rollupCounts(data[d.id], d.id);
                   if(data[d.id])***REMOVED***
                     tFill = myColors[data[d.id]];
                   ***REMOVED*** else ***REMOVED***
@@ -296,7 +306,7 @@
                 if(data[d.id] < smallest || typeof data[d.id] === 'undefined')***REMOVED***
                   smallest = data[d.id];
                 ***REMOVED***
-                dictIt(data[d.id]);
+                rollupCounts(data[d.id], d.id);
                 if(data[d.id])***REMOVED***
                   tFill = myColors[data[d.id]];
                 ***REMOVED*** else ***REMOVED***
@@ -355,9 +365,14 @@
             largest += 1;
           ***REMOVED***
           // console.log(smallest, largest);
-          _.each(countyCount, function(v, k)***REMOVED***
-            d3.select('#counties-'+k).html(v);
-          ***REMOVED***)
+          for(var idx = 0; idx <= 3; idx++)***REMOVED***
+            var key = idx.toString();
+            d3.select('#counties-' + idx)
+              .html(formatComma(countyCount[key]));
+            d3.select('#subscribers-' + idx)
+              .html(formatComma(subscriberCount[key]));
+          ***REMOVED***
+
           $('.scale rect').each(function(i)***REMOVED***
             if(i > largest || i < smallest)***REMOVED***
               $(this).hide();
