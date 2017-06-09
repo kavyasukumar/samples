@@ -1,0 +1,49 @@
+<%=partial 'partials/variables' %>
+<%=partial 'partials/nav' %>
+<% subscribers_by_state = data.subscribers
+                              .group_by ***REMOVED***|k,v| v['state']***REMOVED***
+                              .map ***REMOVED***|k,v| [k,v.to_h]***REMOVED***.to_h
+ %>
+ <% first = true %>
+
+ <section id="intro" class="row">
+   <h2>Subscriber data</h2>
+   <p> The tables below show the number of individuals enrolled in insurance plans through healthcare.gov.</p>
+   <p> This data is from March 2016. Please see the <a href='https://aspe.hhs.gov/basic-report/plan-selections-zip-code-and-county-health-insurance-marketplace-march-2016'>ASPE</a> page for further data caveats.</p>
+   <p>
+     If the state is not listed below, then the data is not available.</p>
+     <p> If a county is not listed below for a state, then either the data is not available or the number of subscribers were under 10.</p>
+ </section>
+ <section id="subscriber-dash" class="body">
+ <div class="row">
+<% subscribers_by_state.each do |state, subs| %>
+  <ul class="accordion row" data-accordion>
+    <li class="accordion-navigation <% if first %>active<% end %>">
+      <a href='<%= "##***REMOVED***state***REMOVED***"%>' class="icon-something">
+        <%= data.state_lookup[state] %>
+      </a>
+      <div id='<%=state%>' class="content row <% if first
+      first = false%>active<% end %>">
+        <div class='right'>Total subscribers: <%= subs.values.inject(0) ***REMOVED*** |sum, tuple| sum += tuple['subscribers'] ***REMOVED*** %></div>
+        <table class="large-12 columns">
+          <thead>
+            <tr>
+              <th class="large-10 columns"><h3>County</h3></th>
+              <th><h3>Subscribers</h3></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% subs.each do |fips, dat| %>
+            <tr>
+              <td><%=dat['county']%></td>
+              <td><%=dat['subscribers']%></td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+     </li>
+  </ul>
+<% end %>
+</div>
+</section>
