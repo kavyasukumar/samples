@@ -1,0 +1,13 @@
+<div class="datarow row">
+  <div class="providerDiv large-4 columns">
+    <input type="text" placeholder="Provider name">
+  </div>
+  <select class="newStateSelector large-3 columns">
+    <option default value="allstates">Select a state</option>
+    <% _.each(STATE_LOOKUP, function(name, state) ***REMOVED*** %>
+    <option value="<%= state %>"><%= name %></option>
+    <% ***REMOVED***) %>
+  </select>
+  <select class="countySelector hide large-3 columns"></select>
+  <a href='#' class='remove'>x</a>
+</div>

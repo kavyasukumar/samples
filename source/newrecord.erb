@@ -1,5 +1,16 @@
 <%=partial 'partials/variables' %>
+<%=partial 'partials/nav' %>
 <script>
   var COUNTIES_BY_STATE = <%= data.counties_by_state.to_json%>;
 </script>
-<%=partial 'partials/nav' %>
+
+<div class="alertHolder"></div>
+<section id="createForm">
+  <div id="plusdiv" class="row"><a href='#' class='add'>+</a></div>
+</section>
+
+<div class="row">
+  <a href="#" class="button right saveRecord">Publish</a>
+</div>
+<%= javascript_include_tag  'add_providers' %>
+<%=partial 'partials/loader' %>

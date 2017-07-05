@@ -306,7 +306,63 @@ var DataAdapter = (function() ***REMOVED***
       ***REMOVED***);
     ***REMOVED***;
 
-    _instance.updateCoverage = function(records, callBackFunction) ***REMOVED***
+    _instance.addCoverage = function(records)***REMOVED***
+      return new Promise(function(resolve, reject) ***REMOVED***
+        var dataKey = 'coverage-2017',
+          collection = _kintoBucket.collection(dataKey),
+          recordCount = records.length,
+          chunk = 100,
+          subset = [],
+          promises = [];
+
+        var batchCreateFx = function(batch) ***REMOVED***
+          for (var i = 0; i < subset.length; i++) ***REMOVED***
+            batch.createRecord(subset[i]);
+          ***REMOVED***
+        ***REMOVED***;
+
+        var batchErrHandle = function(err) ***REMOVED***
+          window.commonErrorHandler(err);
+          reject(err);
+        ***REMOVED***;
+
+        var batchHandleFx = function(responses) ***REMOVED***
+          try ***REMOVED***
+            var dataKey = 'coverage-2017',
+              currLastMod = getLocalData(dataKey + '-last_modified'),
+              unifiedResp = [];
+            for (var i in responses[0]) ***REMOVED***
+              var response = responses[0][i];
+              unifiedResp.push(response.body.data);
+              var myLastMod = response.headers.ETag.replace(/"/g, "");
+              if (myLastMod > currLastMod) ***REMOVED***
+                currLastMod = myLastMod;
+                setLocalData(dataKey + '-last_modified', currLastMod);
+              ***REMOVED***
+            ***REMOVED***
+            storeObjects(dataKey, unifiedResp)
+              .catch(batchErrHandle);
+            storeObjects(dataKey + '-preview', unifiedResp)
+              .catch(batchErrHandle);
+            resolve();
+          ***REMOVED*** catch (err) ***REMOVED***
+            batchErrHandle(err);
+          ***REMOVED***
+        ***REMOVED***;
+
+        for (var i = 0; i < records.length; i += chunk) ***REMOVED***
+          subset = records.slice(i, i + chunk);
+          promises.push(collection.batch(batchCreateFx));
+          if (i >= records.length - chunk) ***REMOVED***
+            Promise.all(promises)
+              .then(batchHandleFx)
+              .catch(batchErrHandle);
+          ***REMOVED***
+        ***REMOVED***
+      ***REMOVED***);
+    ***REMOVED***;
+
+    _instance.updateCoverage = function(records) ***REMOVED***
       return new Promise(function(resolve, reject) ***REMOVED***
         var dataKey = 'coverage-2017',
           collection = _kintoBucket.collection(dataKey),
