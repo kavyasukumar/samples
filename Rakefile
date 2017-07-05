@@ -94,6 +94,7 @@ def county_fips
   ct_fips
 end
 
+
 def states
   state_fips.keys
 end
@@ -235,6 +236,32 @@ task :add_pop_data do
   require 'fileutils'
   File.open('./data/subscribers.json', 'w') do |file|
     file.write pop_hash.to_json
+  end
+  puts 'Done!'
+end
+
+desc 'County lookup data'
+task :add_county_lookup do
+  puts 'Reading file...'
+  csv = CSV.read('./original_data/fips.csv', :headers => true)
+  result = ***REMOVED******REMOVED***
+  csv.each do |row|
+    key = row['state']
+    result[key] = [] if result[key].nil?
+    curr_obj = ***REMOVED*** 'county_name' => row['name'],
+                 'fips_code' => "#***REMOVED***row['stfips']***REMOVED***#***REMOVED***row['ctyfips'].rjust(3,'0')***REMOVED***"***REMOVED***
+
+   if curr_obj['fips_code'] == '02270'
+     curr_obj['fips_code'] = '02158'
+     curr_obj['county_name'] = 'Kusilvak County'
+   end
+
+    result[key].push(curr_obj)
+  end
+  puts 'Writing as JSON hash...'
+  require 'fileutils'
+  File.open('./data/counties_by_state.json', 'w') do |file|
+    file.write result.to_json
   end
   puts 'Done!'
 end
