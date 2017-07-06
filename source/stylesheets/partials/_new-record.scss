@@ -1,27 +1,43 @@
-#plusdiv***REMOVED***
+#plusdiv ***REMOVED***
   position: absolute;
   bottom: 30px;
   left: 0;
-  .add***REMOVED***
+
+  .add ***REMOVED***
     font-size: 40px;
   ***REMOVED***
 ***REMOVED***
 
-#createForm***REMOVED***
-  margin-top: 60px;
+#createForm ***REMOVED***
   position: relative;
+
+  margin-top: 60px;
   padding-bottom: 60px;
 
-  .providerDiv***REMOVED***
+  .providerDiv ***REMOVED***
     padding: 0;
   ***REMOVED***
-  .providerDiv,select***REMOVED***
+
+  .providerDiv,
+  select ***REMOVED***
     margin-right: 16px;
   ***REMOVED***
-  .remove***REMOVED***
+
+  .remove ***REMOVED***
+    color: red;
+
     font-size: 30px;
     font-weight: 100;
     line-height: 40px;
-    color: red;
   ***REMOVED***
+***REMOVED***
+
+#back ***REMOVED***
+  display: block;
+
+  margin-bottom: 26px;
+
+  text-decoration: underline;
+
+  font-size: 20px;
 ***REMOVED***

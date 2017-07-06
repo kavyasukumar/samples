@@ -34,12 +34,14 @@ $(document).foundation();
 
   $(document).ready(function() ***REMOVED***
     var tabs = $('nav li');
-    if (window.location.pathname.match('providers|newrecord')) ***REMOVED***
+    if (window.location.pathname.match('providers')) ***REMOVED***
       console.log('providers');
       $(tabs[1]).addClass('active');
     ***REMOVED*** else if (window.location.pathname.match('subscribers'))***REMOVED***
       console.log('subscriber');
       $(tabs[2]).addClass('active');
+    ***REMOVED*** else if (window.location.pathname.match('newrecord')) ***REMOVED***
+      $('.active').removeClass('active');
     ***REMOVED*** else ***REMOVED***
       console.log('map');
       $(tabs[0]).addClass('active');
