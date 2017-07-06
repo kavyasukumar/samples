@@ -3,9 +3,22 @@
 <script>
   var COUNTIES_BY_STATE = <%= data.counties_by_state.to_json%>;
 </script>
-
 <div class="alertHolder"></div>
-<section id="createForm">
+
+<section id="intro" class="row">
+  <h2>Add new records</h2>
+  <p>
+    Use the form below to add new coverage data.
+  </p>
+  <p>
+    Please make sure that the data does not already exist before adding. It is highly recommended that you spell the provider the same each time.
+  </p>
+  <p>
+    Use + button to add more rows of data and &#215; to remove a row.
+  </p>
+</section>
+
+<section id="createForm" class="row">
   <div id="plusdiv" class="row"><a href='#' class='add'>+</a></div>
 </section>
 
