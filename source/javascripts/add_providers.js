@@ -41,7 +41,7 @@
       var msg = 'Added new data.';
       window.commonNotificationHandler(msg, 'success');
       window.location.href = window.location.href
-        .replace(window.location.pathname,
+        .replace('/newrecord',
           '/providers');
     ***REMOVED***;
     var rows = $('.datarow');
