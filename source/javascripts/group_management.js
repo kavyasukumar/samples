@@ -6,7 +6,7 @@
 
   var parameterize = function(input) ***REMOVED***
     return input.toLowerCase()
-      .replace(/\[|\]|\(|\)|\***REMOVED***|\***REMOVED***|\\|\/|\.|\,|\&/g, '')
+      .replace(/\[|\]|\(|\)|\***REMOVED***|\***REMOVED***|\\|\/|\.|\,|\'|\"|\&/g, '')
       .replace(/\s/g, '-');
   ***REMOVED***;
 
