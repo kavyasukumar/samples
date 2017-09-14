@@ -244,7 +244,9 @@
               if (data[d.id] < smallest || typeof data[d.id] === 'undefined') ***REMOVED***
                 smallest = data[d.id];
               ***REMOVED***
-              rollupCounts(data[d.id], d.id);
+              if(String(d.id) !== '51515')***REMOVED***
+                rollupCounts(data[d.id], d.id);
+              ***REMOVED***
               if (data[d.id]) ***REMOVED***
                 tFill = myColors[data[d.id]];
               ***REMOVED*** else ***REMOVED***
