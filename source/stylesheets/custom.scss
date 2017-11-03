@@ -27,44 +27,44 @@
 $dark: #222222;
 $gray: #999999;
 
-nav.tab-bar***REMOVED***
-  h1, h4***REMOVED***
+nav.tab-bar{
+  h1, h4{
     font-weight: normal;
-  ***REMOVED***
-  ul li***REMOVED***
+  }
+  ul li{
     padding: 0 20px;
     border-left: 1px solid transparentize($white, .7);
     margin: 0px;
     height: 45px;
-    &:first-of-type***REMOVED***
+    &:first-of-type{
       margin-right: -4px;
-    ***REMOVED***
-    &.active***REMOVED***
+    }
+    &.active{
       -webkit-box-shadow: inset 0px -5px 0px 0px #4f7177;
       -moz-box-shadow: inset 0px -5px 0px 0px #4f7177;
       box-shadow: inset 0px -5px 0px 0px #4f7177;
-      h4***REMOVED***
+      h4{
         font-weight: bold;
-      ***REMOVED***
-    ***REMOVED***
-  ***REMOVED***
-***REMOVED***
+      }
+    }
+  }
+}
 
-#svg-map ***REMOVED***
+#svg-map {
   margin: 20px 0 0 20px;
-***REMOVED***
+}
 
-.info ***REMOVED***
-  text ***REMOVED***
+.info {
+  text {
     color: $blueprint-dark-gray;
-  ***REMOVED***
-***REMOVED***
+  }
+}
 
-nav ***REMOVED***
+nav {
   z-index: 2;
-***REMOVED***
+}
 
-.right-bar ***REMOVED***
+.right-bar {
   position: fixed;
   z-index: 1;
   top: 0;
@@ -73,135 +73,135 @@ nav ***REMOVED***
   background-color: #F5F5F5;
   height: 100vh;
   max-width: 25vw;
-***REMOVED***
+}
 
-.alpaca-field-object ***REMOVED***
+.alpaca-field-object {
   padding: 0;
-***REMOVED***
+}
 
-button ***REMOVED***
+button {
   background-color: $gray;
   color: $dark;
   border-radius: 3px;
   padding: 10px;
   margin: 20px 5px 0 0;
-  &:hover***REMOVED***
+  &:hover{
     background-color: darken($gray, 4%);
     color: #222222;
-  ***REMOVED***
-  &#form-submit***REMOVED***
+  }
+  &#form-submit{
     background-color: #5996AD;
-    &:hover***REMOVED***
+    &:hover{
       background-color: darken(#5996AD, 4%);
-    ***REMOVED***
-  ***REMOVED***
-***REMOVED***
+    }
+  }
+}
 
-.alpaca-field-radio ***REMOVED***
+.alpaca-field-radio {
   display: flex;
   justify-content: space-between;
-***REMOVED***
+}
 
-.radio.alpaca-control ***REMOVED***
+.radio.alpaca-control {
   width: 50%;
   background-color: #EFEFEF;
   overflow: auto;
-  &:hover***REMOVED***
+  &:hover{
     background-color: darken(#EFEFEF, 4%);
-  ***REMOVED***
-***REMOVED***
+  }
+}
 
-.radio.alpaca-control label span ***REMOVED***
+.radio.alpaca-control label span {
   text-align: center;
   padding: 6px 0;
   display: block;
   border: 1px solid #D0D0D0;
   border-radius: 3px 0 0 3px;
   color: $dark;
-***REMOVED***
+}
 
-.radio.alpaca-control:nth-of-type(2) ***REMOVED***
-  label span ***REMOVED***
+.radio.alpaca-control:nth-of-type(2) {
+  label span {
     border-radius: 0 3px 3px 0;
-  ***REMOVED***
-***REMOVED***
+  }
+}
 
-.radio.alpaca-control label input ***REMOVED***
+.radio.alpaca-control label input {
   position: absolute;
   top: -20px;
-***REMOVED***
+}
 
-.radio.alpaca-control input:checked + span ***REMOVED***
+.radio.alpaca-control input:checked + span {
   background-color: #ccc;
   border: 1px solid $gray;
-***REMOVED***
+}
 
-.form-group ***REMOVED***
+.form-group {
   margin-bottom: 15px;
 
-  &.alpaca-field-hidden ***REMOVED***
+  &.alpaca-field-hidden {
     margin-bottom: 5px;
-  ***REMOVED***
-***REMOVED***
+  }
+}
 
-.counties ***REMOVED***
+.counties {
   // fill: #ccc;
   // stroke: #ccc;
   stroke-width: 0.5px;
-***REMOVED***
+}
 
-.states ***REMOVED***
+.states {
   // stroke: #fff;
   stroke-linejoin: round;
-***REMOVED***
+}
 
-.tick ***REMOVED***
-  line ***REMOVED***
+.tick {
+  line {
     opacity: 0;
-  ***REMOVED***
+  }
 
-  text ***REMOVED***
+  text {
     font-size: 16px;
     font-family: 'Nitti';
-  ***REMOVED***
-***REMOVED***
+  }
+}
 
-.background ***REMOVED***
+.background {
   fill: none;
   pointer-events: all;
-***REMOVED***
+}
 
-.mesh ***REMOVED***
+.mesh {
   fill: none;
   stroke: #fff;
   stroke-linecap: round;
   stroke-linejoin: round;
-***REMOVED***
+}
 
-#loading-animation***REMOVED***
+#loading-animation{
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 275px auto;
   height: 100px;
-  .animation-container***REMOVED***
+  .animation-container{
     width: 70px;
-  ***REMOVED***
-  span***REMOVED***
+  }
+  span{
     font-size: 40px;
-  ***REMOVED***
-***REMOVED***
+  }
+}
 
 .loader,
 .loader:before,
-.loader:after ***REMOVED***
+.loader:after {
   background: $body-font-color;
   -webkit-animation: load1 1.5s infinite ease-in-out;
   animation: load1 1.5s infinite ease-in-out;
   width: 1em;
   height: 4em;
-***REMOVED***
-.loader ***REMOVED***
+}
+.loader {
   color: $body-font-color;
   text-indent: -9999em;
   position: relative;
@@ -211,56 +211,56 @@ button ***REMOVED***
   transform: translateZ(0);
   -webkit-animation-delay: -0.16s;
   animation-delay: -0.16s;
-***REMOVED***
+}
 .loader:before,
-.loader:after ***REMOVED***
+.loader:after {
   position: absolute;
   top: 0;
   content: '';
-***REMOVED***
-.loader:before ***REMOVED***
+}
+.loader:before {
   left: -1.75em;
   -webkit-animation-delay: -0.32s;
   animation-delay: -0.32s;
-***REMOVED***
-.loader:after ***REMOVED***
+}
+.loader:after {
   left: 1.75em;
-***REMOVED***
-@-webkit-keyframes load1 ***REMOVED***
+}
+@-webkit-keyframes load1 {
   0%,
   80%,
-  100% ***REMOVED***
+  100% {
     box-shadow: 0 0;
     height: 4em;
-  ***REMOVED***
-  40% ***REMOVED***
+  }
+  40% {
     box-shadow: 0 -2em;
     height: 5em;
-  ***REMOVED***
-***REMOVED***
-@keyframes load1 ***REMOVED***
+  }
+}
+@keyframes load1 {
   0%,
   80%,
-  100% ***REMOVED***
+  100% {
     box-shadow: 0 0;
     height: 4em;
-  ***REMOVED***
-  40% ***REMOVED***
+  }
+  40% {
     box-shadow: 0 -2em;
     height: 5em;
-  ***REMOVED***
-***REMOVED***
+  }
+}
 
-.stats***REMOVED***
+.stats{
   margin-top: 50px;
-  table***REMOVED***
+  table{
     width: 100%;
-  ***REMOVED***
-  p.small***REMOVED***
+  }
+  p.small{
     margin: auto;
     font-size: 0.75rem;
-    a***REMOVED***
+    a{
       text-decoration: underline;
-    ***REMOVED***
-  ***REMOVED***
-***REMOVED***
+    }
+  }
+}

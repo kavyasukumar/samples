@@ -26,7 +26,7 @@ def excel_to_hash(excel_file, sheet_name = nil)
   excel = read_excel(excel_file)
   excel = excel.sheet(sheet_name) unless sheet_name.nil?
   keys = excel.row(1)
-  output = excel.map ***REMOVED***|k| Hash[keys.zip(k.to_a)]***REMOVED***
+  output = excel.map {|k| Hash[keys.zip(k.to_a)]}
   output.shift # drop header row
   output
 end
@@ -40,13 +40,13 @@ def excel_to_csv(excel_file, csv_file = nil)
   # Iterating through each row because there is no enumerable object.
   # Row indexing starts from 1. Not 0
   excel.each do |row|
-    print "\rparsing #***REMOVED***row_num***REMOVED*** of #***REMOVED***total_records***REMOVED***..."
+    print "\rparsing #{row_num} of #{total_records}..."
     file_content += row.to_a.to_csv
   end
   puts '' # Moving cursor to next line
   return CSV.parse(file_content, :headers => true) if csv_file.nil?
 
-  puts "Writing to CSV file #***REMOVED***csv_file***REMOVED***"
+  puts "Writing to CSV file #{csv_file}"
   File.open(csv_file, 'w') do |file|
     file.write file_content
   end
@@ -65,14 +65,14 @@ end
 
 def state_fips
   csv = CSV.read('./original_data/fips.csv', :headers => true)
-  st_fips = ***REMOVED******REMOVED***
-  csv.each ***REMOVED***|v| st_fips[v['state']] = v['stfips']***REMOVED***
+  st_fips = {}
+  csv.each {|v| st_fips[v['state']] = v['stfips']}
   st_fips
 end
 
 def fips_state
   csv = CSV.read('./original_data/fips.csv', :headers => true)
-  fips_st = ***REMOVED******REMOVED***
+  fips_st = {}
   csv.each do |v|
     key = v['stfips'].rjust(2,"0")
     fips_st[key] = v['state']
@@ -82,14 +82,14 @@ end
 
 def county_fips
   csv = CSV.read('./original_data/fips.csv', :headers => true)
-  ct_fips = ***REMOVED******REMOVED***
+  ct_fips = {}
   words = [' County', ' Area', ' Municipality', ' Borough', ' Parish']
   replace_regex = Regexp.union(words)
   csv.each do |v|
     name = v['name']
     name = 'Carson' if v['name'] == 'Carson City' && v['state'] == 'NV'
-    key = "#***REMOVED***name.gsub(replace_regex, '')***REMOVED***, #***REMOVED***v['state']***REMOVED***"
-    ct_fips[key] = "#***REMOVED***v['stfips']***REMOVED***#***REMOVED***v['ctyfips'].rjust(3,'0')***REMOVED***"
+    key = "#{name.gsub(replace_regex, '')}, #{v['state']}"
+    ct_fips[key] = "#{v['stfips']}#{v['ctyfips'].rjust(3,'0')}"
   end
   ct_fips
 end
@@ -116,7 +116,7 @@ task :import_2017_coverage do
   uploaded = 0
   failed = 0
   # remove all providers not on market
-  insurance_hash.select! ***REMOVED***|h| h['market'] == 'on_market'***REMOVED***
+  insurance_hash.select! {|h| h['market'] == 'on_market'}
   insurance_hash.each_slice(100) do |row_group|
     batch_req = kinto_client.create_batch_request
     row_group.each do |row|
@@ -134,13 +134,13 @@ task :import_2017_coverage do
       batch_req.add_request(coverage_2017.create_record_request row)
     end
     resp = batch_req.send
-    failures = resp['responses'].select ***REMOVED***|x| x["status"] != 201***REMOVED***
+    failures = resp['responses'].select {|x| x["status"] != 201}
     failed += failures.count
     uploaded += row_group.count
-    print "\rUploaded #***REMOVED***uploaded***REMOVED*** of #***REMOVED***insurance_hash.count***REMOVED*** records. #***REMOVED***failures.count***REMOVED*** failures"
+    print "\rUploaded #{uploaded} of #{insurance_hash.count} records. #{failures.count} failures"
   end
   puts ''
-  puts "\rUploaded #***REMOVED***uploaded***REMOVED*** records with #***REMOVED***failed***REMOVED*** failures"
+  puts "\rUploaded #{uploaded} records with #{failed} failures"
 end
 
 desc 'Shard presidential election results'
@@ -149,22 +149,22 @@ task :shard_election_results do
   results = CSV.read('./original_data/us_atlas/2016_results.csv',
                       :headers => true)
                 .drop(1)
-                .map ***REMOVED***|r| ***REMOVED***'fips' => r['FIPS'],
+                .map {|r| {'fips' => r['FIPS'],
                             'total_vote' => r['Total Vote'],
                             'clinton' => r['Hillary Clinton'],
                             'trump' => r['Donald J. Trump']
-                          ***REMOVED***
-                      ***REMOVED***
+                          }
+                      }
 
   require 'fileutils'
   File.open('./processed_data/election_results/US_results.json', 'w') do |file|
     file.write results.to_json
   end
   FileUtils::mkdir_p './processed_data/election_results'
-  results.chunk ***REMOVED***|x| x['fips'][0, x['fips'].length-3].rjust(2,"0")***REMOVED***
+  results.chunk {|x| x['fips'][0, x['fips'].length-3].rjust(2,"0")}
          .map  do |f, rows|
-           File.open("./processed_data/election_results/#***REMOVED***fips_state[f]***REMOVED***_results.json", 'w') do |file|
-             print "\rWriting #***REMOVED***fips_state[f]***REMOVED*** file..."
+           File.open("./processed_data/election_results/#{fips_state[f]}_results.json", 'w') do |file|
+             print "\rWriting #{fips_state[f]} file..."
              file.write rows.to_json
            end
          end
@@ -179,12 +179,12 @@ task :import_coverage_history do
   cont = yes?('This will delete all existing records for 2017. Continue?')
   exit unless cont
   [*2014..2016].each do |year|
-    puts "uploading data for #***REMOVED***year***REMOVED***..."
-    excel_file =  "./original_data/coverage_history/#***REMOVED***year***REMOVED***.xlsx"
+    puts "uploading data for #{year}..."
+    excel_file =  "./original_data/coverage_history/#{year}.xlsx"
     coverage_hash = excel_to_hash(excel_file, 'issuers')
 
     bucket = kinto_bucket(datastore_config['bucket'])
-    collection = bucket.collection("coverage-#***REMOVED***year***REMOVED***")
+    collection = bucket.collection("coverage-#{year}")
 
     puts 'Deleting existing records...'
     # need a while loop because only a 1000 records get deleted at a time
@@ -205,13 +205,13 @@ task :import_coverage_history do
         batch_req.add_request(collection.create_record_request row)
       end
       resp = batch_req.send
-      failures = resp['responses'].select ***REMOVED***|x| x["status"] != 201***REMOVED***
+      failures = resp['responses'].select {|x| x["status"] != 201}
       failed += failures.count
       uploaded += row_group.count
-      print "\rUploaded #***REMOVED***uploaded***REMOVED*** of #***REMOVED***coverage_hash.count***REMOVED*** records. #***REMOVED***failures.count***REMOVED*** failures"
+      print "\rUploaded #{uploaded} of #{coverage_hash.count} records. #{failures.count} failures"
     end
     puts ''
-    puts "\rUploaded #***REMOVED***uploaded***REMOVED*** records with #***REMOVED***failed***REMOVED*** failures"
+    puts "\rUploaded #{uploaded} records with #{failed} failures"
   end
 end
 
@@ -220,12 +220,12 @@ task :add_pop_data do
   puts 'Reading CSV...'
   pop_hash = CSV.read('./original_data/HHS/planSelections.csv',
                       :headers => true)
-                .map ***REMOVED***|r| [r['FIPS'].to_s.rjust(5, '0'),
-                            ***REMOVED***'county' => r['County'],
+                .map {|r| [r['FIPS'].to_s.rjust(5, '0'),
+                            {'county' => r['County'],
                             'state' => r['State'],
                             'subscribers' => r['Plan_Selections'].to_i
-                          ***REMOVED***]
-                      ***REMOVED***.to_h
+                          }]
+                      }.to_h
   # Avoiding data mismatch from AK's changed county name
   # See https://www.census.gov/geo/reference/county-changes.html
   pop_hash['02158'] = pop_hash.delete '02270' unless pop_hash['02270'].nil?
@@ -243,12 +243,12 @@ desc 'County lookup data'
 task :add_county_lookup do
   puts 'Reading file...'
   csv = CSV.read('./original_data/fips.csv', :headers => true)
-  result = ***REMOVED******REMOVED***
+  result = {}
   csv.each do |row|
     key = row['state']
     result[key] = [] if result[key].nil?
-    curr_obj = ***REMOVED*** 'county_name' => row['name'],
-                 'fips_code' => "#***REMOVED***row['stfips']***REMOVED***#***REMOVED***row['ctyfips'].rjust(3,'0')***REMOVED***"***REMOVED***
+    curr_obj = { 'county_name' => row['name'],
+                 'fips_code' => "#{row['stfips']}#{row['ctyfips'].rjust(3,'0')}"}
 
    if curr_obj['fips_code'] == '02270'
      curr_obj['fips_code'] = '02158'
@@ -274,14 +274,14 @@ task :backup_data do
   now = DateTime.now.strftime('%Y_%m_%d_%H%M')
   i = 1
   while get_filename do
-    file_path = "./backup_data/coverage_2017_#***REMOVED***now***REMOVED***.json"
+    file_path = "./backup_data/coverage_2017_#{now}.json"
     if File.exist?(file_path)
-      cont = yes?("Replace file #***REMOVED***file_path***REMOVED***?")
+      cont = yes?("Replace file #{file_path}?")
       if cont
         File.delete(file_path)
         get_filename = false
       else
-        now = "#***REMOVED***now***REMOVED***_#***REMOVED***i***REMOVED***"
+        now = "#{now}_#{i}"
         i = i + 1
       end
     else
@@ -291,7 +291,7 @@ task :backup_data do
 
   states.each do |s|
     puts s
-    resp = coverage_2017.list_records("state=#***REMOVED***s***REMOVED***")
+    resp = coverage_2017.list_records("state=#{s}")
     puts resp['data'].count
 
     File.open(file_path, 'a+') do |file|

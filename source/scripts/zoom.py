@@ -1,6 +1,6 @@
 import csv, json
 
-zooms = ***REMOVED******REMOVED***
+zooms = {}
 
 with open('../../original_data/zoom_levels.csv') as csvfile:
     reader = csv.DictReader(csvfile)

@@ -1,6 +1,6 @@
 import csv, json
 
-fips = ***REMOVED******REMOVED***
+fips = {}
 
 with open('../../original_data/fips.csv') as csvfile:
     reader = csv.DictReader(csvfile)

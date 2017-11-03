@@ -4,25 +4,25 @@
 //= require _vendor_extra/moment
 //= require _vendor/pancake.stack
 //= require _vendor/textures.min
-(function() ***REMOVED***
+(function() {
   var stateIdx = ['WA', 'MT', 'ID', 'ND', 'MN', 'ME', 'MI', 'WI', 'OR', 'SD', 'NH', 'VT', 'NY', 'WY', 'IA', 'NE', 'MA', 'IL', 'PA', 'CT', 'RI', 'CA', 'UT', 'NV', 'OH', 'IN', 'NJ', 'CO', 'WV', 'MO', 'KS', 'DE', 'MD', 'VA', 'KY', 'DC', 'AZ', 'OK', 'NM', 'TN', 'NC', 'TX', 'AR', 'SC', 'AL', 'GA', 'MS', 'LA', 'FL', 'HI', 'AK'];
-  var zoomLevels = ***REMOVED***"WA": 0.75, "DE": 0.6, "WI": 0.55, "WV": 0.6, "HI": 0.7, "FL": 0.6, "WY": 0.55, "NH": 0.55, "NJ": 0.6, "NM": 0.55, "TX": 0.6, "LA": 0.6, "NC": 0.85, "ND": 0.75, "NE": 0.8, "TN": 0.9, "NY": 0.65, "PA": 0.7, "CA": 0.6, "NV": 0.6, "CO": 0.6, "AL": 0.6, "AR": 0.6, "VT": 0.55, "IL": 0.6, "GA": 0.6, "IN": 0.55, "IA": 0.7, "OK": 0.8, "AZ": 0.55, "ID": 0.55, "CT": 0.6, "ME": 0.55, "MD": 0.7, "MA": 0.7, "OH": 0.55, "UT": 0.55, "MO": 0.55, "MN": 0.55, "MI": 0.55, "RI": 0.6, "KS": 0.7, "MT": 0.75, "MS": 0.55, "SC": 0.65, "KY": 0.9, "OR": 0.65, "SD": 0.7, "AK": 0.9, "DC": 12.0***REMOVED***;
+  var zoomLevels = {"WA": 0.75, "DE": 0.6, "WI": 0.55, "WV": 0.6, "HI": 0.7, "FL": 0.6, "WY": 0.55, "NH": 0.55, "NJ": 0.6, "NM": 0.55, "TX": 0.6, "LA": 0.6, "NC": 0.85, "ND": 0.75, "NE": 0.8, "TN": 0.9, "NY": 0.65, "PA": 0.7, "CA": 0.6, "NV": 0.6, "CO": 0.6, "AL": 0.6, "AR": 0.6, "VT": 0.55, "IL": 0.6, "GA": 0.6, "IN": 0.55, "IA": 0.7, "OK": 0.8, "AZ": 0.55, "ID": 0.55, "CT": 0.6, "ME": 0.55, "MD": 0.7, "MA": 0.7, "OH": 0.55, "UT": 0.55, "MO": 0.55, "MN": 0.55, "MI": 0.55, "RI": 0.6, "KS": 0.7, "MT": 0.75, "MS": 0.55, "SC": 0.65, "KY": 0.9, "OR": 0.65, "SD": 0.7, "AK": 0.9, "DC": 12.0};
 
   var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height"),
-    formData = ***REMOVED***
+    formData = {
       'map_type': "U.S.",
       'map_num': "single",
       'select_year': "2017",
       'election_results': false
-    ***REMOVED***,
-    oldFormData = ***REMOVED******REMOVED***,
+    },
+    oldFormData = {},
     currentYear,
     active = d3.select(null),
     tester,
-    countyCount = ***REMOVED******REMOVED***,
-    subscriberCount = ***REMOVED******REMOVED***,
+    countyCount = {},
+    subscriberCount = {},
     subScriberDataStates = _.chain(SUBSCRIBERS).pluck('state').uniq().value();
 
   // var projection = d3.geoAlbersUsa()
@@ -32,12 +32,12 @@
 
   var formatComma = d3.format(",");
 
-  var zoomed = function() ***REMOVED***
+  var zoomed = function() {
     var transform = d3.event.transform;
 
     d3.selectAll('.counties').style("stroke-width", 1.5 / transform.k + "px");
     d3.selectAll('.counties').attr("transform", transform);
-  ***REMOVED***;
+  };
 
   var zoom = d3.zoom()
     .on("zoom", zoomed);
@@ -51,11 +51,11 @@
 
   // If the drag behavior prevents the default click,
   // also stop propagation so we don’t click-to-zoom.
-  var stopped = function() ***REMOVED***
-    if (d3.event.defaultPrevented) ***REMOVED***
+  var stopped = function() {
+    if (d3.event.defaultPrevented) {
       d3.event.stopPropagation();
-    ***REMOVED***
-  ***REMOVED***;
+    }
+  };
 
   svg.on("click", stopped, true);
 
@@ -66,30 +66,30 @@
     .domain(d3.range(0, 9))
     .range(myColors);
 
-  var addToHash = function(hashObj, key, val) ***REMOVED***
-    if (!val) ***REMOVED***
+  var addToHash = function(hashObj, key, val) {
+    if (!val) {
       return;
-    ***REMOVED***
-    if (!hashObj[key]) ***REMOVED***
+    }
+    if (!hashObj[key]) {
       hashObj[key] = val;
       return;
-    ***REMOVED***
+    }
     hashObj[key] += val;
-  ***REMOVED***;
+  };
 
-  var rollupCounts = function(count, fips) ***REMOVED***
-    if (typeof count === 'undefined') ***REMOVED***
+  var rollupCounts = function(count, fips) {
+    if (typeof count === 'undefined') {
       count = 0;
-    ***REMOVED*** else if (count > 2) ***REMOVED***
+    } else if (count > 2) {
       count = 3;
-    ***REMOVED***
+    }
     var key = count.toString(),
       subscribeVal = SUBSCRIBERS[fips] && SUBSCRIBERS[fips].subscribers;
     addToHash(countyCount, key, 1);
     addToHash(subscriberCount, key, subscribeVal);
-  ***REMOVED***;
+  };
 
-  var drawScale = function() ***REMOVED***
+  var drawScale = function() {
     svg.append("text")
       .attr("class", "caption")
       .attr("x", 4)
@@ -104,54 +104,54 @@
       .attr('transform', "translate(5,685)");
 
     g.selectAll("rect")
-      .data(color.range().map(function(d) ***REMOVED***
+      .data(color.range().map(function(d) {
         return d;
-      ***REMOVED***))
+      }))
       .enter().append("rect")
       .attr("height", 20)
-      .attr("x", function(d, i) ***REMOVED***
+      .attr("x", function(d, i) {
         return i * 59;
-      ***REMOVED***)
+      })
       .attr("width", 59)
-      .attr("fill", function(d) ***REMOVED***
+      .attr("fill", function(d) {
         return d;
-      ***REMOVED***);
+      });
 
     g.selectAll("text")
       .data([0, 0, 1, 2, 3, 4, 6, 8, 10])
       .enter().append("text")
-      .attr("x", function(d, i) ***REMOVED***
+      .attr("x", function(d, i) {
         return d * 59;
-      ***REMOVED***)
+      })
       .attr("y", 45)
       .attr("fill", "#777777")
       .attr('class', 'value')
       .attr("text-anchor", "middle")
       .attr('font-size', '20px')
       .attr('font-family', 'Nitti')
-      .text(function(d) ***REMOVED***
+      .text(function(d) {
         return d;
-      ***REMOVED***);
+      });
 
     g.selectAll("line")
       .data([0, 1, 2, 3, 4, 6, 8, 10])
       .enter().append("line")
-      .attr("x1", function(d, i) ***REMOVED***
+      .attr("x1", function(d, i) {
         return d * 59;
-      ***REMOVED***)
-      .attr("x2", function(d, i) ***REMOVED***
+      })
+      .attr("x2", function(d, i) {
         return d * 59;
-      ***REMOVED***)
+      })
       .attr("y1", 0)
       .attr("y2", 28)
-      .attr('value', function(d) ***REMOVED***
+      .attr('value', function(d) {
         return d;
-      ***REMOVED***)
+      })
       .attr('stroke', '#999')
       .attr('width', "1px");
-  ***REMOVED***;
+  };
 
-  var clicked = function() ***REMOVED***
+  var clicked = function() {
     var bounds = path.bounds(tester),
       dx = bounds[1][0] - bounds[0][0],
       dy = bounds[1][1] - bounds[0][1],
@@ -159,9 +159,9 @@
       y = (bounds[0][1] + bounds[1][1]) / 2,
       zoomLevel = zoomLevels[formData['state_select']] || 0.6,
       scale = Math.max(1, Math.min(15, zoomLevel / Math.max(dx / width, dy / height)));
-    if (formData['state_select'] === 'DC') ***REMOVED***
+    if (formData['state_select'] === 'DC') {
       scale = 100;
-    ***REMOVED***
+    }
 
     var translate = [width / 2 - scale * x, height / 2 - scale * y];
 
@@ -172,56 +172,56 @@
     d3.selectAll('.counties').transition()
       .duration(750)
       .call(zoom.transform, transform);
-  ***REMOVED***;
+  };
 
-  var reset = function() ***REMOVED***
+  var reset = function() {
     active.classed("active", false);
     active = d3.select(null);
 
     svg.transition()
       .duration(750)
       .call(zoom.transform, initialTransform);
-  ***REMOVED***;
+  };
 
-  var updateTable = function()***REMOVED***
-    for (var idx = 0; idx <= 3; idx++) ***REMOVED***
+  var updateTable = function(){
+    for (var idx = 0; idx <= 3; idx++) {
       var key = idx.toString();
       d3.select('#counties-' + idx)
         .html(formatComma(countyCount[key]));
 
-      if(formData['map_type'] !== 'state' || _.contains(subScriberDataStates,formData['state_select'])) ***REMOVED***
+      if(formData['map_type'] !== 'state' || _.contains(subScriberDataStates,formData['state_select'])) {
         d3.select('#subscribers-' + idx)
           .html(formatComma(subscriberCount[key]));
-      ***REMOVED*** else ***REMOVED***
+      } else {
         d3.select('#subscribers-' + idx)
           .html('No Data');
-      ***REMOVED***
-    ***REMOVED***
-  ***REMOVED***;
+      }
+    }
+  };
 
-  var drawMap = function(data) ***REMOVED***
+  var drawMap = function(data) {
     var dt = moment(new Date()).format('MMM D, YYYY'),
         largest = 0,
         smallest = 10;
-    countyCount = ***REMOVED***
+    countyCount = {
       '0': 0,
       '1': 0,
       '2': 0,
       '3': 0
-    ***REMOVED***;
-    subscriberCount = ***REMOVED***
+    };
+    subscriberCount = {
       '0': 0,
       '1': 0,
       '2': 0,
       '3': 0
-    ***REMOVED***;
+    };
 
-    var ready = function(error, us) ***REMOVED***
+    var ready = function(error, us) {
       console.log('ready');
       var tj = topojson.feature(us, us.objects.counties).features;
-      if (error) ***REMOVED***
+      if (error) {
         throw error;
-      ***REMOVED***
+      }
 
       var stf = [];
       stf = STATE_FIPS[formData['state_select']];
@@ -230,177 +230,177 @@
         .selectAll("path")
         .data(tj)
         .enter().append("path")
-        .attr("fill", function(d) ***REMOVED***
+        .attr("fill", function(d) {
           var tFill;
           var shortFips = d.id;
-          if (String(d.id).length === 4) ***REMOVED***
+          if (String(d.id).length === 4) {
             d.id = '0' + String(d.id);
-          ***REMOVED***
-          if (formData['map_type'] === 'state') ***REMOVED***
-            if (_.contains(stf, String(d.id))) ***REMOVED***
-              if (data[d.id] > largest) ***REMOVED***
+          }
+          if (formData['map_type'] === 'state') {
+            if (_.contains(stf, String(d.id))) {
+              if (data[d.id] > largest) {
                 largest = data[d.id];
-              ***REMOVED***
-              if (data[d.id] < smallest || typeof data[d.id] === 'undefined') ***REMOVED***
+              }
+              if (data[d.id] < smallest || typeof data[d.id] === 'undefined') {
                 smallest = data[d.id];
-              ***REMOVED***
-              if(String(d.id) !== '51515')***REMOVED***
+              }
+              if(String(d.id) !== '51515'){
                 rollupCounts(data[d.id], d.id);
-              ***REMOVED***
-              if (data[d.id]) ***REMOVED***
+              }
+              if (data[d.id]) {
                 tFill = myColors[data[d.id]];
-              ***REMOVED*** else ***REMOVED***
+              } else {
                 tFill = '#fff200';
-              ***REMOVED***
-            ***REMOVED*** else ***REMOVED***
+              }
+            } else {
               tFill = 'none';
-            ***REMOVED***
-          ***REMOVED*** else ***REMOVED***
-            if (d.id === '46102') ***REMOVED***
+            }
+          } else {
+            if (d.id === '46102') {
               d.id = '46113';
-            ***REMOVED***
-            if (data[d.id] > largest) ***REMOVED***
+            }
+            if (data[d.id] > largest) {
               largest = data[d.id];
-            ***REMOVED***
-            if (data[d.id] < smallest || typeof data[d.id] === 'undefined') ***REMOVED***
+            }
+            if (data[d.id] < smallest || typeof data[d.id] === 'undefined') {
               smallest = data[d.id];
-            ***REMOVED***
+            }
             rollupCounts(data[d.id], d.id);
-            if (data[d.id]) ***REMOVED***
+            if (data[d.id]) {
               tFill = myColors[data[d.id]];
-            ***REMOVED*** else ***REMOVED***
+            } else {
               tFill = '#fff200';
-            ***REMOVED***
-          ***REMOVED***
+            }
+          }
           return tFill;
 
-        ***REMOVED***)
-        .attr('id', function(d) ***REMOVED***
+        })
+        .attr('id', function(d) {
           return 'f_' + d.id + ' ' + data[d.id];
-        ***REMOVED***)
+        })
         .attr("d", path)
-        .attr("stroke", function(d) ***REMOVED***
-          if (formData['map_type'] === 'state') ***REMOVED***
-            if (_.contains(stf, String(d.id))) ***REMOVED***
+        .attr("stroke", function(d) {
+          if (formData['map_type'] === 'state') {
+            if (_.contains(stf, String(d.id))) {
               return '#fff';
-            ***REMOVED***
-          ***REMOVED*** else ***REMOVED***
-            if (data[d.id]) ***REMOVED***
+            }
+          } else {
+            if (data[d.id]) {
               return '#fff';
-            ***REMOVED***
-          ***REMOVED***
-        ***REMOVED***)
+            }
+          }
+        })
         .attr('stroke-width', '0.5px')
         .append("title")
-        .text(function(d) ***REMOVED***
+        .text(function(d) {
           return d.count;
-        ***REMOVED***);
+        });
 
       svg.append("path")
         .attr('transform', 'translate(30,90) scale(.85)')
-        .datum(topojson.mesh(us, us.objects.states, function(a, b) ***REMOVED***
+        .datum(topojson.mesh(us, us.objects.states, function(a, b) {
           return a !== b;
-        ***REMOVED***))
+        }))
         .attr("class", "mesh")
         .attr("d", path)
         .attr('fill', 'none')
         .attr('stroke', '#fff');
 
-      if (formData['map_type'] === 'state') ***REMOVED***
+      if (formData['map_type'] === 'state') {
         d3.selectAll('.mesh').style('display', 'none');
-      ***REMOVED*** else ***REMOVED***
+      } else {
         d3.selectAll('.mesh').style('display', 'block');
-      ***REMOVED***
-      if (formData['map_type'] === 'state') ***REMOVED***
-        if (formData['state_select'] === 'AK') ***REMOVED***
+      }
+      if (formData['map_type'] === 'state') {
+        if (formData['state_select'] === 'AK') {
           tester = topojson.feature(us, us.objects.states).features[26];
-        ***REMOVED*** else ***REMOVED***
+        } else {
           tester = topojson.feature(us, us.objects.states).features[_.indexOf(stateIdx, formData['state_select'])];
-        ***REMOVED***
+        }
         d3.selectAll('.counties').attr('stroke', 'none').attr('fill', 'none');
         clicked();
-      ***REMOVED*** else ***REMOVED***
+      } else {
         d3.selectAll('.counties').attr('stroke', '#ccc').attr('fill', '#ccc');
-      ***REMOVED***
-      if (typeof smallest === 'undefined') ***REMOVED***
+      }
+      if (typeof smallest === 'undefined') {
         smallest = 0;
-      ***REMOVED***
-      if (smallest === 5 || smallest === 7 || smallest === 9) ***REMOVED***
+      }
+      if (smallest === 5 || smallest === 7 || smallest === 9) {
         smallest -= 1;
-      ***REMOVED***
-      if (largest === 4 || largest === 6 || largest === 8) ***REMOVED***
+      }
+      if (largest === 4 || largest === 6 || largest === 8) {
         largest += 1;
-      ***REMOVED***
+      }
       // console.log(smallest, largest);
       updateTable();
 
-      $('.scale rect').each(function(i) ***REMOVED***
-        if (i > largest || i < smallest) ***REMOVED***
+      $('.scale rect').each(function(i) {
+        if (i > largest || i < smallest) {
           $(this).hide();
-        ***REMOVED***
-      ***REMOVED***);
-      $('.scale .value').each(function() ***REMOVED***
+        }
+      });
+      $('.scale .value').each(function() {
         var it = parseInt($(this).html());
-        if (it > largest + 1 || it < smallest) ***REMOVED***
+        if (it > largest + 1 || it < smallest) {
           $(this).hide();
-        ***REMOVED***
-      ***REMOVED***);
-      $('.scale line').each(function(i) ***REMOVED***
+        }
+      });
+      $('.scale line').each(function(i) {
         var it = parseInt($(this).attr('value'));
-        if (it > largest + 1 || it < smallest) ***REMOVED***
+        if (it > largest + 1 || it < smallest) {
           $(this).hide();
-        ***REMOVED***
-      ***REMOVED***);
+        }
+      });
 
-      if (smallest > 0) ***REMOVED***
+      if (smallest > 0) {
         var left = (smallest * 59) - 5;
         d3.selectAll('.scale').attr('transform', "translate(-" + left + ",685)");
-      ***REMOVED***
+      }
 
-    ***REMOVED***;
+    };
 
     d3.select('#loading-animation').style('display', 'none');
     console.log('draw map!');
-    if (formData === oldFormData) ***REMOVED*** return; ***REMOVED***
+    if (formData === oldFormData) { return; }
 
     oldFormData = formData;
-    if (formData['map_type'] === 'state' && formData['state_select'] !== 'AK') ***REMOVED***
+    if (formData['map_type'] === 'state' && formData['state_select'] !== 'AK') {
       projection = d3.geoMercator()
         .center([43.09, -79.06])
         .scale(800)
         .translate([width / 2, height / 2]);
-    ***REMOVED*** else ***REMOVED***
+    } else {
       projection = null;
-    ***REMOVED***
+    }
     path.projection(projection);
 
     console.log(formData);
     svg.html('');
-    if (formData['image_title']) ***REMOVED***
+    if (formData['image_title']) {
       var titleG = svg.append('g')
         .attr('font-family', 'Balto')
         .attr('transform', 'translate(5,25)');
 
-      if (formData['image_title'].length > 50) ***REMOVED***
+      if (formData['image_title'].length > 50) {
         var titleArray = [],
           wordArray = formData['image_title'].split(' '),
           x = Math.ceil(formData['image_title'].length / 50),
           count = 0,
           temp = [];
 
-        for (var i in wordArray) ***REMOVED***
-          if (count + wordArray[i].length + 1 < 50) ***REMOVED***
+        for (var i in wordArray) {
+          if (count + wordArray[i].length + 1 < 50) {
             temp.push(wordArray[i]);
             count += wordArray[i].length;
-          ***REMOVED*** else ***REMOVED***
+          } else {
             titleArray.push(temp);
             temp = [wordArray[i]];
             count = wordArray[i].length + 1;
-          ***REMOVED***
-        ***REMOVED***
+          }
+        }
         titleArray.push(temp);
 
-        for (i in titleArray) ***REMOVED***
+        for (i in titleArray) {
           var num = parseInt(i);
           titleG.append("text")
             .attr('class', 'title')
@@ -409,8 +409,8 @@
             .attr('font-size', '32px')
             .attr('fill', '#474747')
             .text(titleArray[i].join(' '));
-        ***REMOVED***
-      ***REMOVED*** else ***REMOVED***
+        }
+      } else {
         titleG.append("text")
           .attr('class', 'title')
           .attr('y', 25)
@@ -418,9 +418,9 @@
           .attr('font-size', '32px')
           .attr('fill', '#474747')
           .text(formData['image_title']);
-      ***REMOVED***
+      }
 
-    ***REMOVED***
+    }
     svg.append("rect")
       .attr("class", "background")
       .attr("width", width)
@@ -429,15 +429,15 @@
 
     drawScale();
 
-    if (formData['map_type'] === 'state' && formData['state_select'] !== 'AK') ***REMOVED***
+    if (formData['map_type'] === 'state' && formData['state_select'] !== 'AK') {
       d3.queue()
         .defer(d3.json, "https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/us.json")
         .await(ready);
-    ***REMOVED*** else ***REMOVED***
+    } else {
       d3.queue()
         .defer(d3.json, "https://d3js.org/us-10m.v1.json")
         .await(ready);
-    ***REMOVED***
+    }
 
     svg.append('g')
       .attr('class', 'vox-logo')
@@ -458,135 +458,135 @@
     info.append('text')
       .attr('y', 25)
       .html('As of ' + dt);
-  ***REMOVED***;
+  };
 
-  $('#form-submit').on('click', function() ***REMOVED***
+  $('#form-submit').on('click', function() {
     var control = new Alpaca($("#form").get());
     formData = control.getValue();
     formData.select_year = '2017';
     currentYear = formData.select_year;
-    if (formData['scenario'] && formData['scenario'] === 'hypothetical') ***REMOVED***
+    if (formData['scenario'] && formData['scenario'] === 'hypothetical') {
       d3.select('#loading-animation').style('display', 'block');
       window.dataAdapter.getPreviewProviderCount()
         .then(drawMap)
-        .catch(function(err) ***REMOVED***
+        .catch(function(err) {
           // handle error here
           console.log(err);
-        ***REMOVED***);
-    ***REMOVED*** else ***REMOVED***
+        });
+    } else {
       window.dataAdapter.getProviderCount(currentYear)
         .then(drawMap)
-        .catch(function(err) ***REMOVED***
+        .catch(function(err) {
           // handle error here
           console.log(err);
-        ***REMOVED***);
-    ***REMOVED***
-  ***REMOVED***);
+        });
+    }
+  });
 
 
-  d3.select("#save").on("click", function() ***REMOVED***
+  d3.select("#save").on("click", function() {
     d3.select('canvas').attr('width', 900).attr('height', 800);
     var tName = currentYear;
-    if (formData['map_type'] === 'state') ***REMOVED***
+    if (formData['map_type'] === 'state') {
       tName = formData['state_select'] + '_' + currentYear;
-    ***REMOVED***
+    }
     console.log(formData['scenario']);
-    if (formData['scenario'] === 'hypothetical') ***REMOVED***
+    if (formData['scenario'] === 'hypothetical') {
       tName += '_selected';
-    ***REMOVED***
+    }
     var flapjack = new Pancake("svg-map");
     flapjack.download(tName + '_providers.png');
-  ***REMOVED***);
+  });
 
-  $(document).ready(function() ***REMOVED***
+  $(document).ready(function() {
     window.dataAdapter = window.dataAdapter || DataAdapter.getInstance();
 
     currentYear = '2017';
     window.dataAdapter.ready()
-      .then(function() ***REMOVED***
+      .then(function() {
         window.dataAdapter.getProviderCount(currentYear)
           .then(drawMap)
-          .catch(function(err) ***REMOVED***
+          .catch(function(err) {
             // handle error here
             console.log(err);
-          ***REMOVED***);
-      ***REMOVED***).catch(function(err) ***REMOVED***
+          });
+      }).catch(function(err) {
         // handle error here
         console.log(err);
-      ***REMOVED***);
+      });
 
 
-    $("#form").alpaca(***REMOVED***
-      "schema": ***REMOVED***
+    $("#form").alpaca({
+      "schema": {
         "type": "object",
-        "properties": ***REMOVED***
-          "image_title": ***REMOVED***
+        "properties": {
+          "image_title": {
             "title": "Image title"
-          ***REMOVED***,
-          "map_type": ***REMOVED***
+          },
+          "map_type": {
             "required": true,
             "default": "U.S.",
             "enum": ["U.S.", "state"]
-          ***REMOVED***,
-          "state_select": ***REMOVED***
+          },
+          "state_select": {
             "title": "Select state",
             "type": "string",
             "required": true,
             "default": "AL",
             "enum": ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'],
             "dependencies": "map_type"
-          ***REMOVED***,
-          "scenario_label": ***REMOVED***
+          },
+          "scenario_label": {
             "type": "string",
             "title": "Which type of data would you like to display?"
-          ***REMOVED***,
-          "scenario": ***REMOVED***
+          },
+          "scenario": {
             "required": true,
             "default": 'actual',
             "enum": [
               'actual',
               'hypothetical'
             ]
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***,
-      "options": ***REMOVED***
-        "fields": ***REMOVED***
-          "map_type": ***REMOVED***
+          }
+        }
+      },
+      "options": {
+        "fields": {
+          "map_type": {
             "vertical": false,
             "optionLabels": [
               "<span>U.S.</span>",
               "<span>state</span>"
             ]
-          ***REMOVED***,
-          "state_select": ***REMOVED***
+          },
+          "state_select": {
             "type": "select",
             "optionLabels": [
               'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
             ],
-            "dependencies": ***REMOVED***
+            "dependencies": {
               "map_type": "state"
-            ***REMOVED***
-          ***REMOVED***,
-          "select_year": ***REMOVED***
+            }
+          },
+          "select_year": {
             "type": "select",
-            "dependencies": ***REMOVED***
+            "dependencies": {
               "map_num": "single"
-            ***REMOVED***
-          ***REMOVED***,
-          "scenario_label": ***REMOVED***
+            }
+          },
+          "scenario_label": {
             "type": "hidden"
-          ***REMOVED***,
-          "scenario": ***REMOVED***
+          },
+          "scenario": {
             "optionLabels": [
               "<span>actual</span>",
               "<span>hypothetical</span>"
             ]
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***
-    ***REMOVED***);
+          }
+        }
+      }
+    });
     $('.radio.alpaca-control').css('display', 'flex');
-  ***REMOVED***);
+  });
 
-***REMOVED***)();
+})();

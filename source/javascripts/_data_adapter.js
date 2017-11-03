@@ -2,7 +2,7 @@
 
 /* globals KINTO_TOKEN, STATE_LOOKUP*/
 
-var DataAdapter = (function() ***REMOVED***
+var DataAdapter = (function() {
   var instance;
   var db,
     isDataStale = false,
@@ -11,303 +11,303 @@ var DataAdapter = (function() ***REMOVED***
     STORES = ['coverage-2017', 'coverage-2017-preview', 'coverage-2016', 'coverage-2015', 'coverage-2014'];
 
   window.localStorage.setItem('kintoToken', KINTO_TOKEN);
-  window.setupKinto(***REMOVED***
+  window.setupKinto({
     bucket: 'vox-aca-dashboard'
-  ***REMOVED***);
+  });
   var _kintoBucket = _kintoBucket || window.getKintoBucket();
 
 
   // indexedDB helpers
-  var openDb = function() ***REMOVED***
-    return new Promise(function(resolve, reject) ***REMOVED***
+  var openDb = function() {
+    return new Promise(function(resolve, reject) {
       console.log("opening indexed DB...");
       var req = window.indexedDB.open(DB_NAME, DB_VERSION);
-      req.onsuccess = function(evt) ***REMOVED***
+      req.onsuccess = function(evt) {
         db = this.result;
         console.log('opened DB');
         resolve();
-      ***REMOVED***;
-      req.onerror = function(evt) ***REMOVED***
+      };
+      req.onerror = function(evt) {
         console.error("openDb:", evt.target.errorCode);
         reject();
-      ***REMOVED***;
-      req.onupgradeneeded = function(evt) ***REMOVED***
+      };
+      req.onupgradeneeded = function(evt) {
         console.log("Upgrading db...");
-        for (var i in STORES) ***REMOVED***
+        for (var i in STORES) {
           evt.currentTarget.result.createObjectStore(
-            STORES[i], ***REMOVED***
+            STORES[i], {
               keyPath: 'id'
-            ***REMOVED***);
-        ***REMOVED***
-      ***REMOVED***;
-    ***REMOVED***);
-  ***REMOVED***;
+            });
+        }
+      };
+    });
+  };
 
-  var getObjectStore = function(storeName, mode) ***REMOVED***
+  var getObjectStore = function(storeName, mode) {
     var tx = db.transaction(storeName, mode);
     return tx.objectStore(storeName);
-  ***REMOVED***;
+  };
 
-  var storeObject = function(store, obj) ***REMOVED***
-    return new Promise(function(resolve, reject) ***REMOVED***
+  var storeObject = function(store, obj) {
+    return new Promise(function(resolve, reject) {
       var req = store.put(obj);
 
-      req.onsuccess = function() ***REMOVED***
+      req.onsuccess = function() {
         resolve();
-      ***REMOVED***;
+      };
 
-      req.onerror = function(error) ***REMOVED***
+      req.onerror = function(error) {
         reject(error);
-      ***REMOVED***;
-    ***REMOVED***);
-  ***REMOVED***;
+      };
+    });
+  };
 
-  var storeObjects = function(storeName, objects) ***REMOVED***
-    return new Promise(function(resolve, reject) ***REMOVED***
+  var storeObjects = function(storeName, objects) {
+    return new Promise(function(resolve, reject) {
       var objectStore = getObjectStore(storeName, 'readwrite'),
         promises = [];
 
-      for (var i in objects) ***REMOVED***
+      for (var i in objects) {
         promises.push(storeObject(objectStore, objects[i]));
-      ***REMOVED***
+      }
 
-      Promise.all(promises).then(function() ***REMOVED***
+      Promise.all(promises).then(function() {
         resolve();
-      ***REMOVED***).catch(function(error) ***REMOVED***
+      }).catch(function(error) {
         reject(error);
-      ***REMOVED***);
-    ***REMOVED***);
-  ***REMOVED***;
+      });
+    });
+  };
 
-  var clearObjects = function(storeName) ***REMOVED***
-    return new Promise(function(resolve, reject) ***REMOVED***
+  var clearObjects = function(storeName) {
+    return new Promise(function(resolve, reject) {
       var objectStore = getObjectStore(storeName, 'readwrite');
       var req = objectStore.clear();
-      req.onsuccess = function(evt) ***REMOVED***
+      req.onsuccess = function(evt) {
         resolve();
-      ***REMOVED***;
-      req.onerror = function(err) ***REMOVED***
+      };
+      req.onerror = function(err) {
         reject(err);
-      ***REMOVED***;
-    ***REMOVED***);
-  ***REMOVED***;
+      };
+    });
+  };
 
-  var replaceObjects = function(storeName, objects) ***REMOVED***
-    return new Promise(function(resolve, reject) ***REMOVED***
-      clearObjects(storeName).then(function() ***REMOVED***
+  var replaceObjects = function(storeName, objects) {
+    return new Promise(function(resolve, reject) {
+      clearObjects(storeName).then(function() {
         storeObjects(storeName, objects)
           .then(resolve)
-          .catch(function(err) ***REMOVED***
+          .catch(function(err) {
             window.commonErrorHandler(err);
             reject(err);
-          ***REMOVED***);
-      ***REMOVED***);
-    ***REMOVED***);
-  ***REMOVED***;
+          });
+      });
+    });
+  };
 
-  var getObjects = function(storeName) ***REMOVED***
-    return new Promise(function(resolve, reject) ***REMOVED***
+  var getObjects = function(storeName) {
+    return new Promise(function(resolve, reject) {
       var objectStore = getObjectStore(storeName, 'readonly');
       var req = objectStore.getAll();
-      req.onsuccess = function(evt) ***REMOVED***
+      req.onsuccess = function(evt) {
         resolve(evt.target.result);
-      ***REMOVED***;
-      req.onerror = function(err) ***REMOVED***
+      };
+      req.onerror = function(err) {
         reject(err);
-      ***REMOVED***;
-    ***REMOVED***);
-  ***REMOVED***;
+      };
+    });
+  };
 
-  var countObjects = function(storeName) ***REMOVED***
-    return new Promise(function(resolve, reject) ***REMOVED***
+  var countObjects = function(storeName) {
+    return new Promise(function(resolve, reject) {
       var objectStore = getObjectStore(storeName, 'readonly');
       var req = objectStore.count();
-      req.onsuccess = function(evt) ***REMOVED***
+      req.onsuccess = function(evt) {
         resolve(evt.target.result);
-      ***REMOVED***;
-      req.onerror = function(err) ***REMOVED***
+      };
+      req.onerror = function(err) {
         resolve(err);
-      ***REMOVED***;
-    ***REMOVED***);
-  ***REMOVED***;
+      };
+    });
+  };
 
   // localStorage helpers
-  var setLocalData = function(key, obj) ***REMOVED***
+  var setLocalData = function(key, obj) {
     window.localStorage.setItem('vox-' + key, JSON.stringify(obj));
-  ***REMOVED***;
+  };
 
-  var getLocalData = function(key) ***REMOVED***
+  var getLocalData = function(key) {
     var val = window.localStorage.getItem('vox-' + key);
-    if (val === 'undefined') ***REMOVED***
+    if (val === 'undefined') {
       return 0;
-    ***REMOVED***
+    }
     return JSON.parse(val);
-  ***REMOVED***;
+  };
 
   // Data helpers
-  var hasUpdates = function(dataKey) ***REMOVED***
-    return new Promise(function(resolve, reject) ***REMOVED***
-      if (isDataStale) ***REMOVED***
+  var hasUpdates = function(dataKey) {
+    return new Promise(function(resolve, reject) {
+      if (isDataStale) {
         resolve(true);
         return;
-      ***REMOVED***
+      }
       var localLastMod = getLocalData(dataKey + '-last_modified');
 
-      if (!localLastMod) ***REMOVED***
+      if (!localLastMod) {
         resolve(true);
         return;
-      ***REMOVED***
+      }
 
       var serverLastMod = null,
         serverTotal = 0;
 
-      _kintoBucket.collection(dataKey).listRecords(***REMOVED***
+      _kintoBucket.collection(dataKey).listRecords({
         since: localLastMod.toString(),
         limit: 1
-      ***REMOVED***).then(function(resp) ***REMOVED***
+      }).then(function(resp) {
         serverLastMod = resp.last_modified;
-        if (serverLastMod > localLastMod) ***REMOVED***
+        if (serverLastMod > localLastMod) {
           resolve(true);
-        ***REMOVED*** else ***REMOVED***
+        } else {
           _kintoBucket.collection(dataKey).getTotalRecords()
-            .then(function(serverCount) ***REMOVED***
+            .then(function(serverCount) {
               serverTotal = serverCount;
-              countObjects(dataKey).then(function(count) ***REMOVED***
+              countObjects(dataKey).then(function(count) {
                 var clientTotal = count;
-                if (serverTotal !== clientTotal) ***REMOVED***
+                if (serverTotal !== clientTotal) {
                   resolve(true);
-                ***REMOVED*** else ***REMOVED***
+                } else {
                   resolve(false);
-                ***REMOVED***
-              ***REMOVED***);
-            ***REMOVED***).catch(function(err) ***REMOVED***
+                }
+              });
+            }).catch(function(err) {
               reject(err);
-            ***REMOVED***);
-        ***REMOVED***
-      ***REMOVED***).catch(function(err) ***REMOVED***
+            });
+        }
+      }).catch(function(err) {
         reject(err);
-      ***REMOVED***);
-    ***REMOVED***);
-  ***REMOVED***;
+      });
+    });
+  };
 
-  var mergeData = function(superset, changeSet) ***REMOVED***
-    _.each(changeSet, function(rec) ***REMOVED***
-      var idx = _.findIndex(superset, function(d) ***REMOVED***
+  var mergeData = function(superset, changeSet) {
+    _.each(changeSet, function(rec) {
+      var idx = _.findIndex(superset, function(d) {
         return d.id === rec.id;
-      ***REMOVED***);
+      });
       superset[idx].is_active = rec.is_active;
-    ***REMOVED***);
+    });
     return superset;
-  ***REMOVED***;
+  };
 
-  var init = function() ***REMOVED***
+  var init = function() {
 
     // Private properties and methods
-    var _instance = ***REMOVED******REMOVED***,
+    var _instance = {},
       _databaseReady = false;
 
     // Public properties and methods
-    _instance.getCoverage = function(year) ***REMOVED***
-      return new Promise(function(resolve, reject) ***REMOVED***
-        try ***REMOVED***
+    _instance.getCoverage = function(year) {
+      return new Promise(function(resolve, reject) {
+        try {
           var dataKey = 'coverage-' + year;
 
-          hasUpdates(dataKey).then(function(update) ***REMOVED***
-            if (!update) ***REMOVED***
+          hasUpdates(dataKey).then(function(update) {
+            if (!update) {
               console.log('data exists');
-              getObjects(dataKey).then(function(resp) ***REMOVED***
-                if (parseInt(year) === 2017) ***REMOVED***
+              getObjects(dataKey).then(function(resp) {
+                if (parseInt(year) === 2017) {
                   countObjects(dataKey + '-preview')
-                    .then(function(count) ***REMOVED***
-                      if (count === 0) ***REMOVED***
+                    .then(function(count) {
+                      if (count === 0) {
                         console.log('Storing data in preview');
                         storeObjects(dataKey + '-preview', resp);
-                      ***REMOVED***
-                    ***REMOVED***);
-                ***REMOVED***
+                      }
+                    });
+                }
                 resolve(resp);
-              ***REMOVED***);
+              });
               return;
-            ***REMOVED***
+            }
             console.log('Refreshing data...');
             var collection = _kintoBucket.collection(dataKey);
 
             var states = _.keys(STATE_LOOKUP),
               promises = [];
 
-            var handleKintoResp = function(responses) ***REMOVED***
+            var handleKintoResp = function(responses) {
               var currLastMod = getLocalData(dataKey + '-last_modified'),
                 unifiedResp = [];
-              clearObjects(dataKey).then(function() ***REMOVED***
-                for (var i in responses) ***REMOVED***
+              clearObjects(dataKey).then(function() {
+                for (var i in responses) {
                   var response = responses[i];
                   unifiedResp = _.union(unifiedResp, response.data);
                   storeObjects(dataKey, response.data);
 
-                  if (response.last_modified > currLastMod) ***REMOVED***
+                  if (response.last_modified > currLastMod) {
                     currLastMod = response.last_modified;
                     setLocalData(dataKey + '-last_modified', currLastMod);
-                  ***REMOVED***
-                ***REMOVED***
-                if (parseInt(year) === 2017) ***REMOVED***
+                  }
+                }
+                if (parseInt(year) === 2017) {
                   countObjects(dataKey + '-preview')
-                    .then(function(count) ***REMOVED***
-                      if (count !== 0) ***REMOVED***
+                    .then(function(count) {
+                      if (count !== 0) {
                         var msg = 'Newer version of data found. Discarded old data to avoid conflicts';
                         window.commonNotificationHandler(msg, 'warning');
-                      ***REMOVED***
-                    ***REMOVED***);
-                  replaceObjects(dataKey + '-preview', unifiedResp).then(function() ***REMOVED***
+                      }
+                    });
+                  replaceObjects(dataKey + '-preview', unifiedResp).then(function() {
                     isDataStale = false;
                     resolve(unifiedResp);
-                  ***REMOVED***).catch(function(err) ***REMOVED***
+                  }).catch(function(err) {
                     window.commonErrorHandler(err);
                     reject(err);
-                  ***REMOVED***);
-                ***REMOVED*** else ***REMOVED***
+                  });
+                } else {
                   isDataStale = false;
                   resolve(unifiedResp);
-                ***REMOVED***
-              ***REMOVED***);
-            ***REMOVED***;
+                }
+              });
+            };
 
-            var fetchState = function(ind) ***REMOVED***
-              setTimeout(function() ***REMOVED***
-                promises.push(collection.listRecords(***REMOVED***
-                  filters: ***REMOVED***
+            var fetchState = function(ind) {
+              setTimeout(function() {
+                promises.push(collection.listRecords({
+                  filters: {
                     state: states[ind]
-                  ***REMOVED***,
+                  },
                   limit: 1000,
                   pages: Infinity,
                   retry: 4
-                ***REMOVED***));
-                if (parseInt(ind) === states.length - 1) ***REMOVED***
+                }));
+                if (parseInt(ind) === states.length - 1) {
                   Promise.all(promises)
                     .then(handleKintoResp)
-                    .catch(function(err) ***REMOVED***
+                    .catch(function(err) {
                       window.commonErrorHandler(err);
                       reject(err);
-                    ***REMOVED***);
-                ***REMOVED***
-              ***REMOVED***, ind * 300);
-            ***REMOVED***;
+                    });
+                }
+              }, ind * 300);
+            };
 
-            for (var i in states) ***REMOVED***
+            for (var i in states) {
               fetchState(i);
-            ***REMOVED***
-          ***REMOVED***).catch(function(err) ***REMOVED***
+            }
+          }).catch(function(err) {
             window.commonErrorHandler(err);
             reject(err);
-          ***REMOVED***);
-        ***REMOVED*** catch (err) ***REMOVED***
+          });
+        } catch (err) {
           window.commonErrorHandler(err);
           reject(err);
-        ***REMOVED***
-      ***REMOVED***);
-    ***REMOVED***;
+        }
+      });
+    };
 
-    _instance.addCoverage = function(records)***REMOVED***
-      return new Promise(function(resolve, reject) ***REMOVED***
+    _instance.addCoverage = function(records){
+      return new Promise(function(resolve, reject) {
         var dataKey = 'coverage-2017',
           collection = _kintoBucket.collection(dataKey),
           recordCount = records.length,
@@ -315,55 +315,55 @@ var DataAdapter = (function() ***REMOVED***
           subset = [],
           promises = [];
 
-        var batchCreateFx = function(batch) ***REMOVED***
-          for (var i = 0; i < subset.length; i++) ***REMOVED***
+        var batchCreateFx = function(batch) {
+          for (var i = 0; i < subset.length; i++) {
             batch.createRecord(subset[i]);
-          ***REMOVED***
-        ***REMOVED***;
+          }
+        };
 
-        var batchErrHandle = function(err) ***REMOVED***
+        var batchErrHandle = function(err) {
           window.commonErrorHandler(err);
           reject(err);
-        ***REMOVED***;
+        };
 
-        var batchHandleFx = function(responses) ***REMOVED***
-          try ***REMOVED***
+        var batchHandleFx = function(responses) {
+          try {
             var dataKey = 'coverage-2017',
               currLastMod = getLocalData(dataKey + '-last_modified'),
               unifiedResp = [];
-            for (var i in responses[0]) ***REMOVED***
+            for (var i in responses[0]) {
               var response = responses[0][i];
               unifiedResp.push(response.body.data);
               var myLastMod = response.headers.ETag.replace(/"/g, "");
-              if (myLastMod > currLastMod) ***REMOVED***
+              if (myLastMod > currLastMod) {
                 currLastMod = myLastMod;
                 setLocalData(dataKey + '-last_modified', currLastMod);
-              ***REMOVED***
-            ***REMOVED***
+              }
+            }
             storeObjects(dataKey, unifiedResp)
               .catch(batchErrHandle);
             storeObjects(dataKey + '-preview', unifiedResp)
               .catch(batchErrHandle);
             resolve();
-          ***REMOVED*** catch (err) ***REMOVED***
+          } catch (err) {
             batchErrHandle(err);
-          ***REMOVED***
-        ***REMOVED***;
+          }
+        };
 
-        for (var i = 0; i < records.length; i += chunk) ***REMOVED***
+        for (var i = 0; i < records.length; i += chunk) {
           subset = records.slice(i, i + chunk);
           promises.push(collection.batch(batchCreateFx));
-          if (i >= records.length - chunk) ***REMOVED***
+          if (i >= records.length - chunk) {
             Promise.all(promises)
               .then(batchHandleFx)
               .catch(batchErrHandle);
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***);
-    ***REMOVED***;
+          }
+        }
+      });
+    };
 
-    _instance.updateCoverage = function(records) ***REMOVED***
-      return new Promise(function(resolve, reject) ***REMOVED***
+    _instance.updateCoverage = function(records) {
+      return new Promise(function(resolve, reject) {
         var dataKey = 'coverage-2017',
           collection = _kintoBucket.collection(dataKey),
           recordCount = records.length,
@@ -371,187 +371,187 @@ var DataAdapter = (function() ***REMOVED***
           subset = [],
           promises = [];
 
-        var batchUpdateFx = function(batch) ***REMOVED***
-          for (var i = 0; i < subset.length; i++) ***REMOVED***
-            batch.updateRecord(subset[i], ***REMOVED***
+        var batchUpdateFx = function(batch) {
+          for (var i = 0; i < subset.length; i++) {
+            batch.updateRecord(subset[i], {
               patch: true
-            ***REMOVED***);
-          ***REMOVED***
-        ***REMOVED***;
+            });
+          }
+        };
 
-        var batchErrHandle = function(err) ***REMOVED***
+        var batchErrHandle = function(err) {
           window.commonErrorHandler(err);
           reject(err);
-        ***REMOVED***;
+        };
 
-        var batchHandleFx = function(responses) ***REMOVED***
-          try ***REMOVED***
+        var batchHandleFx = function(responses) {
+          try {
             var dataKey = 'coverage-2017',
               currLastMod = getLocalData(dataKey + '-last_modified'),
               unifiedResp = [];
-            for (var i in responses[0]) ***REMOVED***
+            for (var i in responses[0]) {
               var response = responses[0][i];
               unifiedResp.push(response.body.data);
               var myLastMod = response.headers.ETag.replace(/"/g, "");
-              if (myLastMod > currLastMod) ***REMOVED***
+              if (myLastMod > currLastMod) {
                 currLastMod = myLastMod;
                 setLocalData(dataKey + '-last_modified', currLastMod);
-              ***REMOVED***
-            ***REMOVED***
+              }
+            }
             storeObjects(dataKey, unifiedResp)
               .catch(batchErrHandle);
             storeObjects(dataKey + '-preview', unifiedResp)
               .catch(batchErrHandle);
             resolve();
-          ***REMOVED*** catch (err) ***REMOVED***
+          } catch (err) {
             batchErrHandle(err);
-          ***REMOVED***
-        ***REMOVED***;
+          }
+        };
 
-        for (var i = 0; i < records.length; i += chunk) ***REMOVED***
+        for (var i = 0; i < records.length; i += chunk) {
           subset = records.slice(i, i + chunk);
           promises.push(collection.batch(batchUpdateFx));
-          if (i >= records.length - chunk) ***REMOVED***
+          if (i >= records.length - chunk) {
             Promise.all(promises)
               .then(batchHandleFx)
               .catch(batchErrHandle);
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***);
-    ***REMOVED***;
+          }
+        }
+      });
+    };
 
-    _instance.getProviderCount = function(year) ***REMOVED***
+    _instance.getProviderCount = function(year) {
       // promise binding needs some rethinking
       var thisObj = this;
-      return new Promise(function(resolve, reject) ***REMOVED***
-        thisObj.getCoverage(year).then(function(coverage) ***REMOVED***
+      return new Promise(function(resolve, reject) {
+        thisObj.getCoverage(year).then(function(coverage) {
           console.log('getting provider count...');
           var response;
-          if (parseInt(year) === 2017) ***REMOVED***
+          if (parseInt(year) === 2017) {
             response = _.chain(coverage)
-              .where(***REMOVED***
+              .where({
                 is_active: true
-              ***REMOVED***)
-              .countBy(function(item) ***REMOVED***
+              })
+              .countBy(function(item) {
                 return item.fips_code;
-              ***REMOVED***)
+              })
               .value();
-          ***REMOVED*** else ***REMOVED***
+          } else {
             response = _.chain(coverage)
-              .countBy(function(item) ***REMOVED***
+              .countBy(function(item) {
                 return item.fips_code;
-              ***REMOVED***)
+              })
               .value();
-          ***REMOVED***
+          }
           resolve(response);
-        ***REMOVED***).catch(function(err) ***REMOVED***
+        }).catch(function(err) {
           window.commonErrorHandler(err);
           reject(err);
-        ***REMOVED***);
-      ***REMOVED***);
-    ***REMOVED***;
+        });
+      });
+    };
 
-    _instance.getPreviewProviderCount = function() ***REMOVED***
+    _instance.getPreviewProviderCount = function() {
       var thisObj = this;
-      return new Promise(function(resolve, reject) ***REMOVED***
-        var rollupFx = function(coverage) ***REMOVED***
-          try ***REMOVED***
+      return new Promise(function(resolve, reject) {
+        var rollupFx = function(coverage) {
+          try {
             var response = _.chain(coverage)
-              .where(***REMOVED***
+              .where({
                 is_active: true
-              ***REMOVED***)
-              .countBy(function(item) ***REMOVED***
+              })
+              .countBy(function(item) {
                 return item.fips_code;
-              ***REMOVED***)
+              })
               .value();
             resolve(response);
-          ***REMOVED*** catch (err) ***REMOVED***
+          } catch (err) {
             window.commonErrorHandler(err);
             reject(err);
-          ***REMOVED***
-        ***REMOVED***;
+          }
+        };
         thisObj.getPreviewCoverage()
           .then(rollupFx)
-          .catch(function(err) ***REMOVED***
+          .catch(function(err) {
             window.commonErrorHandler(err);
             reject(err);
-          ***REMOVED***);
-      ***REMOVED***);
-    ***REMOVED***;
+          });
+      });
+    };
 
-    _instance.updatePreviewCoverage = function(records) ***REMOVED***
-      return new Promise(function(resolve, reject) ***REMOVED***
+    _instance.updatePreviewCoverage = function(records) {
+      return new Promise(function(resolve, reject) {
         var dataKey = 'coverage-2017-preview';
-        getObjects(dataKey).then(function(response) ***REMOVED***
-          storeObjects(dataKey, mergeData(response, records)).then(function() ***REMOVED***
+        getObjects(dataKey).then(function(response) {
+          storeObjects(dataKey, mergeData(response, records)).then(function() {
             resolve();
-          ***REMOVED***);
-        ***REMOVED***).catch(function(err) ***REMOVED***
+          });
+        }).catch(function(err) {
           window.commonErrorHandler(err);
           reject(err);
-        ***REMOVED***);
-      ***REMOVED***);
-    ***REMOVED***;
+        });
+      });
+    };
 
-    _instance.getPreviewCoverage = function() ***REMOVED***
-      return new Promise(function(resolve, reject) ***REMOVED***
-        if (isDataStale) ***REMOVED***
+    _instance.getPreviewCoverage = function() {
+      return new Promise(function(resolve, reject) {
+        if (isDataStale) {
           this.dataAdapter.getCoverage(2017).then(resolve);
           return;
-        ***REMOVED***
-        getObjects('coverage-2017-preview').then(function(response) ***REMOVED***
-          if (!response.length) ***REMOVED***
+        }
+        getObjects('coverage-2017-preview').then(function(response) {
+          if (!response.length) {
             this.dataAdapter.getCoverage(2017).then(resolve);
             return;
-          ***REMOVED***
+          }
           resolve(response);
-        ***REMOVED***).catch(function(err) ***REMOVED***
+        }).catch(function(err) {
           window.commonErrorHandler(err);
           reject(err);
-        ***REMOVED***);
-      ***REMOVED***);
-    ***REMOVED***;
+        });
+      });
+    };
 
-    _instance.discardPreviewChanges = function() ***REMOVED***
-      return new Promise(function(resolve, reject) ***REMOVED***
+    _instance.discardPreviewChanges = function() {
+      return new Promise(function(resolve, reject) {
         clearObjects('coverage-2017-preview')
           .then(resolve)
-          .catch(function(err) ***REMOVED***
+          .catch(function(err) {
             window.commonErrorHandler(err);
             reject(err);
-          ***REMOVED***);
-      ***REMOVED***);
-    ***REMOVED***;
+          });
+      });
+    };
 
-    _instance.ready = function() ***REMOVED***
-      return new Promise(function(resolve, reject) ***REMOVED***
-        openDb().then(function() ***REMOVED***
-          hasUpdates('coverage-2017').then(function(update) ***REMOVED***
+    _instance.ready = function() {
+      return new Promise(function(resolve, reject) {
+        openDb().then(function() {
+          hasUpdates('coverage-2017').then(function(update) {
             isDataStale = update;
             resolve();
-          ***REMOVED***);
-        ***REMOVED***).catch(function(err) ***REMOVED***
+          });
+        }).catch(function(err) {
           window.commonErrorHandler(err);
           reject(err);
-        ***REMOVED***);
-      ***REMOVED***);
-    ***REMOVED***;
+        });
+      });
+    };
 
     return _instance;
-  ***REMOVED***;
+  };
 
-  return ***REMOVED***
+  return {
 
     // Get the Singleton instance if one exists
     // or create one if it doesn't
-    getInstance: function() ***REMOVED***
+    getInstance: function() {
 
-      if (!instance) ***REMOVED***
+      if (!instance) {
         instance = init();
-      ***REMOVED***
+      }
 
       return instance;
-    ***REMOVED***
+    }
 
-  ***REMOVED***;
-***REMOVED***)();
+  };
+})();

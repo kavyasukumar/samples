@@ -6,20 +6,20 @@
  */
 var pixelRatio = 2;
 function RGBColor(color_string)
-***REMOVED***
+{
     this.ok = false;
 
     // strip any leading #
-    if (color_string.charAt(0) == '#') ***REMOVED*** // remove # if any
+    if (color_string.charAt(0) == '#') { // remove # if any
         color_string = color_string.substr(1,6);
-    ***REMOVED***
+    }
 
     color_string = color_string.replace(/ /g,'');
     color_string = color_string.toLowerCase();
 
     // before getting into regexps, try simple matches
     // and overwrite the input
-    var simple_colors = ***REMOVED***
+    var simple_colors = {
         aliceblue: 'f0f8ff',
         antiquewhite: 'faebd7',
         aqua: '00ffff',
@@ -163,65 +163,65 @@ function RGBColor(color_string)
         whitesmoke: 'f5f5f5',
         yellow: 'ffff00',
         yellowgreen: '9acd32'
-    ***REMOVED***;
-    for (var key in simple_colors) ***REMOVED***
-        if (color_string == key) ***REMOVED***
+    };
+    for (var key in simple_colors) {
+        if (color_string == key) {
             color_string = simple_colors[key];
-        ***REMOVED***
-    ***REMOVED***
+        }
+    }
     // emd of simple type-in colors
 
     // array of color definition objects
     var color_defs = [
-        ***REMOVED***
-            re: /^rgb\((\d***REMOVED***1,3***REMOVED***),\s*(\d***REMOVED***1,3***REMOVED***),\s*(\d***REMOVED***1,3***REMOVED***)\)$/,
+        {
+            re: /^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/,
             example: ['rgb(123, 234, 45)', 'rgb(255,234,245)'],
-            process: function (bits)***REMOVED***
+            process: function (bits){
                 return [
                     parseInt(bits[1]),
                     parseInt(bits[2]),
                     parseInt(bits[3])
                 ];
-            ***REMOVED***
-        ***REMOVED***,
-        ***REMOVED***
-            re: /^(\w***REMOVED***2***REMOVED***)(\w***REMOVED***2***REMOVED***)(\w***REMOVED***2***REMOVED***)$/,
+            }
+        },
+        {
+            re: /^(\w{2})(\w{2})(\w{2})$/,
             example: ['#00ff00', '336699'],
-            process: function (bits)***REMOVED***
+            process: function (bits){
                 return [
                     parseInt(bits[1], 16),
                     parseInt(bits[2], 16),
                     parseInt(bits[3], 16)
                 ];
-            ***REMOVED***
-        ***REMOVED***,
-        ***REMOVED***
-            re: /^(\w***REMOVED***1***REMOVED***)(\w***REMOVED***1***REMOVED***)(\w***REMOVED***1***REMOVED***)$/,
+            }
+        },
+        {
+            re: /^(\w{1})(\w{1})(\w{1})$/,
             example: ['#fb0', 'f0f'],
-            process: function (bits)***REMOVED***
+            process: function (bits){
                 return [
                     parseInt(bits[1] + bits[1], 16),
                     parseInt(bits[2] + bits[2], 16),
                     parseInt(bits[3] + bits[3], 16)
                 ];
-            ***REMOVED***
-        ***REMOVED***
+            }
+        }
     ];
 
     // search through the definitions to find a match
-    for (var i = 0; i < color_defs.length; i++) ***REMOVED***
+    for (var i = 0; i < color_defs.length; i++) {
         var re = color_defs[i].re;
         var processor = color_defs[i].process;
         var bits = re.exec(color_string);
-        if (bits) ***REMOVED***
+        if (bits) {
             channels = processor(bits);
             this.r = channels[0];
             this.g = channels[1];
             this.b = channels[2];
             this.ok = true;
-        ***REMOVED***
+        }
 
-    ***REMOVED***
+    }
 
     // validate/cleanup values
     this.r = (this.r < 0 || isNaN(this.r)) ? 0 : ((this.r > 255) ? 255 : this.r);
@@ -229,10 +229,10 @@ function RGBColor(color_string)
     this.b = (this.b < 0 || isNaN(this.b)) ? 0 : ((this.b > 255) ? 255 : this.b);
 
     // some getters
-    this.toRGB = function () ***REMOVED***
+    this.toRGB = function () {
         return 'rgb(' + this.r + ', ' + this.g + ', ' + this.b + ')';
-    ***REMOVED***
-    this.toHex = function () ***REMOVED***
+    }
+    this.toHex = function () {
         var r = this.r.toString(16);
         var g = this.g.toString(16);
         var b = this.b.toString(16);
@@ -240,28 +240,28 @@ function RGBColor(color_string)
         if (g.length == 1) g = '0' + g;
         if (b.length == 1) b = '0' + b;
         return '#' + r + g + b;
-    ***REMOVED***
+    }
 
     // help
-    this.getHelpXML = function () ***REMOVED***
+    this.getHelpXML = function () {
 
         var examples = new Array();
         // add regexps
-        for (var i = 0; i < color_defs.length; i++) ***REMOVED***
+        for (var i = 0; i < color_defs.length; i++) {
             var example = color_defs[i].example;
-            for (var j = 0; j < example.length; j++) ***REMOVED***
+            for (var j = 0; j < example.length; j++) {
                 examples[examples.length] = example[j];
-            ***REMOVED***
-        ***REMOVED***
+            }
+        }
         // add type-in colors
-        for (var sc in simple_colors) ***REMOVED***
+        for (var sc in simple_colors) {
             examples[examples.length] = sc;
-        ***REMOVED***
+        }
 
         var xml = document.createElement('ul');
         xml.setAttribute('id', 'rgbcolor-examples');
-        for (var i = 0; i < examples.length; i++) ***REMOVED***
-            try ***REMOVED***
+        for (var i = 0; i < examples.length; i++) {
+            try {
                 var list_item = document.createElement('li');
                 var list_color = new RGBColor(examples[i]);
                 var example_div = document.createElement('div');
@@ -279,13 +279,13 @@ function RGBColor(color_string)
                 list_item.appendChild(list_item_value);
                 xml.appendChild(list_item);
 
-            ***REMOVED*** catch(e)***REMOVED******REMOVED***
-        ***REMOVED***
+            } catch(e){}
+        }
         return xml;
 
-    ***REMOVED***
+    }
 
-***REMOVED***
+}
 
 /*
 
@@ -366,7 +366,7 @@ var shg_table = [
 		24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24 ];
 
 function stackBlurImage( imageID, canvasID, radius, blurAlphaChannel )
-***REMOVED***
+{
 
  	var img = document.getElementById( imageID );
 	var w = img.naturalWidth;
@@ -391,11 +391,11 @@ function stackBlurImage( imageID, canvasID, radius, blurAlphaChannel )
 		stackBlurCanvasRGBA( canvasID, 0, 0, w, h, radius );
 	else
 		stackBlurCanvasRGB( canvasID, 0, 0, w, h, radius );
-***REMOVED***
+}
 
 
 function stackBlurCanvasRGBA( id, top_x, top_y, width, height, radius )
-***REMOVED***
+{
 	if ( isNaN(radius) || radius < 1 ) return;
 	radius |= 0;
 
@@ -403,27 +403,27 @@ function stackBlurCanvasRGBA( id, top_x, top_y, width, height, radius )
 	var context = canvas.getContext("2d");
 	var imageData;
 
-	try ***REMOVED***
-	  try ***REMOVED***
+	try {
+	  try {
 		imageData = context.getImageData( top_x, top_y, width, height );
-	  ***REMOVED*** catch(e) ***REMOVED***
+	  } catch(e) {
 
 		// NOTE: this part is supposedly only needed if you want to work with local files
 		// so it might be okay to remove the whole try/catch block and just use
 		// imageData = context.getImageData( top_x, top_y, width, height );
-		try ***REMOVED***
+		try {
 			netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
 			imageData = context.getImageData( top_x, top_y, width, height );
-		***REMOVED*** catch(e) ***REMOVED***
+		} catch(e) {
 			alert("Cannot access local image");
 			throw new Error("unable to access local image data: " + e);
 			return;
-		***REMOVED***
-	  ***REMOVED***
-	***REMOVED*** catch(e) ***REMOVED***
+		}
+	  }
+	} catch(e) {
 	  alert("Cannot access image");
 	  throw new Error("unable to access image data: " + e);
-	***REMOVED***
+	}
 
 	var pixels = imageData.data;
 
@@ -442,10 +442,10 @@ function stackBlurCanvasRGBA( id, top_x, top_y, width, height, radius )
 	var stackStart = new BlurStack();
 	var stack = stackStart;
 	for ( i = 1; i < div; i++ )
-	***REMOVED***
+	{
 		stack = stack.next = new BlurStack();
 		if ( i == radiusPlus1 ) var stackEnd = stack;
-	***REMOVED***
+	}
 	stack.next = stackStart;
 	var stackIn = null;
 	var stackOut = null;
@@ -456,7 +456,7 @@ function stackBlurCanvasRGBA( id, top_x, top_y, width, height, radius )
 	var shg_sum = shg_table[radius];
 
 	for ( y = 0; y < height; y++ )
-	***REMOVED***
+	{
 		r_in_sum = g_in_sum = b_in_sum = a_in_sum = r_sum = g_sum = b_sum = a_sum = 0;
 
 		r_out_sum = radiusPlus1 * ( pr = pixels[yi] );
@@ -472,16 +472,16 @@ function stackBlurCanvasRGBA( id, top_x, top_y, width, height, radius )
 		stack = stackStart;
 
 		for( i = 0; i < radiusPlus1; i++ )
-		***REMOVED***
+		{
 			stack.r = pr;
 			stack.g = pg;
 			stack.b = pb;
 			stack.a = pa;
 			stack = stack.next;
-		***REMOVED***
+		}
 
 		for( i = 1; i < radiusPlus1; i++ )
-		***REMOVED***
+		{
 			p = yi + (( widthMinus1 < i ? widthMinus1 : i ) << 2 );
 			r_sum += ( stack.r = ( pr = pixels[p])) * ( rbs = radiusPlus1 - i );
 			g_sum += ( stack.g = ( pg = pixels[p+1])) * rbs;
@@ -494,23 +494,23 @@ function stackBlurCanvasRGBA( id, top_x, top_y, width, height, radius )
 			a_in_sum += pa;
 
 			stack = stack.next;
-		***REMOVED***
+		}
 
 
 		stackIn = stackStart;
 		stackOut = stackEnd;
 		for ( x = 0; x < width; x++ )
-		***REMOVED***
+		{
 			pixels[yi+3] = pa = (a_sum * mul_sum) >> shg_sum;
 			if ( pa != 0 )
-			***REMOVED***
+			{
 				pa = 255 / pa;
 				pixels[yi]   = ((r_sum * mul_sum) >> shg_sum) * pa;
 				pixels[yi+1] = ((g_sum * mul_sum) >> shg_sum) * pa;
 				pixels[yi+2] = ((b_sum * mul_sum) >> shg_sum) * pa;
-			***REMOVED*** else ***REMOVED***
+			} else {
 				pixels[yi] = pixels[yi+1] = pixels[yi+2] = 0;
-			***REMOVED***
+			}
 
 			r_sum -= r_out_sum;
 			g_sum -= g_out_sum;
@@ -549,13 +549,13 @@ function stackBlurCanvasRGBA( id, top_x, top_y, width, height, radius )
 			stackOut = stackOut.next;
 
 			yi += 4;
-		***REMOVED***
+		}
 		yw += width;
-	***REMOVED***
+	}
 
 
 	for ( x = 0; x < width; x++ )
-	***REMOVED***
+	{
 		g_in_sum = b_in_sum = a_in_sum = r_in_sum = g_sum = b_sum = a_sum = r_sum = 0;
 
 		yi = x << 2;
@@ -572,18 +572,18 @@ function stackBlurCanvasRGBA( id, top_x, top_y, width, height, radius )
 		stack = stackStart;
 
 		for( i = 0; i < radiusPlus1; i++ )
-		***REMOVED***
+		{
 			stack.r = pr;
 			stack.g = pg;
 			stack.b = pb;
 			stack.a = pa;
 			stack = stack.next;
-		***REMOVED***
+		}
 
 		yp = width;
 
 		for( i = 1; i <= radius; i++ )
-		***REMOVED***
+		{
 			yi = ( yp + x ) << 2;
 
 			r_sum += ( stack.r = ( pr = pixels[yi])) * ( rbs = radiusPlus1 - i );
@@ -599,27 +599,27 @@ function stackBlurCanvasRGBA( id, top_x, top_y, width, height, radius )
 			stack = stack.next;
 
 			if( i < heightMinus1 )
-			***REMOVED***
+			{
 				yp += width;
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 
 		yi = x;
 		stackIn = stackStart;
 		stackOut = stackEnd;
 		for ( y = 0; y < height; y++ )
-		***REMOVED***
+		{
 			p = yi << 2;
 			pixels[p+3] = pa = (a_sum * mul_sum) >> shg_sum;
 			if ( pa > 0 )
-			***REMOVED***
+			{
 				pa = 255 / pa;
 				pixels[p]   = ((r_sum * mul_sum) >> shg_sum ) * pa;
 				pixels[p+1] = ((g_sum * mul_sum) >> shg_sum ) * pa;
 				pixels[p+2] = ((b_sum * mul_sum) >> shg_sum ) * pa;
-			***REMOVED*** else ***REMOVED***
+			} else {
 				pixels[p] = pixels[p+1] = pixels[p+2] = 0;
-			***REMOVED***
+			}
 
 			r_sum -= r_out_sum;
 			g_sum -= g_out_sum;
@@ -653,16 +653,16 @@ function stackBlurCanvasRGBA( id, top_x, top_y, width, height, radius )
 			stackOut = stackOut.next;
 
 			yi += width;
-		***REMOVED***
-	***REMOVED***
+		}
+	}
 
 	context.putImageData( imageData, top_x, top_y );
 
-***REMOVED***
+}
 
 
 function stackBlurCanvasRGB( id, top_x, top_y, width, height, radius )
-***REMOVED***
+{
 	if ( isNaN(radius) || radius < 1 ) return;
 	radius |= 0;
 
@@ -671,27 +671,27 @@ function stackBlurCanvasRGB( id, top_x, top_y, width, height, radius )
   context.setTransform(pixelRatio,0,0,pixelRatio,0,0);
 	var imageData;
 
-	try ***REMOVED***
-	  try ***REMOVED***
+	try {
+	  try {
 		imageData = context.getImageData( top_x, top_y, width, height );
-	  ***REMOVED*** catch(e) ***REMOVED***
+	  } catch(e) {
 
 		// NOTE: this part is supposedly only needed if you want to work with local files
 		// so it might be okay to remove the whole try/catch block and just use
 		// imageData = context.getImageData( top_x, top_y, width, height );
-		try ***REMOVED***
+		try {
 			netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
 			imageData = context.getImageData( top_x, top_y, width, height );
-		***REMOVED*** catch(e) ***REMOVED***
+		} catch(e) {
 			alert("Cannot access local image");
 			throw new Error("unable to access local image data: " + e);
 			return;
-		***REMOVED***
-	  ***REMOVED***
-	***REMOVED*** catch(e) ***REMOVED***
+		}
+	  }
+	} catch(e) {
 	  alert("Cannot access image");
 	  throw new Error("unable to access image data: " + e);
-	***REMOVED***
+	}
 
 	var pixels = imageData.data;
 
@@ -710,10 +710,10 @@ function stackBlurCanvasRGB( id, top_x, top_y, width, height, radius )
 	var stackStart = new BlurStack();
 	var stack = stackStart;
 	for ( i = 1; i < div; i++ )
-	***REMOVED***
+	{
 		stack = stack.next = new BlurStack();
 		if ( i == radiusPlus1 ) var stackEnd = stack;
-	***REMOVED***
+	}
 	stack.next = stackStart;
 	var stackIn = null;
 	var stackOut = null;
@@ -724,7 +724,7 @@ function stackBlurCanvasRGB( id, top_x, top_y, width, height, radius )
 	var shg_sum = shg_table[radius];
 
 	for ( y = 0; y < height; y++ )
-	***REMOVED***
+	{
 		r_in_sum = g_in_sum = b_in_sum = r_sum = g_sum = b_sum = 0;
 
 		r_out_sum = radiusPlus1 * ( pr = pixels[yi] );
@@ -738,15 +738,15 @@ function stackBlurCanvasRGB( id, top_x, top_y, width, height, radius )
 		stack = stackStart;
 
 		for( i = 0; i < radiusPlus1; i++ )
-		***REMOVED***
+		{
 			stack.r = pr;
 			stack.g = pg;
 			stack.b = pb;
 			stack = stack.next;
-		***REMOVED***
+		}
 
 		for( i = 1; i < radiusPlus1; i++ )
-		***REMOVED***
+		{
 			p = yi + (( widthMinus1 < i ? widthMinus1 : i ) << 2 );
 			r_sum += ( stack.r = ( pr = pixels[p])) * ( rbs = radiusPlus1 - i );
 			g_sum += ( stack.g = ( pg = pixels[p+1])) * rbs;
@@ -757,13 +757,13 @@ function stackBlurCanvasRGB( id, top_x, top_y, width, height, radius )
 			b_in_sum += pb;
 
 			stack = stack.next;
-		***REMOVED***
+		}
 
 
 		stackIn = stackStart;
 		stackOut = stackEnd;
 		for ( x = 0; x < width; x++ )
-		***REMOVED***
+		{
 			pixels[yi]   = (r_sum * mul_sum) >> shg_sum;
 			pixels[yi+1] = (g_sum * mul_sum) >> shg_sum;
 			pixels[yi+2] = (b_sum * mul_sum) >> shg_sum;
@@ -799,13 +799,13 @@ function stackBlurCanvasRGB( id, top_x, top_y, width, height, radius )
 			stackOut = stackOut.next;
 
 			yi += 4;
-		***REMOVED***
+		}
 		yw += width;
-	***REMOVED***
+	}
 
 
 	for ( x = 0; x < width; x++ )
-	***REMOVED***
+	{
 		g_in_sum = b_in_sum = r_in_sum = g_sum = b_sum = r_sum = 0;
 
 		yi = x << 2;
@@ -820,17 +820,17 @@ function stackBlurCanvasRGB( id, top_x, top_y, width, height, radius )
 		stack = stackStart;
 
 		for( i = 0; i < radiusPlus1; i++ )
-		***REMOVED***
+		{
 			stack.r = pr;
 			stack.g = pg;
 			stack.b = pb;
 			stack = stack.next;
-		***REMOVED***
+		}
 
 		yp = width;
 
 		for( i = 1; i <= radius; i++ )
-		***REMOVED***
+		{
 			yi = ( yp + x ) << 2;
 
 			r_sum += ( stack.r = ( pr = pixels[yi])) * ( rbs = radiusPlus1 - i );
@@ -844,16 +844,16 @@ function stackBlurCanvasRGB( id, top_x, top_y, width, height, radius )
 			stack = stack.next;
 
 			if( i < heightMinus1 )
-			***REMOVED***
+			{
 				yp += width;
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 
 		yi = x;
 		stackIn = stackStart;
 		stackOut = stackEnd;
 		for ( y = 0; y < height; y++ )
-		***REMOVED***
+		{
 			p = yi << 2;
 			pixels[p]   = (r_sum * mul_sum) >> shg_sum;
 			pixels[p+1] = (g_sum * mul_sum) >> shg_sum;
@@ -886,21 +886,21 @@ function stackBlurCanvasRGB( id, top_x, top_y, width, height, radius )
 			stackOut = stackOut.next;
 
 			yi += width;
-		***REMOVED***
-	***REMOVED***
+		}
+	}
 
 	context.putImageData( imageData, top_x, top_y );
 
-***REMOVED***
+}
 
 function BlurStack()
-***REMOVED***
+{
 	this.r = 0;
 	this.g = 0;
 	this.b = 0;
 	this.a = 0;
 	this.next = null;
-***REMOVED***/*
+}/*
  * canvg.js - Javascript SVG parser and renderer on Canvas
  * MIT Licensed
  * Gabe Lerner (gabelerner@gmail.com)
@@ -908,7 +908,7 @@ function BlurStack()
  *
  * Requires: rgbcolor.js - http://www.phpied.com/rgb-color-parser-in-javascript/
  */
-(function()***REMOVED***
+(function(){
 	// canvg(target, s)
 	// empty parameters: replace all 'svg' elements on page with 'canvas' elements
 	// target: canvas element or the id of a canvas element
@@ -924,11 +924,11 @@ function BlurStack()
 	//		 scaleHeight: int => scales vertically to height
 	//		 renderCallback: function => will call the function after the first render is completed
 	//		 forceRedraw: function => will call the function on every frame, if it returns true, will redraw
-	this.canvg = function (target, s, opts) ***REMOVED***
+	this.canvg = function (target, s, opts) {
 		// no parameters
-		if (target == null && s == null && opts == null) ***REMOVED***
+		if (target == null && s == null && opts == null) {
 			var svgTags = document.getElementsByTagName('svg');
-			for (var i=0; i<svgTags.length; i++) ***REMOVED***
+			for (var i=0; i<svgTags.length; i++) {
 				var svgTag = svgTags[i];
 				var c = document.createElement('canvas');
 				c.width = svgTag.clientWidth;
@@ -938,14 +938,14 @@ function BlurStack()
 				var div = document.createElement('div');
 				div.appendChild(svgTag);
 				canvg(c, div.innerHTML);
-			***REMOVED***
+			}
 			return;
-		***REMOVED***
-		opts = opts || ***REMOVED******REMOVED***;
+		}
+		opts = opts || {};
 
-		if (typeof target == 'string') ***REMOVED***
+		if (typeof target == 'string') {
 			target = document.getElementById(target);
-		***REMOVED***
+		}
 
 		// store class on canvas
 		if (target.svg != null) target.svg.stop();
@@ -956,198 +956,198 @@ function BlurStack()
 
 		var ctx = target.getContext('2d');
     ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0);
-		if (typeof(s.documentElement) != 'undefined') ***REMOVED***
+		if (typeof(s.documentElement) != 'undefined') {
 			// load from xml doc
 			svg.loadXmlDoc(ctx, s);
-		***REMOVED***
-		else if (s.substr(0,1) == '<') ***REMOVED***
+		}
+		else if (s.substr(0,1) == '<') {
 			// load from xml string
 			svg.loadXml(ctx, s);
-		***REMOVED***
-		else ***REMOVED***
+		}
+		else {
 			// load from url
 			svg.load(ctx, s);
-		***REMOVED***
-	***REMOVED***
+		}
+	}
 
-	function build() ***REMOVED***
-		var svg = ***REMOVED*** ***REMOVED***;
+	function build() {
+		var svg = { };
 
 		svg.FRAMERATE = 30;
 		svg.MAX_VIRTUAL_PIXELS = 30000;
 
 		// globals
-		svg.init = function(ctx) ***REMOVED***
+		svg.init = function(ctx) {
 			var uniqueId = 0;
-			svg.UniqueId = function () ***REMOVED*** uniqueId++; return 'canvg' + uniqueId;	***REMOVED***;
-			svg.Definitions = ***REMOVED******REMOVED***;
-			svg.Styles = ***REMOVED******REMOVED***;
+			svg.UniqueId = function () { uniqueId++; return 'canvg' + uniqueId;	};
+			svg.Definitions = {};
+			svg.Styles = {};
 			svg.Animations = [];
 			svg.Images = [];
 			svg.ctx = ctx;
-			svg.ViewPort = new (function () ***REMOVED***
+			svg.ViewPort = new (function () {
 				this.viewPorts = [];
-				this.Clear = function() ***REMOVED*** this.viewPorts = []; ***REMOVED***
-				this.SetCurrent = function(width, height) ***REMOVED*** this.viewPorts.push(***REMOVED*** width: width, height: height ***REMOVED***); ***REMOVED***
-				this.RemoveCurrent = function() ***REMOVED*** this.viewPorts.pop(); ***REMOVED***
-				this.Current = function() ***REMOVED*** return this.viewPorts[this.viewPorts.length - 1]; ***REMOVED***
-				this.width = function() ***REMOVED*** return this.Current().width; ***REMOVED***
-				this.height = function() ***REMOVED*** return this.Current().height; ***REMOVED***
-				this.ComputeSize = function(d) ***REMOVED***
+				this.Clear = function() { this.viewPorts = []; }
+				this.SetCurrent = function(width, height) { this.viewPorts.push({ width: width, height: height }); }
+				this.RemoveCurrent = function() { this.viewPorts.pop(); }
+				this.Current = function() { return this.viewPorts[this.viewPorts.length - 1]; }
+				this.width = function() { return this.Current().width; }
+				this.height = function() { return this.Current().height; }
+				this.ComputeSize = function(d) {
 					if (d != null && typeof(d) == 'number') return d;
 					if (d == 'x') return this.width();
 					if (d == 'y') return this.height();
 					return Math.sqrt(Math.pow(this.width(), 2) + Math.pow(this.height(), 2)) / Math.sqrt(2);
-				***REMOVED***
-			***REMOVED***);
-		***REMOVED***
+				}
+			});
+		}
 		svg.init();
 
 		// images loaded
-		svg.ImagesLoaded = function() ***REMOVED***
-			for (var i=0; i<svg.Images.length; i++) ***REMOVED***
+		svg.ImagesLoaded = function() {
+			for (var i=0; i<svg.Images.length; i++) {
 				if (!svg.Images[i].loaded) return false;
-			***REMOVED***
+			}
 			return true;
-		***REMOVED***
+		}
 
 		// trim
-		svg.trim = function(s) ***REMOVED*** return s.replace(/^\s+|\s+$/g, ''); ***REMOVED***
+		svg.trim = function(s) { return s.replace(/^\s+|\s+$/g, ''); }
 
 		// compress spaces
-		svg.compressSpaces = function(s) ***REMOVED*** return s.replace(/[\s\r\t\n]+/gm,' '); ***REMOVED***
+		svg.compressSpaces = function(s) { return s.replace(/[\s\r\t\n]+/gm,' '); }
 
 		// ajax
-		svg.ajax = function(url) ***REMOVED***
+		svg.ajax = function(url) {
 			var AJAX;
-			if(window.XMLHttpRequest)***REMOVED***AJAX=new XMLHttpRequest();***REMOVED***
-			else***REMOVED***AJAX=new ActiveXObject('Microsoft.XMLHTTP');***REMOVED***
-			if(AJAX)***REMOVED***
+			if(window.XMLHttpRequest){AJAX=new XMLHttpRequest();}
+			else{AJAX=new ActiveXObject('Microsoft.XMLHTTP');}
+			if(AJAX){
 			   AJAX.open('GET',url,false);
 			   AJAX.send(null);
 			   return AJAX.responseText;
-			***REMOVED***
+			}
 			return null;
-		***REMOVED***
+		}
 
 		// parse xml
-		svg.parseXml = function(xml) ***REMOVED***
+		svg.parseXml = function(xml) {
 			if (window.DOMParser)
-			***REMOVED***
+			{
 				var parser = new DOMParser();
 				return parser.parseFromString(xml, 'text/xml');
-			***REMOVED***
+			}
 			else
-			***REMOVED***
+			{
 				xml = xml.replace(/<!DOCTYPE svg[^>]*>/, '');
 				var xmlDoc = new ActiveXObject('Microsoft.XMLDOM');
 				xmlDoc.async = 'false';
 				xmlDoc.loadXML(xml);
 				return xmlDoc;
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 
-		svg.Property = function(name, value) ***REMOVED***
+		svg.Property = function(name, value) {
 			this.name = name;
 			this.value = value;
-		***REMOVED***
-			svg.Property.prototype.getValue = function() ***REMOVED***
+		}
+			svg.Property.prototype.getValue = function() {
 				return this.value;
-			***REMOVED***
+			}
 
-			svg.Property.prototype.hasValue = function() ***REMOVED***
+			svg.Property.prototype.hasValue = function() {
 				return (this.value != null && this.value !== '');
-			***REMOVED***
+			}
 
 			// return the numerical value of the property
-			svg.Property.prototype.numValue = function() ***REMOVED***
+			svg.Property.prototype.numValue = function() {
 				if (!this.hasValue()) return 0;
 
 				var n = parseFloat(this.value);
-				if ((this.value + '').match(/%$/)) ***REMOVED***
+				if ((this.value + '').match(/%$/)) {
 					n = n / 100.0;
-				***REMOVED***
+				}
 				return n;
-			***REMOVED***
+			}
 
-			svg.Property.prototype.valueOrDefault = function(def) ***REMOVED***
+			svg.Property.prototype.valueOrDefault = function(def) {
 				if (this.hasValue()) return this.value;
 				return def;
-			***REMOVED***
+			}
 
-			svg.Property.prototype.numValueOrDefault = function(def) ***REMOVED***
+			svg.Property.prototype.numValueOrDefault = function(def) {
 				if (this.hasValue()) return this.numValue();
 				return def;
-			***REMOVED***
+			}
 
 			// color extensions
 				// augment the current color value with the opacity
-				svg.Property.prototype.addOpacity = function(opacity) ***REMOVED***
+				svg.Property.prototype.addOpacity = function(opacity) {
 					var newValue = this.value;
-					if (opacity != null && opacity != '' && typeof(this.value)=='string') ***REMOVED*** // can only add opacity to colors, not patterns
+					if (opacity != null && opacity != '' && typeof(this.value)=='string') { // can only add opacity to colors, not patterns
 						var color = new RGBColor(this.value);
-						if (color.ok) ***REMOVED***
+						if (color.ok) {
 							newValue = 'rgba(' + color.r + ', ' + color.g + ', ' + color.b + ', ' + opacity + ')';
-						***REMOVED***
-					***REMOVED***
+						}
+					}
 					return new svg.Property(this.name, newValue);
-				***REMOVED***
+				}
 
 			// definition extensions
 				// get the definition from the definitions table
-				svg.Property.prototype.getDefinition = function() ***REMOVED***
+				svg.Property.prototype.getDefinition = function() {
 					var name = this.value.match(/#([^\)'"]+)/);
-					if (name) ***REMOVED*** name = name[1]; ***REMOVED***
-					if (!name) ***REMOVED*** name = this.value; ***REMOVED***
+					if (name) { name = name[1]; }
+					if (!name) { name = this.value; }
 					return svg.Definitions[name];
-				***REMOVED***
+				}
 
-				svg.Property.prototype.isUrlDefinition = function() ***REMOVED***
+				svg.Property.prototype.isUrlDefinition = function() {
 					return this.value.indexOf('url(') == 0
-				***REMOVED***
+				}
 
-				svg.Property.prototype.getFillStyleDefinition = function(e, opacityProp) ***REMOVED***
+				svg.Property.prototype.getFillStyleDefinition = function(e, opacityProp) {
 					var def = this.getDefinition();
 
 					// gradient
-					if (def != null && def.createGradient) ***REMOVED***
+					if (def != null && def.createGradient) {
 						return def.createGradient(svg.ctx, e, opacityProp);
-					***REMOVED***
+					}
 
 					// pattern
-					if (def != null && def.createPattern) ***REMOVED***
-						if (def.getHrefAttribute().hasValue()) ***REMOVED***
+					if (def != null && def.createPattern) {
+						if (def.getHrefAttribute().hasValue()) {
 							var pt = def.attribute('patternTransform');
 							def = def.getHrefAttribute().getDefinition();
-							if (pt.hasValue()) ***REMOVED*** def.attribute('patternTransform', true).value = pt.value; ***REMOVED***
-						***REMOVED***
+							if (pt.hasValue()) { def.attribute('patternTransform', true).value = pt.value; }
+						}
 						return def.createPattern(svg.ctx, e);
-					***REMOVED***
+					}
 
 					return null;
-				***REMOVED***
+				}
 
 			// length extensions
-				svg.Property.prototype.getDPI = function(viewPort) ***REMOVED***
+				svg.Property.prototype.getDPI = function(viewPort) {
 					return 96.0; // TODO: compute?
-				***REMOVED***
+				}
 
-				svg.Property.prototype.getEM = function(viewPort) ***REMOVED***
+				svg.Property.prototype.getEM = function(viewPort) {
 					var em = 12;
 
 					var fontSize = new svg.Property('fontSize', svg.Font.Parse(svg.ctx.font).fontSize);
 					if (fontSize.hasValue()) em = fontSize.toPixels(viewPort);
 
 					return em;
-				***REMOVED***
+				}
 
-				svg.Property.prototype.getUnits = function() ***REMOVED***
+				svg.Property.prototype.getUnits = function() {
 					var s = this.value+'';
 					return s.replace(/[0-9\.\-]/g,'');
-				***REMOVED***
+				}
 
 				// get the length as pixels
-				svg.Property.prototype.toPixels = function(viewPort, processPercent) ***REMOVED***
+				svg.Property.prototype.toPixels = function(viewPort, processPercent) {
 					if (!this.hasValue()) return 0;
 					var s = this.value+'';
 					if (s.match(/em$/)) return this.numValue() * this.getEM(viewPort);
@@ -1162,317 +1162,317 @@ function BlurStack()
 					var n = this.numValue();
 					if (processPercent && n < 1.0) return n * svg.ViewPort.ComputeSize(viewPort);
 					return n;
-				***REMOVED***
+				}
 
 			// time extensions
 				// get the time as milliseconds
-				svg.Property.prototype.toMilliseconds = function() ***REMOVED***
+				svg.Property.prototype.toMilliseconds = function() {
 					if (!this.hasValue()) return 0;
 					var s = this.value+'';
 					if (s.match(/s$/)) return this.numValue() * 1000;
 					if (s.match(/ms$/)) return this.numValue();
 					return this.numValue();
-				***REMOVED***
+				}
 
 			// angle extensions
 				// get the angle as radians
-				svg.Property.prototype.toRadians = function() ***REMOVED***
+				svg.Property.prototype.toRadians = function() {
 					if (!this.hasValue()) return 0;
 					var s = this.value+'';
 					if (s.match(/deg$/)) return this.numValue() * (Math.PI / 180.0);
 					if (s.match(/grad$/)) return this.numValue() * (Math.PI / 200.0);
 					if (s.match(/rad$/)) return this.numValue();
 					return this.numValue() * (Math.PI / 180.0);
-				***REMOVED***
+				}
 
 		// fonts
-		svg.Font = new (function() ***REMOVED***
+		svg.Font = new (function() {
 			this.Styles = 'normal|italic|oblique|inherit';
 			this.Variants = 'normal|small-caps|inherit';
 			this.Weights = 'normal|bold|bolder|lighter|100|200|300|400|500|600|700|800|900|inherit';
 
-			this.CreateFont = function(fontStyle, fontVariant, fontWeight, fontSize, fontFamily, inherit) ***REMOVED***
+			this.CreateFont = function(fontStyle, fontVariant, fontWeight, fontSize, fontFamily, inherit) {
 				var f = inherit != null ? this.Parse(inherit) : this.CreateFont('', '', '', '', '', svg.ctx.font);
-				return ***REMOVED***
+				return {
 					fontFamily: fontFamily || f.fontFamily,
 					fontSize: fontSize || f.fontSize,
 					fontStyle: fontStyle || f.fontStyle,
 					fontWeight: fontWeight || f.fontWeight,
 					fontVariant: fontVariant || f.fontVariant,
-					toString: function () ***REMOVED*** return [this.fontStyle, this.fontVariant, this.fontWeight, this.fontSize, this.fontFamily].join(' ') ***REMOVED***
-				***REMOVED***
-			***REMOVED***
+					toString: function () { return [this.fontStyle, this.fontVariant, this.fontWeight, this.fontSize, this.fontFamily].join(' ') }
+				}
+			}
 
 			var that = this;
-			this.Parse = function(s) ***REMOVED***
-				var f = ***REMOVED******REMOVED***;
+			this.Parse = function(s) {
+				var f = {};
 				var d = svg.trim(svg.compressSpaces(s || '')).split(' ');
-				var set = ***REMOVED*** fontSize: false, fontStyle: false, fontWeight: false, fontVariant: false ***REMOVED***
+				var set = { fontSize: false, fontStyle: false, fontWeight: false, fontVariant: false }
 				var ff = '';
-				for (var i=0; i<d.length; i++) ***REMOVED***
-					if (!set.fontStyle && that.Styles.indexOf(d[i]) != -1) ***REMOVED*** if (d[i] != 'inherit') f.fontStyle = d[i]; set.fontStyle = true; ***REMOVED***
-					else if (!set.fontVariant && that.Variants.indexOf(d[i]) != -1) ***REMOVED*** if (d[i] != 'inherit') f.fontVariant = d[i]; set.fontStyle = set.fontVariant = true;	***REMOVED***
-					else if (!set.fontWeight && that.Weights.indexOf(d[i]) != -1) ***REMOVED***	if (d[i] != 'inherit') f.fontWeight = d[i]; set.fontStyle = set.fontVariant = set.fontWeight = true; ***REMOVED***
-					else if (!set.fontSize) ***REMOVED*** if (d[i] != 'inherit') f.fontSize = d[i].split('/')[0]; set.fontStyle = set.fontVariant = set.fontWeight = set.fontSize = true; ***REMOVED***
-					else ***REMOVED*** if (d[i] != 'inherit') ff += d[i]; ***REMOVED***
-				***REMOVED*** if (ff != '') f.fontFamily = ff;
+				for (var i=0; i<d.length; i++) {
+					if (!set.fontStyle && that.Styles.indexOf(d[i]) != -1) { if (d[i] != 'inherit') f.fontStyle = d[i]; set.fontStyle = true; }
+					else if (!set.fontVariant && that.Variants.indexOf(d[i]) != -1) { if (d[i] != 'inherit') f.fontVariant = d[i]; set.fontStyle = set.fontVariant = true;	}
+					else if (!set.fontWeight && that.Weights.indexOf(d[i]) != -1) {	if (d[i] != 'inherit') f.fontWeight = d[i]; set.fontStyle = set.fontVariant = set.fontWeight = true; }
+					else if (!set.fontSize) { if (d[i] != 'inherit') f.fontSize = d[i].split('/')[0]; set.fontStyle = set.fontVariant = set.fontWeight = set.fontSize = true; }
+					else { if (d[i] != 'inherit') ff += d[i]; }
+				} if (ff != '') f.fontFamily = ff;
 				return f;
-			***REMOVED***
-		***REMOVED***);
+			}
+		});
 
 		// points and paths
-		svg.ToNumberArray = function(s) ***REMOVED***
+		svg.ToNumberArray = function(s) {
 			var a = svg.trim(svg.compressSpaces((s || '').replace(/,/g, ' '))).split(' ');
-			for (var i=0; i<a.length; i++) ***REMOVED***
+			for (var i=0; i<a.length; i++) {
 				a[i] = parseFloat(a[i]);
-			***REMOVED***
+			}
 			return a;
-		***REMOVED***
-		svg.Point = function(x, y) ***REMOVED***
+		}
+		svg.Point = function(x, y) {
 			this.x = x;
 			this.y = y;
-		***REMOVED***
-			svg.Point.prototype.angleTo = function(p) ***REMOVED***
+		}
+			svg.Point.prototype.angleTo = function(p) {
 				return Math.atan2(p.y - this.y, p.x - this.x);
-			***REMOVED***
+			}
 
-			svg.Point.prototype.applyTransform = function(v) ***REMOVED***
+			svg.Point.prototype.applyTransform = function(v) {
 				var xp = this.x * v[0] + this.y * v[2] + v[4];
 				var yp = this.x * v[1] + this.y * v[3] + v[5];
 				this.x = xp;
 				this.y = yp;
-			***REMOVED***
+			}
 
-		svg.CreatePoint = function(s) ***REMOVED***
+		svg.CreatePoint = function(s) {
 			var a = svg.ToNumberArray(s);
 			return new svg.Point(a[0], a[1]);
-		***REMOVED***
-		svg.CreatePath = function(s) ***REMOVED***
+		}
+		svg.CreatePath = function(s) {
 			var a = svg.ToNumberArray(s);
 			var path = [];
-			for (var i=0; i<a.length; i+=2) ***REMOVED***
+			for (var i=0; i<a.length; i+=2) {
 				path.push(new svg.Point(a[i], a[i+1]));
-			***REMOVED***
+			}
 			return path;
-		***REMOVED***
+		}
 
 		// bounding box
-		svg.BoundingBox = function(x1, y1, x2, y2) ***REMOVED*** // pass in initial points if you want
+		svg.BoundingBox = function(x1, y1, x2, y2) { // pass in initial points if you want
 			this.x1 = Number.NaN;
 			this.y1 = Number.NaN;
 			this.x2 = Number.NaN;
 			this.y2 = Number.NaN;
 
-			this.x = function() ***REMOVED*** return this.x1; ***REMOVED***
-			this.y = function() ***REMOVED*** return this.y1; ***REMOVED***
-			this.width = function() ***REMOVED*** return this.x2 - this.x1; ***REMOVED***
-			this.height = function() ***REMOVED*** return this.y2 - this.y1; ***REMOVED***
+			this.x = function() { return this.x1; }
+			this.y = function() { return this.y1; }
+			this.width = function() { return this.x2 - this.x1; }
+			this.height = function() { return this.y2 - this.y1; }
 
-			this.addPoint = function(x, y) ***REMOVED***
-				if (x != null) ***REMOVED***
-					if (isNaN(this.x1) || isNaN(this.x2)) ***REMOVED***
+			this.addPoint = function(x, y) {
+				if (x != null) {
+					if (isNaN(this.x1) || isNaN(this.x2)) {
 						this.x1 = x;
 						this.x2 = x;
-					***REMOVED***
+					}
 					if (x < this.x1) this.x1 = x;
 					if (x > this.x2) this.x2 = x;
-				***REMOVED***
+				}
 
-				if (y != null) ***REMOVED***
-					if (isNaN(this.y1) || isNaN(this.y2)) ***REMOVED***
+				if (y != null) {
+					if (isNaN(this.y1) || isNaN(this.y2)) {
 						this.y1 = y;
 						this.y2 = y;
-					***REMOVED***
+					}
 					if (y < this.y1) this.y1 = y;
 					if (y > this.y2) this.y2 = y;
-				***REMOVED***
-			***REMOVED***
-			this.addX = function(x) ***REMOVED*** this.addPoint(x, null); ***REMOVED***
-			this.addY = function(y) ***REMOVED*** this.addPoint(null, y); ***REMOVED***
+				}
+			}
+			this.addX = function(x) { this.addPoint(x, null); }
+			this.addY = function(y) { this.addPoint(null, y); }
 
-			this.addBoundingBox = function(bb) ***REMOVED***
+			this.addBoundingBox = function(bb) {
 				this.addPoint(bb.x1, bb.y1);
 				this.addPoint(bb.x2, bb.y2);
-			***REMOVED***
+			}
 
-			this.addQuadraticCurve = function(p0x, p0y, p1x, p1y, p2x, p2y) ***REMOVED***
+			this.addQuadraticCurve = function(p0x, p0y, p1x, p1y, p2x, p2y) {
 				var cp1x = p0x + 2/3 * (p1x - p0x); // CP1 = QP0 + 2/3 *(QP1-QP0)
 				var cp1y = p0y + 2/3 * (p1y - p0y); // CP1 = QP0 + 2/3 *(QP1-QP0)
 				var cp2x = cp1x + 1/3 * (p2x - p0x); // CP2 = CP1 + 1/3 *(QP2-QP0)
 				var cp2y = cp1y + 1/3 * (p2y - p0y); // CP2 = CP1 + 1/3 *(QP2-QP0)
 				this.addBezierCurve(p0x, p0y, cp1x, cp2x, cp1y,	cp2y, p2x, p2y);
-			***REMOVED***
+			}
 
-			this.addBezierCurve = function(p0x, p0y, p1x, p1y, p2x, p2y, p3x, p3y) ***REMOVED***
+			this.addBezierCurve = function(p0x, p0y, p1x, p1y, p2x, p2y, p3x, p3y) {
 				// from http://blog.hackers-cafe.net/2009/06/how-to-calculate-bezier-curves-bounding.html
 				var p0 = [p0x, p0y], p1 = [p1x, p1y], p2 = [p2x, p2y], p3 = [p3x, p3y];
 				this.addPoint(p0[0], p0[1]);
 				this.addPoint(p3[0], p3[1]);
 
-				for (i=0; i<=1; i++) ***REMOVED***
-					var f = function(t) ***REMOVED***
+				for (i=0; i<=1; i++) {
+					var f = function(t) {
 						return Math.pow(1-t, 3) * p0[i]
 						+ 3 * Math.pow(1-t, 2) * t * p1[i]
 						+ 3 * (1-t) * Math.pow(t, 2) * p2[i]
 						+ Math.pow(t, 3) * p3[i];
-					***REMOVED***
+					}
 
 					var b = 6 * p0[i] - 12 * p1[i] + 6 * p2[i];
 					var a = -3 * p0[i] + 9 * p1[i] - 9 * p2[i] + 3 * p3[i];
 					var c = 3 * p1[i] - 3 * p0[i];
 
-					if (a == 0) ***REMOVED***
+					if (a == 0) {
 						if (b == 0) continue;
 						var t = -c / b;
-						if (0 < t && t < 1) ***REMOVED***
+						if (0 < t && t < 1) {
 							if (i == 0) this.addX(f(t));
 							if (i == 1) this.addY(f(t));
-						***REMOVED***
+						}
 						continue;
-					***REMOVED***
+					}
 
 					var b2ac = Math.pow(b, 2) - 4 * c * a;
 					if (b2ac < 0) continue;
 					var t1 = (-b + Math.sqrt(b2ac)) / (2 * a);
-					if (0 < t1 && t1 < 1) ***REMOVED***
+					if (0 < t1 && t1 < 1) {
 						if (i == 0) this.addX(f(t1));
 						if (i == 1) this.addY(f(t1));
-					***REMOVED***
+					}
 					var t2 = (-b - Math.sqrt(b2ac)) / (2 * a);
-					if (0 < t2 && t2 < 1) ***REMOVED***
+					if (0 < t2 && t2 < 1) {
 						if (i == 0) this.addX(f(t2));
 						if (i == 1) this.addY(f(t2));
-					***REMOVED***
-				***REMOVED***
-			***REMOVED***
+					}
+				}
+			}
 
-			this.isPointInBox = function(x, y) ***REMOVED***
+			this.isPointInBox = function(x, y) {
 				return (this.x1 <= x && x <= this.x2 && this.y1 <= y && y <= this.y2);
-			***REMOVED***
+			}
 
 			this.addPoint(x1, y1);
 			this.addPoint(x2, y2);
-		***REMOVED***
+		}
 
 		// transforms
-		svg.Transform = function(v) ***REMOVED***
+		svg.Transform = function(v) {
 			var that = this;
-			this.Type = ***REMOVED******REMOVED***
+			this.Type = {}
 
 			// translate
-			this.Type.translate = function(s) ***REMOVED***
+			this.Type.translate = function(s) {
 				this.p = svg.CreatePoint(s);
-				this.apply = function(ctx) ***REMOVED***
+				this.apply = function(ctx) {
 					ctx.translate(this.p.x || 0.0, this.p.y || 0.0);
-				***REMOVED***
-				this.unapply = function(ctx) ***REMOVED***
+				}
+				this.unapply = function(ctx) {
 					ctx.translate(-1.0 * this.p.x || 0.0, -1.0 * this.p.y || 0.0);
-				***REMOVED***
-				this.applyToPoint = function(p) ***REMOVED***
+				}
+				this.applyToPoint = function(p) {
 					p.applyTransform([1, 0, 0, 1, this.p.x || 0.0, this.p.y || 0.0]);
-				***REMOVED***
-			***REMOVED***
+				}
+			}
 
 			// rotate
-			this.Type.rotate = function(s) ***REMOVED***
+			this.Type.rotate = function(s) {
 				var a = svg.ToNumberArray(s);
 				this.angle = new svg.Property('angle', a[0]);
 				this.cx = a[1] || 0;
 				this.cy = a[2] || 0;
-				this.apply = function(ctx) ***REMOVED***
+				this.apply = function(ctx) {
 					ctx.translate(this.cx, this.cy);
 					ctx.rotate(this.angle.toRadians());
 					ctx.translate(-this.cx, -this.cy);
-				***REMOVED***
-				this.unapply = function(ctx) ***REMOVED***
+				}
+				this.unapply = function(ctx) {
 					ctx.translate(this.cx, this.cy);
 					ctx.rotate(-1.0 * this.angle.toRadians());
 					ctx.translate(-this.cx, -this.cy);
-				***REMOVED***
-				this.applyToPoint = function(p) ***REMOVED***
+				}
+				this.applyToPoint = function(p) {
 					var a = this.angle.toRadians();
 					p.applyTransform([1, 0, 0, 1, this.p.x || 0.0, this.p.y || 0.0]);
 					p.applyTransform([Math.cos(a), Math.sin(a), -Math.sin(a), Math.cos(a), 0, 0]);
 					p.applyTransform([1, 0, 0, 1, -this.p.x || 0.0, -this.p.y || 0.0]);
-				***REMOVED***
-			***REMOVED***
+				}
+			}
 
-			this.Type.scale = function(s) ***REMOVED***
+			this.Type.scale = function(s) {
 				this.p = svg.CreatePoint(s);
-				this.apply = function(ctx) ***REMOVED***
+				this.apply = function(ctx) {
 					ctx.scale(this.p.x || 1.0, this.p.y || this.p.x || 1.0);
-				***REMOVED***
-				this.unapply = function(ctx) ***REMOVED***
+				}
+				this.unapply = function(ctx) {
 					ctx.scale(1.0 / this.p.x || 1.0, 1.0 / this.p.y || this.p.x || 1.0);
-				***REMOVED***
-				this.applyToPoint = function(p) ***REMOVED***
+				}
+				this.applyToPoint = function(p) {
 					p.applyTransform([this.p.x || 0.0, 0, 0, this.p.y || 0.0, 0, 0]);
-				***REMOVED***
-			***REMOVED***
+				}
+			}
 
-			this.Type.matrix = function(s) ***REMOVED***
+			this.Type.matrix = function(s) {
 				this.m = svg.ToNumberArray(s);
-				this.apply = function(ctx) ***REMOVED***
+				this.apply = function(ctx) {
 					ctx.transform(this.m[0], this.m[1], this.m[2], this.m[3], this.m[4], this.m[5]);
-				***REMOVED***
-				this.applyToPoint = function(p) ***REMOVED***
+				}
+				this.applyToPoint = function(p) {
 					p.applyTransform(this.m);
-				***REMOVED***
-			***REMOVED***
+				}
+			}
 
-			this.Type.SkewBase = function(s) ***REMOVED***
+			this.Type.SkewBase = function(s) {
 				this.base = that.Type.matrix;
 				this.base(s);
 				this.angle = new svg.Property('angle', s);
-			***REMOVED***
+			}
 			this.Type.SkewBase.prototype = new this.Type.matrix;
 
-			this.Type.skewX = function(s) ***REMOVED***
+			this.Type.skewX = function(s) {
 				this.base = that.Type.SkewBase;
 				this.base(s);
 				this.m = [1, 0, Math.tan(this.angle.toRadians()), 1, 0, 0];
-			***REMOVED***
+			}
 			this.Type.skewX.prototype = new this.Type.SkewBase;
 
-			this.Type.skewY = function(s) ***REMOVED***
+			this.Type.skewY = function(s) {
 				this.base = that.Type.SkewBase;
 				this.base(s);
 				this.m = [1, Math.tan(this.angle.toRadians()), 0, 1, 0, 0];
-			***REMOVED***
+			}
 			this.Type.skewY.prototype = new this.Type.SkewBase;
 
 			this.transforms = [];
 
-			this.apply = function(ctx) ***REMOVED***
-				for (var i=0; i<this.transforms.length; i++) ***REMOVED***
+			this.apply = function(ctx) {
+				for (var i=0; i<this.transforms.length; i++) {
 					this.transforms[i].apply(ctx);
-				***REMOVED***
-			***REMOVED***
+				}
+			}
 
-			this.unapply = function(ctx) ***REMOVED***
-				for (var i=this.transforms.length-1; i>=0; i--) ***REMOVED***
+			this.unapply = function(ctx) {
+				for (var i=this.transforms.length-1; i>=0; i--) {
 					this.transforms[i].unapply(ctx);
-				***REMOVED***
-			***REMOVED***
+				}
+			}
 
-			this.applyToPoint = function(p) ***REMOVED***
-				for (var i=0; i<this.transforms.length; i++) ***REMOVED***
+			this.applyToPoint = function(p) {
+				for (var i=0; i<this.transforms.length; i++) {
 					this.transforms[i].applyToPoint(p);
-				***REMOVED***
-			***REMOVED***
+				}
+			}
 
 			var data = svg.trim(svg.compressSpaces(v)).replace(/\)(\s?,\s?)/g,') ').split(/\s(?=[a-z])/);
-			for (var i=0; i<data.length; i++) ***REMOVED***
+			for (var i=0; i<data.length; i++) {
 				var type = svg.trim(data[i].split('(')[0]);
 				var s = data[i].split('(')[1].replace(')','');
 				var transform = new this.Type[type](s);
 				transform.type = type;
 				this.transforms.push(transform);
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 
 		// aspect ratio
-		svg.AspectRatio = function(ctx, aspectRatio, width, desiredWidth, height, desiredHeight, minX, minY, refX, refY) ***REMOVED***
+		svg.AspectRatio = function(ctx, aspectRatio, width, desiredWidth, height, desiredHeight, minX, minY, refX, refY) {
 			// aspect ratio - http://www.w3.org/TR/SVG/coords.html#PreserveAspectRatioAttribute
 			aspectRatio = svg.compressSpaces(aspectRatio);
 			aspectRatio = aspectRatio.replace(/^defer\s/,''); // ignore defer
@@ -1484,21 +1484,21 @@ function BlurStack()
 			var scaleY = height / desiredHeight;
 			var scaleMin = Math.min(scaleX, scaleY);
 			var scaleMax = Math.max(scaleX, scaleY);
-			if (meetOrSlice == 'meet') ***REMOVED*** desiredWidth *= scaleMin; desiredHeight *= scaleMin; ***REMOVED***
-			if (meetOrSlice == 'slice') ***REMOVED*** desiredWidth *= scaleMax; desiredHeight *= scaleMax; ***REMOVED***
+			if (meetOrSlice == 'meet') { desiredWidth *= scaleMin; desiredHeight *= scaleMin; }
+			if (meetOrSlice == 'slice') { desiredWidth *= scaleMax; desiredHeight *= scaleMax; }
 
 			refX = new svg.Property('refX', refX);
 			refY = new svg.Property('refY', refY);
-			if (refX.hasValue() && refY.hasValue()) ***REMOVED***
+			if (refX.hasValue() && refY.hasValue()) {
 				ctx.translate(-scaleMin * refX.toPixels('x'), -scaleMin * refY.toPixels('y'));
-			***REMOVED***
-			else ***REMOVED***
+			}
+			else {
 				// align
 				if (align.match(/^xMid/) && ((meetOrSlice == 'meet' && scaleMin == scaleY) || (meetOrSlice == 'slice' && scaleMax == scaleY))) ctx.translate(width / 2.0 - desiredWidth / 2.0, 0);
 				if (align.match(/YMid$/) && ((meetOrSlice == 'meet' && scaleMin == scaleX) || (meetOrSlice == 'slice' && scaleMax == scaleX))) ctx.translate(0, height / 2.0 - desiredHeight / 2.0);
 				if (align.match(/^xMax/) && ((meetOrSlice == 'meet' && scaleMin == scaleY) || (meetOrSlice == 'slice' && scaleMax == scaleY))) ctx.translate(width - desiredWidth, 0);
 				if (align.match(/YMax$/) && ((meetOrSlice == 'meet' && scaleMin == scaleX) || (meetOrSlice == 'slice' && scaleMax == scaleX))) ctx.translate(0, height - desiredHeight);
-			***REMOVED***
+			}
 
 			// scale
 			if (align == 'none') ctx.scale(scaleX, scaleY);
@@ -1507,61 +1507,61 @@ function BlurStack()
 
 			// translate
 			ctx.translate(minX == null ? 0 : -minX, minY == null ? 0 : -minY);
-		***REMOVED***
+		}
 
 		// elements
-		svg.Element = ***REMOVED******REMOVED***
+		svg.Element = {}
 
 		svg.EmptyProperty = new svg.Property('EMPTY', '');
 
-		svg.Element.ElementBase = function(node) ***REMOVED***
-			this.attributes = ***REMOVED******REMOVED***;
-			this.styles = ***REMOVED******REMOVED***;
+		svg.Element.ElementBase = function(node) {
+			this.attributes = {};
+			this.styles = {};
 			this.children = [];
 
 			// get or create attribute
-			this.attribute = function(name, createIfNotExists) ***REMOVED***
+			this.attribute = function(name, createIfNotExists) {
 				var a = this.attributes[name];
 				if (a != null) return a;
 
-				if (createIfNotExists == true) ***REMOVED*** a = new svg.Property(name, ''); this.attributes[name] = a; ***REMOVED***
+				if (createIfNotExists == true) { a = new svg.Property(name, ''); this.attributes[name] = a; }
 				return a || svg.EmptyProperty;
-			***REMOVED***
+			}
 
-			this.getHrefAttribute = function() ***REMOVED***
-				for (var a in this.attributes) ***REMOVED***
-					if (a.match(/:href$/)) ***REMOVED***
+			this.getHrefAttribute = function() {
+				for (var a in this.attributes) {
+					if (a.match(/:href$/)) {
 						return this.attributes[a];
-					***REMOVED***
-				***REMOVED***
+					}
+				}
 				return svg.EmptyProperty;
-			***REMOVED***
+			}
 
 			// get or create style, crawls up node tree
-			this.style = function(name, createIfNotExists) ***REMOVED***
+			this.style = function(name, createIfNotExists) {
 				var s = this.styles[name];
 				if (s != null) return s;
 
 				var a = this.attribute(name);
-				if (a != null && a.hasValue()) ***REMOVED***
+				if (a != null && a.hasValue()) {
 					this.styles[name] = a; // move up to me to cache
 					return a;
-				***REMOVED***
+				}
 
 				var p = this.parent;
-				if (p != null) ***REMOVED***
+				if (p != null) {
 					var ps = p.style(name);
-					if (ps != null && ps.hasValue()) ***REMOVED***
+					if (ps != null && ps.hasValue()) {
 						return ps;
-					***REMOVED***
-				***REMOVED***
+					}
+				}
 
-				if (createIfNotExists == true) ***REMOVED*** s = new svg.Property(name, ''); this.styles[name] = s; ***REMOVED***
+				if (createIfNotExists == true) { s = new svg.Property(name, ''); this.styles[name] = s; }
 				return s || svg.EmptyProperty;
-			***REMOVED***
+			}
 
 			// base render
-			this.render = function(ctx) ***REMOVED***
+			this.render = function(ctx) {
 				// don't render display=none
 				if (this.style('display').value == 'none') return;
 
@@ -1569,269 +1569,269 @@ function BlurStack()
 				if (this.attribute('visibility').value == 'hidden') return;
 
 				ctx.save();
-				if (this.attribute('mask').hasValue()) ***REMOVED*** // mask
+				if (this.attribute('mask').hasValue()) { // mask
 					var mask = this.attribute('mask').getDefinition();
 					if (mask != null) mask.apply(ctx, this);
-				***REMOVED***
-				else if (this.style('filter').hasValue()) ***REMOVED*** // filter
+				}
+				else if (this.style('filter').hasValue()) { // filter
 					var filter = this.style('filter').getDefinition();
 					if (filter != null) filter.apply(ctx, this);
-				***REMOVED***
-				else ***REMOVED***
+				}
+				else {
 					this.setContext(ctx);
 					this.renderChildren(ctx);
 					this.clearContext(ctx);
-				***REMOVED***
+				}
 				ctx.restore();
-			***REMOVED***
+			}
 
 			// base set context
-			this.setContext = function(ctx) ***REMOVED***
+			this.setContext = function(ctx) {
 				// OVERRIDE ME!
-			***REMOVED***
+			}
 
 			// base clear context
-			this.clearContext = function(ctx) ***REMOVED***
+			this.clearContext = function(ctx) {
 				// OVERRIDE ME!
-			***REMOVED***
+			}
 
 			// base render children
-			this.renderChildren = function(ctx) ***REMOVED***
-				for (var i=0; i<this.children.length; i++) ***REMOVED***
+			this.renderChildren = function(ctx) {
+				for (var i=0; i<this.children.length; i++) {
 					this.children[i].render(ctx);
-				***REMOVED***
-			***REMOVED***
+				}
+			}
 
-			this.addChild = function(childNode, create) ***REMOVED***
+			this.addChild = function(childNode, create) {
 				var child = childNode;
 				if (create) child = svg.CreateElement(childNode);
 				child.parent = this;
 				this.children.push(child);
-			***REMOVED***
+			}
 
-			if (node != null && node.nodeType == 1) ***REMOVED*** //ELEMENT_NODE
+			if (node != null && node.nodeType == 1) { //ELEMENT_NODE
 				// add children
-				for (var i=0; i<node.childNodes.length; i++) ***REMOVED***
+				for (var i=0; i<node.childNodes.length; i++) {
 					var childNode = node.childNodes[i];
 					if (childNode.nodeType == 1) this.addChild(childNode, true); //ELEMENT_NODE
-					if (this.captureTextNodes && childNode.nodeType == 3) ***REMOVED***
+					if (this.captureTextNodes && childNode.nodeType == 3) {
 						var text = childNode.nodeValue || childNode.text || '';
-						if (svg.trim(svg.compressSpaces(text)) != '') ***REMOVED***
+						if (svg.trim(svg.compressSpaces(text)) != '') {
 							this.addChild(new svg.Element.tspan(childNode), false); // TEXT_NODE
-						***REMOVED***
-					***REMOVED***
-				***REMOVED***
+						}
+					}
+				}
 
 				// add attributes
-				for (var i=0; i<node.attributes.length; i++) ***REMOVED***
+				for (var i=0; i<node.attributes.length; i++) {
 					var attribute = node.attributes[i];
 					this.attributes[attribute.nodeName] = new svg.Property(attribute.nodeName, attribute.nodeValue);
-				***REMOVED***
+				}
 
 				// add tag styles
 				var styles = svg.Styles[node.nodeName];
-				if (styles != null) ***REMOVED***
-					for (var name in styles) ***REMOVED***
+				if (styles != null) {
+					for (var name in styles) {
 						this.styles[name] = styles[name];
-					***REMOVED***
-				***REMOVED***
+					}
+				}
 
 				// add class styles
-				if (this.attribute('class').hasValue()) ***REMOVED***
+				if (this.attribute('class').hasValue()) {
 					var classes = svg.compressSpaces(this.attribute('class').value).split(' ');
-					for (var j=0; j<classes.length; j++) ***REMOVED***
+					for (var j=0; j<classes.length; j++) {
 						styles = svg.Styles['.'+classes[j]];
-						if (styles != null) ***REMOVED***
-							for (var name in styles) ***REMOVED***
+						if (styles != null) {
+							for (var name in styles) {
 								this.styles[name] = styles[name];
-							***REMOVED***
-						***REMOVED***
+							}
+						}
 						styles = svg.Styles[node.nodeName+'.'+classes[j]];
-						if (styles != null) ***REMOVED***
-							for (var name in styles) ***REMOVED***
+						if (styles != null) {
+							for (var name in styles) {
 								this.styles[name] = styles[name];
-							***REMOVED***
-						***REMOVED***
-					***REMOVED***
-				***REMOVED***
+							}
+						}
+					}
+				}
 
 				// add id styles
-				if (this.attribute('id').hasValue()) ***REMOVED***
+				if (this.attribute('id').hasValue()) {
 					var styles = svg.Styles['#' + this.attribute('id').value];
-					if (styles != null) ***REMOVED***
-						for (var name in styles) ***REMOVED***
+					if (styles != null) {
+						for (var name in styles) {
 							this.styles[name] = styles[name];
-						***REMOVED***
-					***REMOVED***
-				***REMOVED***
+						}
+					}
+				}
 
 				// add inline styles
-				if (this.attribute('style').hasValue()) ***REMOVED***
+				if (this.attribute('style').hasValue()) {
 					var styles = this.attribute('style').value.split(';');
-					for (var i=0; i<styles.length; i++) ***REMOVED***
-						if (svg.trim(styles[i]) != '') ***REMOVED***
+					for (var i=0; i<styles.length; i++) {
+						if (svg.trim(styles[i]) != '') {
 							var style = styles[i].split(':');
 							var name = svg.trim(style[0]);
 							var value = svg.trim(style[1]);
 							this.styles[name] = new svg.Property(name, value);
-						***REMOVED***
-					***REMOVED***
-				***REMOVED***
+						}
+					}
+				}
 
 				// add id
-				if (this.attribute('id').hasValue()) ***REMOVED***
-					if (svg.Definitions[this.attribute('id').value] == null) ***REMOVED***
+				if (this.attribute('id').hasValue()) {
+					if (svg.Definitions[this.attribute('id').value] == null) {
 						svg.Definitions[this.attribute('id').value] = this;
-					***REMOVED***
-				***REMOVED***
-			***REMOVED***
-		***REMOVED***
+					}
+				}
+			}
+		}
 
-		svg.Element.RenderedElementBase = function(node) ***REMOVED***
+		svg.Element.RenderedElementBase = function(node) {
 			this.base = svg.Element.ElementBase;
 			this.base(node);
 
-			this.setContext = function(ctx) ***REMOVED***
+			this.setContext = function(ctx) {
 				// fill
-				if (this.style('fill').isUrlDefinition()) ***REMOVED***
+				if (this.style('fill').isUrlDefinition()) {
 					var fs = this.style('fill').getFillStyleDefinition(this, this.style('fill-opacity'));
 					if (fs != null) ctx.fillStyle = fs;
-				***REMOVED***
-				else if (this.style('fill').hasValue()) ***REMOVED***
+				}
+				else if (this.style('fill').hasValue()) {
 					var fillStyle = this.style('fill');
 					if (fillStyle.value == 'currentColor') fillStyle.value = this.style('color').value;
 					ctx.fillStyle = (fillStyle.value == 'none' ? 'rgba(0,0,0,0)' : fillStyle.value);
-				***REMOVED***
-				if (this.style('fill-opacity').hasValue()) ***REMOVED***
+				}
+				if (this.style('fill-opacity').hasValue()) {
 					var fillStyle = new svg.Property('fill', ctx.fillStyle);
 					fillStyle = fillStyle.addOpacity(this.style('fill-opacity').value);
 					ctx.fillStyle = fillStyle.value;
-				***REMOVED***
+				}
 
 				// stroke
-				if (this.style('stroke').isUrlDefinition()) ***REMOVED***
+				if (this.style('stroke').isUrlDefinition()) {
 					var fs = this.style('stroke').getFillStyleDefinition(this, this.style('stroke-opacity'));
 					if (fs != null) ctx.strokeStyle = fs;
-				***REMOVED***
-				else if (this.style('stroke').hasValue()) ***REMOVED***
+				}
+				else if (this.style('stroke').hasValue()) {
 					var strokeStyle = this.style('stroke');
 					if (strokeStyle.value == 'currentColor') strokeStyle.value = this.style('color').value;
 					ctx.strokeStyle = (strokeStyle.value == 'none' ? 'rgba(0,0,0,0)' : strokeStyle.value);
-				***REMOVED***
-				if (this.style('stroke-opacity').hasValue()) ***REMOVED***
+				}
+				if (this.style('stroke-opacity').hasValue()) {
 					var strokeStyle = new svg.Property('stroke', ctx.strokeStyle);
 					strokeStyle = strokeStyle.addOpacity(this.style('stroke-opacity').value);
 					ctx.strokeStyle = strokeStyle.value;
-				***REMOVED***
-				if (this.style('stroke-width').hasValue()) ***REMOVED***
+				}
+				if (this.style('stroke-width').hasValue()) {
 					var newLineWidth = this.style('stroke-width').toPixels();
 					ctx.lineWidth = newLineWidth == 0 ? 0.001 : newLineWidth; // browsers don't respect 0
-			    ***REMOVED***
+			    }
 				if (this.style('stroke-linecap').hasValue()) ctx.lineCap = this.style('stroke-linecap').value;
 				if (this.style('stroke-linejoin').hasValue()) ctx.lineJoin = this.style('stroke-linejoin').value;
 				if (this.style('stroke-miterlimit').hasValue()) ctx.miterLimit = this.style('stroke-miterlimit').value;
-				if (this.style('stroke-dasharray').hasValue() && this.style('stroke-dasharray').value != 'none') ***REMOVED***
+				if (this.style('stroke-dasharray').hasValue() && this.style('stroke-dasharray').value != 'none') {
 					var gaps = svg.ToNumberArray(this.style('stroke-dasharray').value);
-					if (typeof(ctx.setLineDash) != 'undefined') ***REMOVED*** ctx.setLineDash(gaps); ***REMOVED***
-					else if (typeof(ctx.webkitLineDash) != 'undefined') ***REMOVED*** ctx.webkitLineDash = gaps; ***REMOVED***
-					else if (typeof(ctx.mozDash ) != 'undefined') ***REMOVED*** ctx.mozDash  = gaps; ***REMOVED***
+					if (typeof(ctx.setLineDash) != 'undefined') { ctx.setLineDash(gaps); }
+					else if (typeof(ctx.webkitLineDash) != 'undefined') { ctx.webkitLineDash = gaps; }
+					else if (typeof(ctx.mozDash ) != 'undefined') { ctx.mozDash  = gaps; }
 
 					var offset = this.style('stroke-dashoffset').numValueOrDefault(1);
-					if (typeof(ctx.lineDashOffset) != 'undefined') ***REMOVED*** ctx.lineDashOffset = offset; ***REMOVED***
-					else if (typeof(ctx.webkitLineDashOffset) != 'undefined') ***REMOVED*** ctx.webkitLineDashOffset = offset; ***REMOVED***
-					else if (typeof(ctx.mozDashOffset) != 'undefined') ***REMOVED*** ctx.mozDashOffset = offset; ***REMOVED***
-				***REMOVED***
+					if (typeof(ctx.lineDashOffset) != 'undefined') { ctx.lineDashOffset = offset; }
+					else if (typeof(ctx.webkitLineDashOffset) != 'undefined') { ctx.webkitLineDashOffset = offset; }
+					else if (typeof(ctx.mozDashOffset) != 'undefined') { ctx.mozDashOffset = offset; }
+				}
 
 				// font
-				if (typeof(ctx.font) != 'undefined') ***REMOVED***
+				if (typeof(ctx.font) != 'undefined') {
 					ctx.font = svg.Font.CreateFont(
 						this.style('font-style').value,
 						this.style('font-variant').value,
 						this.style('font-weight').value,
 						this.style('font-size').hasValue() ? this.style('font-size').toPixels() + 'px' : '',
 						this.style('font-family').value).toString();
-				***REMOVED***
+				}
 
 				// transform
-				if (this.attribute('transform').hasValue()) ***REMOVED***
+				if (this.attribute('transform').hasValue()) {
 					var transform = new svg.Transform(this.attribute('transform').value);
 					transform.apply(ctx);
-				***REMOVED***
+				}
 
 				// clip
-				if (this.style('clip-path').hasValue()) ***REMOVED***
+				if (this.style('clip-path').hasValue()) {
 					var clip = this.style('clip-path').getDefinition();
 					if (clip != null) clip.apply(ctx);
-				***REMOVED***
+				}
 
 				// opacity
-				if (this.style('opacity').hasValue()) ***REMOVED***
+				if (this.style('opacity').hasValue()) {
 					ctx.globalAlpha = this.style('opacity').numValue();
-				***REMOVED***
-			***REMOVED***
-		***REMOVED***
+				}
+			}
+		}
 		svg.Element.RenderedElementBase.prototype = new svg.Element.ElementBase;
 
-		svg.Element.PathElementBase = function(node) ***REMOVED***
+		svg.Element.PathElementBase = function(node) {
 			this.base = svg.Element.RenderedElementBase;
 			this.base(node);
 
-			this.path = function(ctx) ***REMOVED***
+			this.path = function(ctx) {
 				if (ctx != null) ctx.beginPath();
 				return new svg.BoundingBox();
-			***REMOVED***
+			}
 
-			this.renderChildren = function(ctx) ***REMOVED***
+			this.renderChildren = function(ctx) {
 				this.path(ctx);
 				svg.Mouse.checkPath(this, ctx);
-				if (ctx.fillStyle != '') ***REMOVED***
-					if (this.attribute('fill-rule').hasValue()) ***REMOVED*** ctx.fill(this.attribute('fill-rule').value); ***REMOVED***
-					else ***REMOVED*** ctx.fill(); ***REMOVED***
-				***REMOVED***
+				if (ctx.fillStyle != '') {
+					if (this.attribute('fill-rule').hasValue()) { ctx.fill(this.attribute('fill-rule').value); }
+					else { ctx.fill(); }
+				}
 				if (ctx.strokeStyle != '') ctx.stroke();
 
 				var markers = this.getMarkers();
-				if (markers != null) ***REMOVED***
-					if (this.style('marker-start').isUrlDefinition()) ***REMOVED***
+				if (markers != null) {
+					if (this.style('marker-start').isUrlDefinition()) {
 						var marker = this.style('marker-start').getDefinition();
 						marker.render(ctx, markers[0][0], markers[0][1]);
-					***REMOVED***
-					if (this.style('marker-mid').isUrlDefinition()) ***REMOVED***
+					}
+					if (this.style('marker-mid').isUrlDefinition()) {
 						var marker = this.style('marker-mid').getDefinition();
-						for (var i=1;i<markers.length-1;i++) ***REMOVED***
+						for (var i=1;i<markers.length-1;i++) {
 							marker.render(ctx, markers[i][0], markers[i][1]);
-						***REMOVED***
-					***REMOVED***
-					if (this.style('marker-end').isUrlDefinition()) ***REMOVED***
+						}
+					}
+					if (this.style('marker-end').isUrlDefinition()) {
 						var marker = this.style('marker-end').getDefinition();
 						marker.render(ctx, markers[markers.length-1][0], markers[markers.length-1][1]);
-					***REMOVED***
-				***REMOVED***
-			***REMOVED***
+					}
+				}
+			}
 
-			this.getBoundingBox = function() ***REMOVED***
+			this.getBoundingBox = function() {
 				return this.path();
-			***REMOVED***
+			}
 
-			this.getMarkers = function() ***REMOVED***
+			this.getMarkers = function() {
 				return null;
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.PathElementBase.prototype = new svg.Element.RenderedElementBase;
 
 		// svg element
-		svg.Element.svg = function(node) ***REMOVED***
+		svg.Element.svg = function(node) {
 			this.base = svg.Element.RenderedElementBase;
 			this.base(node);
 
 			this.baseClearContext = this.clearContext;
-			this.clearContext = function(ctx) ***REMOVED***
+			this.clearContext = function(ctx) {
 				this.baseClearContext(ctx);
 				svg.ViewPort.RemoveCurrent();
-			***REMOVED***
+			}
 
 			this.baseSetContext = this.setContext;
-			this.setContext = function(ctx) ***REMOVED***
+			this.setContext = function(ctx) {
 				// initial values
 				ctx.strokeStyle = 'rgba(0,0,0,0)';
 				ctx.lineCap = 'butt';
@@ -1850,16 +1850,16 @@ function BlurStack()
 
 				if (!this.attribute('width').hasValue()) this.attribute('width', true).value = '100%';
 				if (!this.attribute('height').hasValue()) this.attribute('height', true).value = '100%';
-				if (typeof(this.root) == 'undefined') ***REMOVED***
+				if (typeof(this.root) == 'undefined') {
 					width = this.attribute('width').toPixels('x');
 					height = this.attribute('height').toPixels('y');
 
 					var x = 0;
 					var y = 0;
-					if (this.attribute('refX').hasValue() && this.attribute('refY').hasValue()) ***REMOVED***
+					if (this.attribute('refX').hasValue() && this.attribute('refY').hasValue()) {
 						x = -this.attribute('refX').toPixels('x');
 						y = -this.attribute('refY').toPixels('y');
-					***REMOVED***
+					}
 
 					ctx.beginPath();
 					ctx.moveTo(x, y);
@@ -1868,11 +1868,11 @@ function BlurStack()
 					ctx.lineTo(x, height);
 					ctx.closePath();
 					ctx.clip();
-				***REMOVED***
+				}
 				svg.ViewPort.SetCurrent(width, height);
 
 				// viewbox
-				if (this.attribute('viewBox').hasValue()) ***REMOVED***
+				if (this.attribute('viewBox').hasValue()) {
 					var viewBox = svg.ToNumberArray(this.attribute('viewBox').value);
 					var minX = viewBox[0];
 					var minY = viewBox[1];
@@ -1892,17 +1892,17 @@ function BlurStack()
 
 					svg.ViewPort.RemoveCurrent();
 					svg.ViewPort.SetCurrent(viewBox[2], viewBox[3]);
-				***REMOVED***
-			***REMOVED***
-		***REMOVED***
+				}
+			}
+		}
 		svg.Element.svg.prototype = new svg.Element.RenderedElementBase;
 
 		// rect element
-		svg.Element.rect = function(node) ***REMOVED***
+		svg.Element.rect = function(node) {
 			this.base = svg.Element.PathElementBase;
 			this.base(node);
 
-			this.path = function(ctx) ***REMOVED***
+			this.path = function(ctx) {
 				var x = this.attribute('x').toPixels('x');
 				var y = this.attribute('y').toPixels('y');
 				var width = this.attribute('width').toPixels('x');
@@ -1913,7 +1913,7 @@ function BlurStack()
 				if (this.attribute('ry').hasValue() && !this.attribute('rx').hasValue()) rx = ry;
 				rx = Math.min(rx, width / 2.0);
 				ry = Math.min(ry, height / 2.0);
-				if (ctx != null) ***REMOVED***
+				if (ctx != null) {
 					ctx.beginPath();
 					ctx.moveTo(x + rx, y);
 					ctx.lineTo(x + width - rx, y);
@@ -1925,47 +1925,47 @@ function BlurStack()
 					ctx.lineTo(x, y + ry);
 					ctx.quadraticCurveTo(x, y, x + rx, y)
 					ctx.closePath();
-				***REMOVED***
+				}
 
 				return new svg.BoundingBox(x, y, x + width, y + height);
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.rect.prototype = new svg.Element.PathElementBase;
 
 		// circle element
-		svg.Element.circle = function(node) ***REMOVED***
+		svg.Element.circle = function(node) {
 			this.base = svg.Element.PathElementBase;
 			this.base(node);
 
-			this.path = function(ctx) ***REMOVED***
+			this.path = function(ctx) {
 				var cx = this.attribute('cx').toPixels('x');
 				var cy = this.attribute('cy').toPixels('y');
 				var r = this.attribute('r').toPixels();
 
-				if (ctx != null) ***REMOVED***
+				if (ctx != null) {
 					ctx.beginPath();
 					ctx.arc(cx, cy, r, 0, Math.PI * 2, true);
 					ctx.closePath();
-				***REMOVED***
+				}
 
 				return new svg.BoundingBox(cx - r, cy - r, cx + r, cy + r);
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.circle.prototype = new svg.Element.PathElementBase;
 
 		// ellipse element
-		svg.Element.ellipse = function(node) ***REMOVED***
+		svg.Element.ellipse = function(node) {
 			this.base = svg.Element.PathElementBase;
 			this.base(node);
 
-			this.path = function(ctx) ***REMOVED***
+			this.path = function(ctx) {
 				var KAPPA = 4 * ((Math.sqrt(2) - 1) / 3);
 				var rx = this.attribute('rx').toPixels('x');
 				var ry = this.attribute('ry').toPixels('y');
 				var cx = this.attribute('cx').toPixels('x');
 				var cy = this.attribute('cy').toPixels('y');
 
-				if (ctx != null) ***REMOVED***
+				if (ctx != null) {
 					ctx.beginPath();
 					ctx.moveTo(cx, cy - ry);
 					ctx.bezierCurveTo(cx + (KAPPA * rx), cy - ry,  cx + rx, cy - (KAPPA * ry), cx + rx, cy);
@@ -1973,93 +1973,93 @@ function BlurStack()
 					ctx.bezierCurveTo(cx - (KAPPA * rx), cy + ry, cx - rx, cy + (KAPPA * ry), cx - rx, cy);
 					ctx.bezierCurveTo(cx - rx, cy - (KAPPA * ry), cx - (KAPPA * rx), cy - ry, cx, cy - ry);
 					ctx.closePath();
-				***REMOVED***
+				}
 
 				return new svg.BoundingBox(cx - rx, cy - ry, cx + rx, cy + ry);
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.ellipse.prototype = new svg.Element.PathElementBase;
 
 		// line element
-		svg.Element.line = function(node) ***REMOVED***
+		svg.Element.line = function(node) {
 			this.base = svg.Element.PathElementBase;
 			this.base(node);
 
-			this.getPoints = function() ***REMOVED***
+			this.getPoints = function() {
 				return [
 					new svg.Point(this.attribute('x1').toPixels('x'), this.attribute('y1').toPixels('y')),
 					new svg.Point(this.attribute('x2').toPixels('x'), this.attribute('y2').toPixels('y'))];
-			***REMOVED***
+			}
 
-			this.path = function(ctx) ***REMOVED***
+			this.path = function(ctx) {
 				var points = this.getPoints();
 
-				if (ctx != null) ***REMOVED***
+				if (ctx != null) {
 					ctx.beginPath();
 					ctx.moveTo(points[0].x, points[0].y);
 					ctx.lineTo(points[1].x, points[1].y);
-				***REMOVED***
+				}
 
 				return new svg.BoundingBox(points[0].x, points[0].y, points[1].x, points[1].y);
-			***REMOVED***
+			}
 
-			this.getMarkers = function() ***REMOVED***
+			this.getMarkers = function() {
 				var points = this.getPoints();
 				var a = points[0].angleTo(points[1]);
 				return [[points[0], a], [points[1], a]];
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.line.prototype = new svg.Element.PathElementBase;
 
 		// polyline element
-		svg.Element.polyline = function(node) ***REMOVED***
+		svg.Element.polyline = function(node) {
 			this.base = svg.Element.PathElementBase;
 			this.base(node);
 
 			this.points = svg.CreatePath(this.attribute('points').value);
-			this.path = function(ctx) ***REMOVED***
+			this.path = function(ctx) {
 				var bb = new svg.BoundingBox(this.points[0].x, this.points[0].y);
-				if (ctx != null) ***REMOVED***
+				if (ctx != null) {
 					ctx.beginPath();
 					ctx.moveTo(this.points[0].x, this.points[0].y);
-				***REMOVED***
-				for (var i=1; i<this.points.length; i++) ***REMOVED***
+				}
+				for (var i=1; i<this.points.length; i++) {
 					bb.addPoint(this.points[i].x, this.points[i].y);
 					if (ctx != null) ctx.lineTo(this.points[i].x, this.points[i].y);
-				***REMOVED***
+				}
 				return bb;
-			***REMOVED***
+			}
 
-			this.getMarkers = function() ***REMOVED***
+			this.getMarkers = function() {
 				var markers = [];
-				for (var i=0; i<this.points.length - 1; i++) ***REMOVED***
+				for (var i=0; i<this.points.length - 1; i++) {
 					markers.push([this.points[i], this.points[i].angleTo(this.points[i+1])]);
-				***REMOVED***
+				}
 				markers.push([this.points[this.points.length-1], markers[markers.length-1][1]]);
 				return markers;
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.polyline.prototype = new svg.Element.PathElementBase;
 
 		// polygon element
-		svg.Element.polygon = function(node) ***REMOVED***
+		svg.Element.polygon = function(node) {
 			this.base = svg.Element.polyline;
 			this.base(node);
 
 			this.basePath = this.path;
-			this.path = function(ctx) ***REMOVED***
+			this.path = function(ctx) {
 				var bb = this.basePath(ctx);
-				if (ctx != null) ***REMOVED***
+				if (ctx != null) {
 					ctx.lineTo(this.points[0].x, this.points[0].y);
 					ctx.closePath();
-				***REMOVED***
+				}
 				return bb;
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.polygon.prototype = new svg.Element.polyline;
 
 		// path element
-		svg.Element.path = function(node) ***REMOVED***
+		svg.Element.path = function(node) {
 			this.base = svg.Element.PathElementBase;
 			this.base(node);
 
@@ -2072,13 +2072,13 @@ function BlurStack()
 			d = d.replace(/([^\s])([MmZzLlHhVvCcSsQqTtAa])/gm,'$1 $2'); // separate commands from points
 			d = d.replace(/([0-9])([+\-])/gm,'$1 $2'); // separate digits when no comma
 			d = d.replace(/(\.[0-9]*)(\.)/gm,'$1 $2'); // separate digits when no comma
-			d = d.replace(/([Aa](\s+[0-9]+)***REMOVED***3***REMOVED***)\s+([01])\s*([01])/gm,'$1 $3 $4 '); // shorthand elliptical arc path syntax
+			d = d.replace(/([Aa](\s+[0-9]+){3})\s+([01])\s*([01])/gm,'$1 $3 $4 '); // shorthand elliptical arc path syntax
 			d = svg.compressSpaces(d); // compress multiple spaces
 			d = svg.trim(d);
-			this.PathParser = new (function(d) ***REMOVED***
+			this.PathParser = new (function(d) {
 				this.tokens = d.split(' ');
 
-				this.reset = function() ***REMOVED***
+				this.reset = function() {
 					this.i = -1;
 					this.command = '';
 					this.previousCommand = '';
@@ -2087,20 +2087,20 @@ function BlurStack()
 					this.current = new svg.Point(0, 0);
 					this.points = [];
 					this.angles = [];
-				***REMOVED***
+				}
 
-				this.isEnd = function() ***REMOVED***
+				this.isEnd = function() {
 					return this.i >= this.tokens.length - 1;
-				***REMOVED***
+				}
 
-				this.isCommandOrEnd = function() ***REMOVED***
+				this.isCommandOrEnd = function() {
 					if (this.isEnd()) return true;
 					return this.tokens[this.i + 1].match(/^[A-Za-z]$/) != null;
-				***REMOVED***
+				}
 
-				this.isRelativeCommand = function() ***REMOVED***
+				this.isRelativeCommand = function() {
 					switch(this.command)
-					***REMOVED***
+					{
 						case 'm':
 						case 'l':
 						case 'h':
@@ -2113,100 +2113,100 @@ function BlurStack()
 						case 'z':
 							return true;
 							break;
-					***REMOVED***
+					}
 					return false;
-				***REMOVED***
+				}
 
-				this.getToken = function() ***REMOVED***
+				this.getToken = function() {
 					this.i++;
 					return this.tokens[this.i];
-				***REMOVED***
+				}
 
-				this.getScalar = function() ***REMOVED***
+				this.getScalar = function() {
 					return parseFloat(this.getToken());
-				***REMOVED***
+				}
 
-				this.nextCommand = function() ***REMOVED***
+				this.nextCommand = function() {
 					this.previousCommand = this.command;
 					this.command = this.getToken();
-				***REMOVED***
+				}
 
-				this.getPoint = function() ***REMOVED***
+				this.getPoint = function() {
 					var p = new svg.Point(this.getScalar(), this.getScalar());
 					return this.makeAbsolute(p);
-				***REMOVED***
+				}
 
-				this.getAsControlPoint = function() ***REMOVED***
+				this.getAsControlPoint = function() {
 					var p = this.getPoint();
 					this.control = p;
 					return p;
-				***REMOVED***
+				}
 
-				this.getAsCurrentPoint = function() ***REMOVED***
+				this.getAsCurrentPoint = function() {
 					var p = this.getPoint();
 					this.current = p;
 					return p;
-				***REMOVED***
+				}
 
-				this.getReflectedControlPoint = function() ***REMOVED***
+				this.getReflectedControlPoint = function() {
 					if (this.previousCommand.toLowerCase() != 'c' &&
 					    this.previousCommand.toLowerCase() != 's' &&
 						this.previousCommand.toLowerCase() != 'q' &&
-						this.previousCommand.toLowerCase() != 't' )***REMOVED***
+						this.previousCommand.toLowerCase() != 't' ){
 						return this.current;
-					***REMOVED***
+					}
 
 					// reflect point
 					var p = new svg.Point(2 * this.current.x - this.control.x, 2 * this.current.y - this.control.y);
 					return p;
-				***REMOVED***
+				}
 
-				this.makeAbsolute = function(p) ***REMOVED***
-					if (this.isRelativeCommand()) ***REMOVED***
+				this.makeAbsolute = function(p) {
+					if (this.isRelativeCommand()) {
 						p.x += this.current.x;
 						p.y += this.current.y;
-					***REMOVED***
+					}
 					return p;
-				***REMOVED***
+				}
 
-				this.addMarker = function(p, from, priorTo) ***REMOVED***
+				this.addMarker = function(p, from, priorTo) {
 					// if the last angle isn't filled in because we didn't have this point yet ...
-					if (priorTo != null && this.angles.length > 0 && this.angles[this.angles.length-1] == null) ***REMOVED***
+					if (priorTo != null && this.angles.length > 0 && this.angles[this.angles.length-1] == null) {
 						this.angles[this.angles.length-1] = this.points[this.points.length-1].angleTo(priorTo);
-					***REMOVED***
+					}
 					this.addMarkerAngle(p, from == null ? null : from.angleTo(p));
-				***REMOVED***
+				}
 
-				this.addMarkerAngle = function(p, a) ***REMOVED***
+				this.addMarkerAngle = function(p, a) {
 					this.points.push(p);
 					this.angles.push(a);
-				***REMOVED***
+				}
 
-				this.getMarkerPoints = function() ***REMOVED*** return this.points; ***REMOVED***
-				this.getMarkerAngles = function() ***REMOVED***
-					for (var i=0; i<this.angles.length; i++) ***REMOVED***
-						if (this.angles[i] == null) ***REMOVED***
-							for (var j=i+1; j<this.angles.length; j++) ***REMOVED***
-								if (this.angles[j] != null) ***REMOVED***
+				this.getMarkerPoints = function() { return this.points; }
+				this.getMarkerAngles = function() {
+					for (var i=0; i<this.angles.length; i++) {
+						if (this.angles[i] == null) {
+							for (var j=i+1; j<this.angles.length; j++) {
+								if (this.angles[j] != null) {
 									this.angles[i] = this.angles[j];
 									break;
-								***REMOVED***
-							***REMOVED***
-						***REMOVED***
-					***REMOVED***
+								}
+							}
+						}
+					}
 					return this.angles;
-				***REMOVED***
-			***REMOVED***)(d);
+				}
+			})(d);
 
-			this.path = function(ctx) ***REMOVED***
+			this.path = function(ctx) {
 				var pp = this.PathParser;
 				pp.reset();
 
 				var bb = new svg.BoundingBox();
 				if (ctx != null) ctx.beginPath();
-				while (!pp.isEnd()) ***REMOVED***
+				while (!pp.isEnd()) {
 					pp.nextCommand();
-					switch (pp.command) ***REMOVED***
+					switch (pp.command) {
 					case 'M':
 					case 'm':
 						var p = pp.getAsCurrentPoint();
@@ -2214,46 +2214,46 @@ function BlurStack()
 						bb.addPoint(p.x, p.y);
 						if (ctx != null) ctx.moveTo(p.x, p.y);
 						pp.start = pp.current;
-						while (!pp.isCommandOrEnd()) ***REMOVED***
+						while (!pp.isCommandOrEnd()) {
 							var p = pp.getAsCurrentPoint();
 							pp.addMarker(p, pp.start);
 							bb.addPoint(p.x, p.y);
 							if (ctx != null) ctx.lineTo(p.x, p.y);
-						***REMOVED***
+						}
 						break;
 					case 'L':
 					case 'l':
-						while (!pp.isCommandOrEnd()) ***REMOVED***
+						while (!pp.isCommandOrEnd()) {
 							var c = pp.current;
 							var p = pp.getAsCurrentPoint();
 							pp.addMarker(p, c);
 							bb.addPoint(p.x, p.y);
 							if (ctx != null) ctx.lineTo(p.x, p.y);
-						***REMOVED***
+						}
 						break;
 					case 'H':
 					case 'h':
-						while (!pp.isCommandOrEnd()) ***REMOVED***
+						while (!pp.isCommandOrEnd()) {
 							var newP = new svg.Point((pp.isRelativeCommand() ? pp.current.x : 0) + pp.getScalar(), pp.current.y);
 							pp.addMarker(newP, pp.current);
 							pp.current = newP;
 							bb.addPoint(pp.current.x, pp.current.y);
 							if (ctx != null) ctx.lineTo(pp.current.x, pp.current.y);
-						***REMOVED***
+						}
 						break;
 					case 'V':
 					case 'v':
-						while (!pp.isCommandOrEnd()) ***REMOVED***
+						while (!pp.isCommandOrEnd()) {
 							var newP = new svg.Point(pp.current.x, (pp.isRelativeCommand() ? pp.current.y : 0) + pp.getScalar());
 							pp.addMarker(newP, pp.current);
 							pp.current = newP;
 							bb.addPoint(pp.current.x, pp.current.y);
 							if (ctx != null) ctx.lineTo(pp.current.x, pp.current.y);
-						***REMOVED***
+						}
 						break;
 					case 'C':
 					case 'c':
-						while (!pp.isCommandOrEnd()) ***REMOVED***
+						while (!pp.isCommandOrEnd()) {
 							var curr = pp.current;
 							var p1 = pp.getPoint();
 							var cntrl = pp.getAsControlPoint();
@@ -2261,11 +2261,11 @@ function BlurStack()
 							pp.addMarker(cp, cntrl, p1);
 							bb.addBezierCurve(curr.x, curr.y, p1.x, p1.y, cntrl.x, cntrl.y, cp.x, cp.y);
 							if (ctx != null) ctx.bezierCurveTo(p1.x, p1.y, cntrl.x, cntrl.y, cp.x, cp.y);
-						***REMOVED***
+						}
 						break;
 					case 'S':
 					case 's':
-						while (!pp.isCommandOrEnd()) ***REMOVED***
+						while (!pp.isCommandOrEnd()) {
 							var curr = pp.current;
 							var p1 = pp.getReflectedControlPoint();
 							var cntrl = pp.getAsControlPoint();
@@ -2273,22 +2273,22 @@ function BlurStack()
 							pp.addMarker(cp, cntrl, p1);
 							bb.addBezierCurve(curr.x, curr.y, p1.x, p1.y, cntrl.x, cntrl.y, cp.x, cp.y);
 							if (ctx != null) ctx.bezierCurveTo(p1.x, p1.y, cntrl.x, cntrl.y, cp.x, cp.y);
-						***REMOVED***
+						}
 						break;
 					case 'Q':
 					case 'q':
-						while (!pp.isCommandOrEnd()) ***REMOVED***
+						while (!pp.isCommandOrEnd()) {
 							var curr = pp.current;
 							var cntrl = pp.getAsControlPoint();
 							var cp = pp.getAsCurrentPoint();
 							pp.addMarker(cp, cntrl, cntrl);
 							bb.addQuadraticCurve(curr.x, curr.y, cntrl.x, cntrl.y, cp.x, cp.y);
 							if (ctx != null) ctx.quadraticCurveTo(cntrl.x, cntrl.y, cp.x, cp.y);
-						***REMOVED***
+						}
 						break;
 					case 'T':
 					case 't':
-						while (!pp.isCommandOrEnd()) ***REMOVED***
+						while (!pp.isCommandOrEnd()) {
 							var curr = pp.current;
 							var cntrl = pp.getReflectedControlPoint();
 							pp.control = cntrl;
@@ -2296,11 +2296,11 @@ function BlurStack()
 							pp.addMarker(cp, cntrl, cntrl);
 							bb.addQuadraticCurve(curr.x, curr.y, cntrl.x, cntrl.y, cp.x, cp.y);
 							if (ctx != null) ctx.quadraticCurveTo(cntrl.x, cntrl.y, cp.x, cp.y);
-						***REMOVED***
+						}
 						break;
 					case 'A':
 					case 'a':
-						while (!pp.isCommandOrEnd()) ***REMOVED***
+						while (!pp.isCommandOrEnd()) {
 						    var curr = pp.current;
 							var rx = pp.getScalar();
 							var ry = pp.getScalar();
@@ -2318,10 +2318,10 @@ function BlurStack()
 							);
 							// adjust radii
 							var l = Math.pow(currp.x,2)/Math.pow(rx,2)+Math.pow(currp.y,2)/Math.pow(ry,2);
-							if (l > 1) ***REMOVED***
+							if (l > 1) {
 								rx *= Math.sqrt(l);
 								ry *= Math.sqrt(l);
-							***REMOVED***
+							}
 							// cx', cy'
 							var s = (largeArcFlag == sweepFlag ? -1 : 1) * Math.sqrt(
 								((Math.pow(rx,2)*Math.pow(ry,2))-(Math.pow(rx,2)*Math.pow(currp.y,2))-(Math.pow(ry,2)*Math.pow(currp.x,2))) /
@@ -2335,11 +2335,11 @@ function BlurStack()
 								(curr.y + cp.y) / 2.0 + Math.sin(xAxisRotation) * cpp.x + Math.cos(xAxisRotation) * cpp.y
 							);
 							// vector magnitude
-							var m = function(v) ***REMOVED*** return Math.sqrt(Math.pow(v[0],2) + Math.pow(v[1],2)); ***REMOVED***
+							var m = function(v) { return Math.sqrt(Math.pow(v[0],2) + Math.pow(v[1],2)); }
 							// ratio between two vectors
-							var r = function(u, v) ***REMOVED*** return (u[0]*v[0]+u[1]*v[1]) / (m(u)*m(v)) ***REMOVED***
+							var r = function(u, v) { return (u[0]*v[0]+u[1]*v[1]) / (m(u)*m(v)) }
 							// angle between two vectors
-							var a = function(u, v) ***REMOVED*** return (u[0]*v[1] < u[1]*v[0] ? -1 : 1) * Math.acos(r(u,v)); ***REMOVED***
+							var a = function(u, v) { return (u[0]*v[1] < u[1]*v[0] ? -1 : 1) * Math.acos(r(u,v)); }
 							// initial angle
 							var a1 = a([1,0], [(currp.x-cpp.x)/rx,(currp.y-cpp.y)/ry]);
 							// angle delta
@@ -2360,7 +2360,7 @@ function BlurStack()
 							pp.addMarkerAngle(cp, ah - dir * Math.PI);
 
 							bb.addPoint(cp.x, cp.y); // TODO: this is too naive, make it better
-							if (ctx != null) ***REMOVED***
+							if (ctx != null) {
 								var r = rx > ry ? rx : ry;
 								var sx = rx > ry ? 1 : rx / ry;
 								var sy = rx > ry ? ry / rx : 1;
@@ -2372,38 +2372,38 @@ function BlurStack()
 								ctx.scale(1/sx, 1/sy);
 								ctx.rotate(-xAxisRotation);
 								ctx.translate(-centp.x, -centp.y);
-							***REMOVED***
-						***REMOVED***
+							}
+						}
 						break;
 					case 'Z':
 					case 'z':
 						if (ctx != null) ctx.closePath();
 						pp.current = pp.start;
-					***REMOVED***
-				***REMOVED***
+					}
+				}
 
 				return bb;
-			***REMOVED***
+			}
 
-			this.getMarkers = function() ***REMOVED***
+			this.getMarkers = function() {
 				var points = this.PathParser.getMarkerPoints();
 				var angles = this.PathParser.getMarkerAngles();
 
 				var markers = [];
-				for (var i=0; i<points.length; i++) ***REMOVED***
+				for (var i=0; i<points.length; i++) {
 					markers.push([points[i], angles[i]]);
-				***REMOVED***
+				}
 				return markers;
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.path.prototype = new svg.Element.PathElementBase;
 
 		// pattern element
-		svg.Element.pattern = function(node) ***REMOVED***
+		svg.Element.pattern = function(node) {
 			this.base = svg.Element.ElementBase;
 			this.base(node);
 
-			this.createPattern = function(ctx, element) ***REMOVED***
+			this.createPattern = function(ctx, element) {
 				var width = this.attribute('width').toPixels('x', true);
 				var height = this.attribute('height').toPixels('y', true);
 
@@ -2420,31 +2420,31 @@ function BlurStack()
 				c.height = height;
 				var cctx = c.getContext('2d');
         cctx.setTransform(pixelRatio,0,0,pixelRatio,0,0);
-				if (this.attribute('x').hasValue() && this.attribute('y').hasValue()) ***REMOVED***
+				if (this.attribute('x').hasValue() && this.attribute('y').hasValue()) {
 					cctx.translate(this.attribute('x').toPixels('x', true), this.attribute('y').toPixels('y', true));
-				***REMOVED***
+				}
 				// render 3x3 grid so when we transform there's no white space on edges
-				for (var x=-1; x<=1; x++) ***REMOVED***
-					for (var y=-1; y<=1; y++) ***REMOVED***
+				for (var x=-1; x<=1; x++) {
+					for (var y=-1; y<=1; y++) {
 						cctx.save();
 						cctx.translate(x * c.width, y * c.height);
 						tempSvg.render(cctx);
 						cctx.restore();
-					***REMOVED***
-				***REMOVED***
+					}
+				}
 				var pattern = ctx.createPattern(c, 'repeat');
 				return pattern;
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.pattern.prototype = new svg.Element.ElementBase;
 
 		// marker element
-		svg.Element.marker = function(node) ***REMOVED***
+		svg.Element.marker = function(node) {
 			this.base = svg.Element.ElementBase;
 			this.base(node);
 
 			this.baseRender = this.render;
-			this.render = function(ctx, point, angle) ***REMOVED***
+			this.render = function(ctx, point, angle) {
 				ctx.translate(point.x, point.y);
 				if (this.attribute('orient').valueOrDefault('auto') == 'auto') ctx.rotate(angle);
 				if (this.attribute('markerUnits').valueOrDefault('strokeWidth') == 'strokeWidth') ctx.scale(ctx.lineWidth, ctx.lineWidth);
@@ -2466,59 +2466,59 @@ function BlurStack()
 				if (this.attribute('markerUnits').valueOrDefault('strokeWidth') == 'strokeWidth') ctx.scale(1/ctx.lineWidth, 1/ctx.lineWidth);
 				if (this.attribute('orient').valueOrDefault('auto') == 'auto') ctx.rotate(-angle);
 				ctx.translate(-point.x, -point.y);
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.marker.prototype = new svg.Element.ElementBase;
 
 		// definitions element
-		svg.Element.defs = function(node) ***REMOVED***
+		svg.Element.defs = function(node) {
 			this.base = svg.Element.ElementBase;
 			this.base(node);
 
-			this.render = function(ctx) ***REMOVED***
+			this.render = function(ctx) {
 				// NOOP
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.defs.prototype = new svg.Element.ElementBase;
 
 		// base for gradients
-		svg.Element.GradientBase = function(node) ***REMOVED***
+		svg.Element.GradientBase = function(node) {
 			this.base = svg.Element.ElementBase;
 			this.base(node);
 
 			this.gradientUnits = this.attribute('gradientUnits').valueOrDefault('objectBoundingBox');
 
 			this.stops = [];
-			for (var i=0; i<this.children.length; i++) ***REMOVED***
+			for (var i=0; i<this.children.length; i++) {
 				var child = this.children[i];
 				if (child.type == 'stop') this.stops.push(child);
-			***REMOVED***
+			}
 
-			this.getGradient = function() ***REMOVED***
+			this.getGradient = function() {
 				// OVERRIDE ME!
-			***REMOVED***
+			}
 
-			this.createGradient = function(ctx, element, parentOpacityProp) ***REMOVED***
+			this.createGradient = function(ctx, element, parentOpacityProp) {
 				var stopsContainer = this;
-				if (this.getHrefAttribute().hasValue()) ***REMOVED***
+				if (this.getHrefAttribute().hasValue()) {
 					stopsContainer = this.getHrefAttribute().getDefinition();
-				***REMOVED***
+				}
 
-				var addParentOpacity = function (color) ***REMOVED***
-					if (parentOpacityProp.hasValue()) ***REMOVED***
+				var addParentOpacity = function (color) {
+					if (parentOpacityProp.hasValue()) {
 						var p = new svg.Property('color', color);
 						return p.addOpacity(parentOpacityProp.value).value;
-					***REMOVED***
+					}
 					return color;
-				***REMOVED***;
+				};
 
 				var g = this.getGradient(ctx, element);
 				if (g == null) return addParentOpacity(stopsContainer.stops[stopsContainer.stops.length - 1].color);
-				for (var i=0; i<stopsContainer.stops.length; i++) ***REMOVED***
+				for (var i=0; i<stopsContainer.stops.length; i++) {
 					g.addColorStop(stopsContainer.stops[i].offset, addParentOpacity(stopsContainer.stops[i].color));
-				***REMOVED***
+				}
 
-				if (this.attribute('gradientTransform').hasValue()) ***REMOVED***
+				if (this.attribute('gradientTransform').hasValue()) {
 					// render as transformed pattern on temporary canvas
 					var rootView = svg.ViewPort.viewPorts[0];
 
@@ -2547,30 +2547,30 @@ function BlurStack()
 					tempCtx.fillStyle = g;
 					tempSvg.render(tempCtx);
 					return tempCtx.createPattern(c, 'no-repeat');
-				***REMOVED***
+				}
 
 				return g;
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.GradientBase.prototype = new svg.Element.ElementBase;
 
 		// linear gradient element
-		svg.Element.linearGradient = function(node) ***REMOVED***
+		svg.Element.linearGradient = function(node) {
 			this.base = svg.Element.GradientBase;
 			this.base(node);
 
-			this.getGradient = function(ctx, element) ***REMOVED***
+			this.getGradient = function(ctx, element) {
 				var bb = element.getBoundingBox();
 
 				if (!this.attribute('x1').hasValue()
 				 && !this.attribute('y1').hasValue()
 				 && !this.attribute('x2').hasValue()
-				 && !this.attribute('y2').hasValue()) ***REMOVED***
+				 && !this.attribute('y2').hasValue()) {
 					this.attribute('x1', true).value = 0;
 					this.attribute('y1', true).value = 0;
 					this.attribute('x2', true).value = 1;
 					this.attribute('y2', true).value = 0;
-				 ***REMOVED***
+				 }
 
 				var x1 = (this.gradientUnits == 'objectBoundingBox'
 					? bb.x() + bb.width() * this.attribute('x1').numValue()
@@ -2587,16 +2587,16 @@ function BlurStack()
 
 				if (x1 == x2 && y1 == y2) return null;
 				return ctx.createLinearGradient(x1, y1, x2, y2);
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.linearGradient.prototype = new svg.Element.GradientBase;
 
 		// radial gradient element
-		svg.Element.radialGradient = function(node) ***REMOVED***
+		svg.Element.radialGradient = function(node) {
 			this.base = svg.Element.GradientBase;
 			this.base(node);
 
-			this.getGradient = function(ctx, element) ***REMOVED***
+			this.getGradient = function(ctx, element) {
 				var bb = element.getBoundingBox();
 
 				if (!this.attribute('cx').hasValue()) this.attribute('cx', true).value = '50%';
@@ -2612,28 +2612,28 @@ function BlurStack()
 
 				var fx = cx;
 				var fy = cy;
-				if (this.attribute('fx').hasValue()) ***REMOVED***
+				if (this.attribute('fx').hasValue()) {
 					fx = (this.gradientUnits == 'objectBoundingBox'
 					? bb.x() + bb.width() * this.attribute('fx').numValue()
 					: this.attribute('fx').toPixels('x'));
-				***REMOVED***
-				if (this.attribute('fy').hasValue()) ***REMOVED***
+				}
+				if (this.attribute('fy').hasValue()) {
 					fy = (this.gradientUnits == 'objectBoundingBox'
 					? bb.y() + bb.height() * this.attribute('fy').numValue()
 					: this.attribute('fy').toPixels('y'));
-				***REMOVED***
+				}
 
 				var r = (this.gradientUnits == 'objectBoundingBox'
 					? (bb.width() + bb.height()) / 2.0 * this.attribute('r').numValue()
 					: this.attribute('r').toPixels());
 
 				return ctx.createRadialGradient(fx, fy, 0, cx, cy, r);
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.radialGradient.prototype = new svg.Element.GradientBase;
 
 		// gradient stop element
-		svg.Element.stop = function(node) ***REMOVED***
+		svg.Element.stop = function(node) {
 			this.base = svg.Element.ElementBase;
 			this.base(node);
 
@@ -2644,11 +2644,11 @@ function BlurStack()
 			var stopColor = this.style('stop-color');
 			if (this.style('stop-opacity').hasValue()) stopColor = stopColor.addOpacity(this.style('stop-opacity').value);
 			this.color = stopColor.value;
-		***REMOVED***
+		}
 		svg.Element.stop.prototype = new svg.Element.ElementBase;
 
 		// animation base element
-		svg.Element.AnimateBase = function(node) ***REMOVED***
+		svg.Element.AnimateBase = function(node) {
 			this.base = svg.Element.ElementBase;
 			this.base(node);
 
@@ -2658,67 +2658,67 @@ function BlurStack()
 			this.begin = this.attribute('begin').toMilliseconds();
 			this.maxDuration = this.begin + this.attribute('dur').toMilliseconds();
 
-			this.getProperty = function() ***REMOVED***
+			this.getProperty = function() {
 				var attributeType = this.attribute('attributeType').value;
 				var attributeName = this.attribute('attributeName').value;
 
-				if (attributeType == 'CSS') ***REMOVED***
+				if (attributeType == 'CSS') {
 					return this.parent.style(attributeName, true);
-				***REMOVED***
+				}
 				return this.parent.attribute(attributeName, true);
-			***REMOVED***;
+			};
 
 			this.initialValue = null;
 			this.initialUnits = '';
 			this.removed = false;
 
-			this.calcValue = function() ***REMOVED***
+			this.calcValue = function() {
 				// OVERRIDE ME!
 				return '';
-			***REMOVED***
+			}
 
-			this.update = function(delta) ***REMOVED***
+			this.update = function(delta) {
 				// set initial value
-				if (this.initialValue == null) ***REMOVED***
+				if (this.initialValue == null) {
 					this.initialValue = this.getProperty().value;
 					this.initialUnits = this.getProperty().getUnits();
-				***REMOVED***
+				}
 
 				// if we're past the end time
-				if (this.duration > this.maxDuration) ***REMOVED***
+				if (this.duration > this.maxDuration) {
 					// loop for indefinitely repeating animations
 					if (this.attribute('repeatCount').value == 'indefinite'
-					 || this.attribute('repeatDur').value == 'indefinite') ***REMOVED***
+					 || this.attribute('repeatDur').value == 'indefinite') {
 						this.duration = 0.0
-					***REMOVED***
-					else if (this.attribute('fill').valueOrDefault('remove') == 'remove' && !this.removed) ***REMOVED***
+					}
+					else if (this.attribute('fill').valueOrDefault('remove') == 'remove' && !this.removed) {
 						this.removed = true;
 						this.getProperty().value = this.initialValue;
 						return true;
-					***REMOVED***
-					else ***REMOVED***
+					}
+					else {
 						return false; // no updates made
-					***REMOVED***
-				***REMOVED***
+					}
+				}
 				this.duration = this.duration + delta;
 
 				// if we're past the begin time
 				var updated = false;
-				if (this.begin < this.duration) ***REMOVED***
+				if (this.begin < this.duration) {
 					var newValue = this.calcValue(); // tween
 
-					if (this.attribute('type').hasValue()) ***REMOVED***
+					if (this.attribute('type').hasValue()) {
 						// for transform, etc.
 						var type = this.attribute('type').value;
 						newValue = type + '(' + newValue + ')';
-					***REMOVED***
+					}
 
 					this.getProperty().value = newValue;
 					updated = true;
-				***REMOVED***
+				}
 
 				return updated;
-			***REMOVED***
+			}
 
 			this.from = this.attribute('from');
 			this.to = this.attribute('to');
@@ -2726,83 +2726,83 @@ function BlurStack()
 			if (this.values.hasValue()) this.values.value = this.values.value.split(';');
 
 			// fraction of duration we've covered
-			this.progress = function() ***REMOVED***
-				var ret = ***REMOVED*** progress: (this.duration - this.begin) / (this.maxDuration - this.begin) ***REMOVED***;
-				if (this.values.hasValue()) ***REMOVED***
+			this.progress = function() {
+				var ret = { progress: (this.duration - this.begin) / (this.maxDuration - this.begin) };
+				if (this.values.hasValue()) {
 					var p = ret.progress * (this.values.value.length - 1);
 					var lb = Math.floor(p), ub = Math.ceil(p);
 					ret.from = new svg.Property('from', parseFloat(this.values.value[lb]));
 					ret.to = new svg.Property('to', parseFloat(this.values.value[ub]));
 					ret.progress = (p - lb) / (ub - lb);
-				***REMOVED***
-				else ***REMOVED***
+				}
+				else {
 					ret.from = this.from;
 					ret.to = this.to;
-				***REMOVED***
+				}
 				return ret;
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.AnimateBase.prototype = new svg.Element.ElementBase;
 
 		// animate element
-		svg.Element.animate = function(node) ***REMOVED***
+		svg.Element.animate = function(node) {
 			this.base = svg.Element.AnimateBase;
 			this.base(node);
 
-			this.calcValue = function() ***REMOVED***
+			this.calcValue = function() {
 				var p = this.progress();
 
 				// tween value linearly
 				var newValue = p.from.numValue() + (p.to.numValue() - p.from.numValue()) * p.progress;
 				return newValue + this.initialUnits;
-			***REMOVED***;
-		***REMOVED***
+			};
+		}
 		svg.Element.animate.prototype = new svg.Element.AnimateBase;
 
 		// animate color element
-		svg.Element.animateColor = function(node) ***REMOVED***
+		svg.Element.animateColor = function(node) {
 			this.base = svg.Element.AnimateBase;
 			this.base(node);
 
-			this.calcValue = function() ***REMOVED***
+			this.calcValue = function() {
 				var p = this.progress();
 				var from = new RGBColor(p.from.value);
 				var to = new RGBColor(p.to.value);
 
-				if (from.ok && to.ok) ***REMOVED***
+				if (from.ok && to.ok) {
 					// tween color linearly
 					var r = from.r + (to.r - from.r) * p.progress;
 					var g = from.g + (to.g - from.g) * p.progress;
 					var b = from.b + (to.b - from.b) * p.progress;
 					return 'rgb('+parseInt(r,10)+','+parseInt(g,10)+','+parseInt(b,10)+')';
-				***REMOVED***
+				}
 				return this.attribute('from').value;
-			***REMOVED***;
-		***REMOVED***
+			};
+		}
 		svg.Element.animateColor.prototype = new svg.Element.AnimateBase;
 
 		// animate transform element
-		svg.Element.animateTransform = function(node) ***REMOVED***
+		svg.Element.animateTransform = function(node) {
 			this.base = svg.Element.AnimateBase;
 			this.base(node);
 
-			this.calcValue = function() ***REMOVED***
+			this.calcValue = function() {
 				var p = this.progress();
 
 				// tween value linearly
 				var from = svg.ToNumberArray(p.from.value);
 				var to = svg.ToNumberArray(p.to.value);
 				var newValue = '';
-				for (var i=0; i<from.length; i++) ***REMOVED***
+				for (var i=0; i<from.length; i++) {
 					newValue += from[i] + (to[i] - from[i]) * p.progress + ' ';
-				***REMOVED***
+				}
 				return newValue;
-			***REMOVED***;
-		***REMOVED***
+			};
+		}
 		svg.Element.animateTransform.prototype = new svg.Element.animate;
 
 		// font element
-		svg.Element.font = function(node) ***REMOVED***
+		svg.Element.font = function(node) {
 			this.base = svg.Element.ElementBase;
 			this.base(node);
 
@@ -2813,168 +2813,168 @@ function BlurStack()
 			this.fontFace = null;
 			this.missingGlyph = null;
 			this.glyphs = [];
-			for (var i=0; i<this.children.length; i++) ***REMOVED***
+			for (var i=0; i<this.children.length; i++) {
 				var child = this.children[i];
-				if (child.type == 'font-face') ***REMOVED***
+				if (child.type == 'font-face') {
 					this.fontFace = child;
-					if (child.style('font-family').hasValue()) ***REMOVED***
+					if (child.style('font-family').hasValue()) {
 						svg.Definitions[child.style('font-family').value] = this;
-					***REMOVED***
-				***REMOVED***
+					}
+				}
 				else if (child.type == 'missing-glyph') this.missingGlyph = child;
-				else if (child.type == 'glyph') ***REMOVED***
-					if (child.arabicForm != '') ***REMOVED***
+				else if (child.type == 'glyph') {
+					if (child.arabicForm != '') {
 						this.isRTL = true;
 						this.isArabic = true;
 						if (typeof(this.glyphs[child.unicode]) == 'undefined') this.glyphs[child.unicode] = [];
 						this.glyphs[child.unicode][child.arabicForm] = child;
-					***REMOVED***
-					else ***REMOVED***
+					}
+					else {
 						this.glyphs[child.unicode] = child;
-					***REMOVED***
-				***REMOVED***
-			***REMOVED***
-		***REMOVED***
+					}
+				}
+			}
+		}
 		svg.Element.font.prototype = new svg.Element.ElementBase;
 
 		// font-face element
-		svg.Element.fontface = function(node) ***REMOVED***
+		svg.Element.fontface = function(node) {
 			this.base = svg.Element.ElementBase;
 			this.base(node);
 
 			this.ascent = this.attribute('ascent').value;
 			this.descent = this.attribute('descent').value;
 			this.unitsPerEm = this.attribute('units-per-em').numValue();
-		***REMOVED***
+		}
 		svg.Element.fontface.prototype = new svg.Element.ElementBase;
 
 		// missing-glyph element
-		svg.Element.missingglyph = function(node) ***REMOVED***
+		svg.Element.missingglyph = function(node) {
 			this.base = svg.Element.path;
 			this.base(node);
 
 			this.horizAdvX = 0;
-		***REMOVED***
+		}
 		svg.Element.missingglyph.prototype = new svg.Element.path;
 
 		// glyph element
-		svg.Element.glyph = function(node) ***REMOVED***
+		svg.Element.glyph = function(node) {
 			this.base = svg.Element.path;
 			this.base(node);
 
 			this.horizAdvX = this.attribute('horiz-adv-x').numValue();
 			this.unicode = this.attribute('unicode').value;
 			this.arabicForm = this.attribute('arabic-form').value;
-		***REMOVED***
+		}
 		svg.Element.glyph.prototype = new svg.Element.path;
 
 		// text element
-		svg.Element.text = function(node) ***REMOVED***
+		svg.Element.text = function(node) {
 			this.captureTextNodes = true;
 			this.base = svg.Element.RenderedElementBase;
 			this.base(node);
 
 			this.baseSetContext = this.setContext;
-			this.setContext = function(ctx) ***REMOVED***
+			this.setContext = function(ctx) {
 				this.baseSetContext(ctx);
 				if (this.style('dominant-baseline').hasValue()) ctx.textBaseline = this.style('dominant-baseline').value;
 				if (this.style('alignment-baseline').hasValue()) ctx.textBaseline = this.style('alignment-baseline').value;
-			***REMOVED***
+			}
 
-			this.getBoundingBox = function () ***REMOVED***
+			this.getBoundingBox = function () {
 				// TODO: implement
 				return new svg.BoundingBox(this.attribute('x').toPixels('x'), this.attribute('y').toPixels('y'), 0, 0);
-			***REMOVED***
+			}
 
-			this.renderChildren = function(ctx) ***REMOVED***
+			this.renderChildren = function(ctx) {
 				this.x = this.attribute('x').toPixels('x');
 				this.y = this.attribute('y').toPixels('y');
 				this.x += this.getAnchorDelta(ctx, this, 0);
-				for (var i=0; i<this.children.length; i++) ***REMOVED***
+				for (var i=0; i<this.children.length; i++) {
 					this.renderChild(ctx, this, i);
-				***REMOVED***
-			***REMOVED***
+				}
+			}
 
-			this.getAnchorDelta = function (ctx, parent, startI) ***REMOVED***
+			this.getAnchorDelta = function (ctx, parent, startI) {
 				var textAnchor = this.style('text-anchor').valueOrDefault('start');
-				if (textAnchor != 'start') ***REMOVED***
+				if (textAnchor != 'start') {
 					var width = 0;
-					for (var i=startI; i<parent.children.length; i++) ***REMOVED***
+					for (var i=startI; i<parent.children.length; i++) {
 						var child = parent.children[i];
 						if (i > startI && child.attribute('x').hasValue()) break; // new group
 						width += child.measureTextRecursive(ctx);
-					***REMOVED***
+					}
 					return -1 * (textAnchor == 'end' ? width : width / 2.0);
-				***REMOVED***
+				}
 				return 0;
-			***REMOVED***
+			}
 
-			this.renderChild = function(ctx, parent, i) ***REMOVED***
+			this.renderChild = function(ctx, parent, i) {
 				var child = parent.children[i];
-				if (child.attribute('x').hasValue()) ***REMOVED***
+				if (child.attribute('x').hasValue()) {
 					child.x = child.attribute('x').toPixels('x') + this.getAnchorDelta(ctx, parent, i);
-				***REMOVED***
-				else ***REMOVED***
+				}
+				else {
 					if (this.attribute('dx').hasValue()) this.x += this.attribute('dx').toPixels('x');
 					if (child.attribute('dx').hasValue()) this.x += child.attribute('dx').toPixels('x');
 					child.x = this.x;
-				***REMOVED***
+				}
 				this.x = child.x + child.measureText(ctx);
 
-				if (child.attribute('y').hasValue()) ***REMOVED***
+				if (child.attribute('y').hasValue()) {
 					child.y = child.attribute('y').toPixels('y');
-				***REMOVED***
-				else ***REMOVED***
+				}
+				else {
 					if (this.attribute('dy').hasValue()) this.y += this.attribute('dy').toPixels('y');
 					if (child.attribute('dy').hasValue()) this.y += child.attribute('dy').toPixels('y');
 					child.y = this.y;
-				***REMOVED***
+				}
 				this.y = child.y;
 
 				child.render(ctx);
 
-				for (var i=0; i<child.children.length; i++) ***REMOVED***
+				for (var i=0; i<child.children.length; i++) {
 					this.renderChild(ctx, child, i);
-				***REMOVED***
-			***REMOVED***
-		***REMOVED***
+				}
+			}
+		}
 		svg.Element.text.prototype = new svg.Element.RenderedElementBase;
 
 		// text base
-		svg.Element.TextElementBase = function(node) ***REMOVED***
+		svg.Element.TextElementBase = function(node) {
 			this.base = svg.Element.RenderedElementBase;
 			this.base(node);
 
-			this.getGlyph = function(font, text, i) ***REMOVED***
+			this.getGlyph = function(font, text, i) {
 				var c = text[i];
 				var glyph = null;
-				if (font.isArabic) ***REMOVED***
+				if (font.isArabic) {
 					var arabicForm = 'isolated';
 					if ((i==0 || text[i-1]==' ') && i<text.length-2 && text[i+1]!=' ') arabicForm = 'terminal';
 					if (i>0 && text[i-1]!=' ' && i<text.length-2 && text[i+1]!=' ') arabicForm = 'medial';
 					if (i>0 && text[i-1]!=' ' && (i == text.length-1 || text[i+1]==' ')) arabicForm = 'initial';
-					if (typeof(font.glyphs[c]) != 'undefined') ***REMOVED***
+					if (typeof(font.glyphs[c]) != 'undefined') {
 						glyph = font.glyphs[c][arabicForm];
 						if (glyph == null && font.glyphs[c].type == 'glyph') glyph = font.glyphs[c];
-					***REMOVED***
-				***REMOVED***
-				else ***REMOVED***
+					}
+				}
+				else {
 					glyph = font.glyphs[c];
-				***REMOVED***
+				}
 				if (glyph == null) glyph = font.missingGlyph;
 				return glyph;
-			***REMOVED***
+			}
 
-			this.renderChildren = function(ctx) ***REMOVED***
+			this.renderChildren = function(ctx) {
 				var customFont = this.parent.style('font-family').getDefinition();
-				if (customFont != null) ***REMOVED***
+				if (customFont != null) {
 					var fontSize = this.parent.style('font-size').numValueOrDefault(svg.Font.Parse(svg.ctx.font).fontSize);
 					var fontStyle = this.parent.style('font-style').valueOrDefault(svg.Font.Parse(svg.ctx.font).fontStyle);
 					var text = this.getText();
 					if (customFont.isRTL) text = text.split("").reverse().join("");
 
 					var dx = svg.ToNumberArray(this.parent.attribute('dx').value);
-					for (var i=0; i<text.length; i++) ***REMOVED***
+					for (var i=0; i<text.length; i++) {
 						var glyph = this.getGlyph(customFont, text, i);
 						var scale = fontSize / customFont.fontFace.unitsPerEm;
 						ctx.translate(this.x, this.y);
@@ -2989,46 +2989,46 @@ function BlurStack()
 						ctx.translate(-this.x, -this.y);
 
 						this.x += fontSize * (glyph.horizAdvX || customFont.horizAdvX) / customFont.fontFace.unitsPerEm;
-						if (typeof(dx[i]) != 'undefined' && !isNaN(dx[i])) ***REMOVED***
+						if (typeof(dx[i]) != 'undefined' && !isNaN(dx[i])) {
 							this.x += dx[i];
-						***REMOVED***
-					***REMOVED***
+						}
+					}
 					return;
-				***REMOVED***
+				}
 
 				if (ctx.fillStyle != '') ctx.fillText(svg.compressSpaces(this.getText()), this.x, this.y);
 				if (ctx.strokeStyle != '') ctx.strokeText(svg.compressSpaces(this.getText()), this.x, this.y);
-			***REMOVED***
+			}
 
-			this.getText = function() ***REMOVED***
+			this.getText = function() {
 				// OVERRIDE ME
-			***REMOVED***
+			}
 
-			this.measureTextRecursive = function(ctx) ***REMOVED***
+			this.measureTextRecursive = function(ctx) {
 				var width = this.measureText(ctx);
-				for (var i=0; i<this.children.length; i++) ***REMOVED***
+				for (var i=0; i<this.children.length; i++) {
 					width += this.children[i].measureTextRecursive(ctx);
-				***REMOVED***
+				}
 				return width;
-			***REMOVED***
+			}
 
-			this.measureText = function(ctx) ***REMOVED***
+			this.measureText = function(ctx) {
 				var customFont = this.parent.style('font-family').getDefinition();
-				if (customFont != null) ***REMOVED***
+				if (customFont != null) {
 					var fontSize = this.parent.style('font-size').numValueOrDefault(svg.Font.Parse(svg.ctx.font).fontSize);
 					var measure = 0;
 					var text = this.getText();
 					if (customFont.isRTL) text = text.split("").reverse().join("");
 					var dx = svg.ToNumberArray(this.parent.attribute('dx').value);
-					for (var i=0; i<text.length; i++) ***REMOVED***
+					for (var i=0; i<text.length; i++) {
 						var glyph = this.getGlyph(customFont, text, i);
 						measure += (glyph.horizAdvX || customFont.horizAdvX) * fontSize / customFont.fontFace.unitsPerEm;
-						if (typeof(dx[i]) != 'undefined' && !isNaN(dx[i])) ***REMOVED***
+						if (typeof(dx[i]) != 'undefined' && !isNaN(dx[i])) {
 							measure += dx[i];
-						***REMOVED***
-					***REMOVED***
+						}
+					}
 					return measure;
-				***REMOVED***
+				}
 
 				var textToMeasure = svg.compressSpaces(this.getText());
 				if (!ctx.measureText) return textToMeasure.length * 10;
@@ -3038,80 +3038,80 @@ function BlurStack()
 				var width = ctx.measureText(textToMeasure).width;
 				ctx.restore();
 				return width;
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.TextElementBase.prototype = new svg.Element.RenderedElementBase;
 
 		// tspan
-		svg.Element.tspan = function(node) ***REMOVED***
+		svg.Element.tspan = function(node) {
 			this.captureTextNodes = true;
 			this.base = svg.Element.TextElementBase;
 			this.base(node);
 
 			this.text = node.nodeValue || node.text || '';
-			this.getText = function() ***REMOVED***
+			this.getText = function() {
 				return this.text;
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.tspan.prototype = new svg.Element.TextElementBase;
 
 		// tref
-		svg.Element.tref = function(node) ***REMOVED***
+		svg.Element.tref = function(node) {
 			this.base = svg.Element.TextElementBase;
 			this.base(node);
 
-			this.getText = function() ***REMOVED***
+			this.getText = function() {
 				var element = this.getHrefAttribute().getDefinition();
 				if (element != null) return element.children[0].getText();
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.tref.prototype = new svg.Element.TextElementBase;
 
 		// a element
-		svg.Element.a = function(node) ***REMOVED***
+		svg.Element.a = function(node) {
 			this.base = svg.Element.TextElementBase;
 			this.base(node);
 
 			this.hasText = true;
-			for (var i=0; i<node.childNodes.length; i++) ***REMOVED***
+			for (var i=0; i<node.childNodes.length; i++) {
 				if (node.childNodes[i].nodeType != 3) this.hasText = false;
-			***REMOVED***
+			}
 
 			// this might contain text
 			this.text = this.hasText ? node.childNodes[0].nodeValue : '';
-			this.getText = function() ***REMOVED***
+			this.getText = function() {
 				return this.text;
-			***REMOVED***
+			}
 
 			this.baseRenderChildren = this.renderChildren;
-			this.renderChildren = function(ctx) ***REMOVED***
-				if (this.hasText) ***REMOVED***
+			this.renderChildren = function(ctx) {
+				if (this.hasText) {
 					// render as text element
 					this.baseRenderChildren(ctx);
 					var fontSize = new svg.Property('fontSize', svg.Font.Parse(svg.ctx.font).fontSize);
 					svg.Mouse.checkBoundingBox(this, new svg.BoundingBox(this.x, this.y - fontSize.toPixels('y'), this.x + this.measureText(ctx), this.y));
-				***REMOVED***
-				else ***REMOVED***
+				}
+				else {
 					// render as temporary group
 					var g = new svg.Element.g();
 					g.children = this.children;
 					g.parent = this;
 					g.render(ctx);
-				***REMOVED***
-			***REMOVED***
+				}
+			}
 
-			this.onclick = function() ***REMOVED***
+			this.onclick = function() {
 				window.open(this.getHrefAttribute().value);
-			***REMOVED***
+			}
 
-			this.onmousemove = function() ***REMOVED***
+			this.onmousemove = function() {
 				svg.ctx.canvas.style.cursor = 'pointer';
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.a.prototype = new svg.Element.TextElementBase;
 
 		// image element
-		svg.Element.image = function(node) ***REMOVED***
+		svg.Element.image = function(node) {
 			this.base = svg.Element.RenderedElementBase;
 			this.base(node);
 
@@ -3120,19 +3120,19 @@ function BlurStack()
 
 			svg.Images.push(this);
 			this.loaded = false;
-			if (!isSvg) ***REMOVED***
+			if (!isSvg) {
 				this.img = document.createElement('img');
 				var self = this;
-				this.img.onload = function() ***REMOVED*** self.loaded = true; ***REMOVED***
-				this.img.onerror = function() ***REMOVED*** if (typeof(console) != 'undefined') ***REMOVED*** console.log('ERROR: image "' + href + '" not found'); self.loaded = true; ***REMOVED*** ***REMOVED***
+				this.img.onload = function() { self.loaded = true; }
+				this.img.onerror = function() { if (typeof(console) != 'undefined') { console.log('ERROR: image "' + href + '" not found'); self.loaded = true; } }
 				this.img.src = href;
-			***REMOVED***
-			else ***REMOVED***
+			}
+			else {
 				this.img = svg.ajax(href);
 				this.loaded = true;
-			***REMOVED***
+			}
 
-			this.renderChildren = function(ctx) ***REMOVED***
+			this.renderChildren = function(ctx) {
 				var x = this.attribute('x').toPixels('x');
 				var y = this.attribute('y').toPixels('y');
 
@@ -3141,10 +3141,10 @@ function BlurStack()
 				if (width == 0 || height == 0) return;
 
 				ctx.save();
-				if (isSvg) ***REMOVED***
+				if (isSvg) {
 					ctx.drawSvg(this.img, x, y, width, height);
-				***REMOVED***
-				else ***REMOVED***
+				}
+				else {
 					ctx.translate(x, y);
 					svg.AspectRatio(ctx,
 									this.attribute('preserveAspectRatio').value,
@@ -3155,46 +3155,46 @@ function BlurStack()
 									0,
 									0);
 					ctx.drawImage(this.img, 0, 0);
-				***REMOVED***
+				}
 				ctx.restore();
-			***REMOVED***
+			}
 
-			this.getBoundingBox = function() ***REMOVED***
+			this.getBoundingBox = function() {
 				var x = this.attribute('x').toPixels('x');
 				var y = this.attribute('y').toPixels('y');
 				var width = this.attribute('width').toPixels('x');
 				var height = this.attribute('height').toPixels('y');
 				return new svg.BoundingBox(x, y, x + width, y + height);
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.image.prototype = new svg.Element.RenderedElementBase;
 
 		// group element
-		svg.Element.g = function(node) ***REMOVED***
+		svg.Element.g = function(node) {
 			this.base = svg.Element.RenderedElementBase;
 			this.base(node);
 
-			this.getBoundingBox = function() ***REMOVED***
+			this.getBoundingBox = function() {
 				var bb = new svg.BoundingBox();
-				for (var i=0; i<this.children.length; i++) ***REMOVED***
+				for (var i=0; i<this.children.length; i++) {
 					bb.addBoundingBox(this.children[i].getBoundingBox());
-				***REMOVED***
+				}
 				return bb;
-			***REMOVED***;
-		***REMOVED***
+			};
+		}
 		svg.Element.g.prototype = new svg.Element.RenderedElementBase;
 
 		// symbol element
-		svg.Element.symbol = function(node) ***REMOVED***
+		svg.Element.symbol = function(node) {
 			this.base = svg.Element.RenderedElementBase;
 			this.base(node);
 
 			this.baseSetContext = this.setContext;
-			this.setContext = function(ctx) ***REMOVED***
+			this.setContext = function(ctx) {
 				this.baseSetContext(ctx);
 
 				// viewbox
-				if (this.attribute('viewBox').hasValue()) ***REMOVED***
+				if (this.attribute('viewBox').hasValue()) {
 					var viewBox = svg.ToNumberArray(this.attribute('viewBox').value);
 					var minX = viewBox[0];
 					var minY = viewBox[1];
@@ -3211,130 +3211,130 @@ function BlurStack()
 									minY);
 
 					svg.ViewPort.SetCurrent(viewBox[2], viewBox[3]);
-				***REMOVED***
-			***REMOVED***
-		***REMOVED***
+				}
+			}
+		}
 		svg.Element.symbol.prototype = new svg.Element.RenderedElementBase;
 
 		// style element
-		svg.Element.style = function(node) ***REMOVED***
+		svg.Element.style = function(node) {
 			this.base = svg.Element.ElementBase;
 			this.base(node);
 
 			// text, or spaces then CDATA
 			var css = ''
-			for (var i=0; i<node.childNodes.length; i++) ***REMOVED***
+			for (var i=0; i<node.childNodes.length; i++) {
 			  css += node.childNodes[i].nodeValue;
-			***REMOVED***
+			}
 			css = css.replace(/(\/\*([^*]|[\r\n]|(\*+([^*\/]|[\r\n])))*\*+\/)|(^[\s]*\/\/.*)/gm, ''); // remove comments
 			css = svg.compressSpaces(css); // replace whitespace
-			var cssDefs = css.split('***REMOVED***');
-			for (var i=0; i<cssDefs.length; i++) ***REMOVED***
-				if (svg.trim(cssDefs[i]) != '') ***REMOVED***
-					var cssDef = cssDefs[i].split('***REMOVED***');
+			var cssDefs = css.split('}');
+			for (var i=0; i<cssDefs.length; i++) {
+				if (svg.trim(cssDefs[i]) != '') {
+					var cssDef = cssDefs[i].split('{');
 					var cssClasses = cssDef[0].split(',');
 					var cssProps = cssDef[1].split(';');
-					for (var j=0; j<cssClasses.length; j++) ***REMOVED***
+					for (var j=0; j<cssClasses.length; j++) {
 						var cssClass = svg.trim(cssClasses[j]);
-						if (cssClass != '') ***REMOVED***
-							var props = ***REMOVED******REMOVED***;
-							for (var k=0; k<cssProps.length; k++) ***REMOVED***
+						if (cssClass != '') {
+							var props = {};
+							for (var k=0; k<cssProps.length; k++) {
 								var prop = cssProps[k].indexOf(':');
 								var name = cssProps[k].substr(0, prop);
 								var value = cssProps[k].substr(prop + 1, cssProps[k].length - prop);
-								if (name != null && value != null) ***REMOVED***
+								if (name != null && value != null) {
 									props[svg.trim(name)] = new svg.Property(svg.trim(name), svg.trim(value));
-								***REMOVED***
-							***REMOVED***
+								}
+							}
 							svg.Styles[cssClass] = props;
-							if (cssClass == '@font-face') ***REMOVED***
+							if (cssClass == '@font-face') {
 								var fontFamily = props['font-family'].value.replace(/"/g,'');
 								var srcs = props['src'].value.split(',');
-								for (var s=0; s<srcs.length; s++) ***REMOVED***
-									if (srcs[s].indexOf('format("svg")') > 0) ***REMOVED***
+								for (var s=0; s<srcs.length; s++) {
+									if (srcs[s].indexOf('format("svg")') > 0) {
 										var urlStart = srcs[s].indexOf('url');
 										var urlEnd = srcs[s].indexOf(')', urlStart);
 										var url = srcs[s].substr(urlStart + 5, urlEnd - urlStart - 6);
 										var doc = svg.parseXml(svg.ajax(url));
 										var fonts = doc.getElementsByTagName('font');
-										for (var f=0; f<fonts.length; f++) ***REMOVED***
+										for (var f=0; f<fonts.length; f++) {
 											var font = svg.CreateElement(fonts[f]);
 											svg.Definitions[fontFamily] = font;
-										***REMOVED***
-									***REMOVED***
-								***REMOVED***
-							***REMOVED***
-						***REMOVED***
-					***REMOVED***
-				***REMOVED***
-			***REMOVED***
-		***REMOVED***
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 		svg.Element.style.prototype = new svg.Element.ElementBase;
 
 		// use element
-		svg.Element.use = function(node) ***REMOVED***
+		svg.Element.use = function(node) {
 			this.base = svg.Element.RenderedElementBase;
 			this.base(node);
 
 			this.baseSetContext = this.setContext;
-			this.setContext = function(ctx) ***REMOVED***
+			this.setContext = function(ctx) {
 				this.baseSetContext(ctx);
 				if (this.attribute('x').hasValue()) ctx.translate(this.attribute('x').toPixels('x'), 0);
 				if (this.attribute('y').hasValue()) ctx.translate(0, this.attribute('y').toPixels('y'));
-			***REMOVED***
+			}
 
-			this.getDefinition = function() ***REMOVED***
+			this.getDefinition = function() {
 				var element = this.getHrefAttribute().getDefinition();
 				if (this.attribute('width').hasValue()) element.attribute('width', true).value = this.attribute('width').value;
 				if (this.attribute('height').hasValue()) element.attribute('height', true).value = this.attribute('height').value;
 				return element;
-			***REMOVED***
+			}
 
-			this.path = function(ctx) ***REMOVED***
+			this.path = function(ctx) {
 				var element = this.getDefinition();
 				if (element != null) element.path(ctx);
-			***REMOVED***
+			}
 
-			this.getBoundingBox = function() ***REMOVED***
+			this.getBoundingBox = function() {
 				var element = this.getDefinition();
 				if (element != null) return element.getBoundingBox();
-			***REMOVED***
+			}
 
-			this.renderChildren = function(ctx) ***REMOVED***
+			this.renderChildren = function(ctx) {
 				var element = this.getDefinition();
-				if (element != null) ***REMOVED***
+				if (element != null) {
 					// temporarily detach from parent and render
 					var oldParent = element.parent;
 					element.parent = null;
 					element.render(ctx);
 					element.parent = oldParent;
-				***REMOVED***
-			***REMOVED***
-		***REMOVED***
+				}
+			}
+		}
 		svg.Element.use.prototype = new svg.Element.RenderedElementBase;
 
 		// mask element
-		svg.Element.mask = function(node) ***REMOVED***
+		svg.Element.mask = function(node) {
 			this.base = svg.Element.ElementBase;
 			this.base(node);
 
-			this.apply = function(ctx, element) ***REMOVED***
+			this.apply = function(ctx, element) {
 				// render as temp svg
 				var x = this.attribute('x').toPixels('x');
 				var y = this.attribute('y').toPixels('y');
 				var width = this.attribute('width').toPixels('x');
 				var height = this.attribute('height').toPixels('y');
 
-				if (width == 0 && height == 0) ***REMOVED***
+				if (width == 0 && height == 0) {
 					var bb = new svg.BoundingBox();
-					for (var i=0; i<this.children.length; i++) ***REMOVED***
+					for (var i=0; i<this.children.length; i++) {
 						bb.addBoundingBox(this.children[i].getBoundingBox());
-					***REMOVED***
+					}
 					var x = Math.floor(bb.x1);
 					var y = Math.floor(bb.y1);
 					var width = Math.floor(bb.width());
 					var	height = Math.floor(bb.height());
-				***REMOVED***
+				}
 
 				// temporarily remove mask to avoid recursion
 				var mask = element.attribute('mask').value;
@@ -3362,47 +3362,47 @@ function BlurStack()
 
 				// reassign mask
 				element.attribute('mask').value = mask;
-			***REMOVED***
+			}
 
-			this.render = function(ctx) ***REMOVED***
+			this.render = function(ctx) {
 				// NO RENDER
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.mask.prototype = new svg.Element.ElementBase;
 
 		// clip element
-		svg.Element.clipPath = function(node) ***REMOVED***
+		svg.Element.clipPath = function(node) {
 			this.base = svg.Element.ElementBase;
 			this.base(node);
 
-			this.apply = function(ctx) ***REMOVED***
-				for (var i=0; i<this.children.length; i++) ***REMOVED***
+			this.apply = function(ctx) {
+				for (var i=0; i<this.children.length; i++) {
 					var child = this.children[i];
-					if (typeof(child.path) != 'undefined') ***REMOVED***
+					if (typeof(child.path) != 'undefined') {
 						var transform = null;
-						if (child.attribute('transform').hasValue()) ***REMOVED***
+						if (child.attribute('transform').hasValue()) {
 							transform = new svg.Transform(child.attribute('transform').value);
 							transform.apply(ctx);
-						***REMOVED***
+						}
 						child.path(ctx);
 						ctx.clip();
-						if (transform) ***REMOVED*** transform.unapply(ctx); ***REMOVED***
-					***REMOVED***
-				***REMOVED***
-			***REMOVED***
+						if (transform) { transform.unapply(ctx); }
+					}
+				}
+			}
 
-			this.render = function(ctx) ***REMOVED***
+			this.render = function(ctx) {
 				// NO RENDER
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.clipPath.prototype = new svg.Element.ElementBase;
 
 		// filters
-		svg.Element.filter = function(node) ***REMOVED***
+		svg.Element.filter = function(node) {
 			this.base = svg.Element.ElementBase;
 			this.base(node);
 
-			this.apply = function(ctx, element) ***REMOVED***
+			this.apply = function(ctx, element) {
 				// render as temp svg
 				var bb = element.getBoundingBox();
 				var x = Math.floor(bb.x1);
@@ -3415,11 +3415,11 @@ function BlurStack()
 				element.style('filter').value = '';
 
 				var px = 0, py = 0;
-				for (var i=0; i<this.children.length; i++) ***REMOVED***
+				for (var i=0; i<this.children.length; i++) {
 					var efd = this.children[i].extraFilterDistance || 0;
 					px = Math.max(px, efd);
 					py = Math.max(py, efd);
-				***REMOVED***
+				}
 
 				var c = document.createElement('canvas');
 				c.width = width + 2*px;
@@ -3430,51 +3430,51 @@ function BlurStack()
 				element.render(tempCtx);
 
 				// apply filters
-				for (var i=0; i<this.children.length; i++) ***REMOVED***
+				for (var i=0; i<this.children.length; i++) {
 					this.children[i].apply(tempCtx, 0, 0, width + 2*px, height + 2*py);
-				***REMOVED***
+				}
 
 				// render on me
 				ctx.drawImage(c, 0, 0, width + 2*px, height + 2*py, x - px, y - py, width + 2*px, height + 2*py);
 
 				// reassign filter
 				element.style('filter', true).value = filter;
-			***REMOVED***
+			}
 
-			this.render = function(ctx) ***REMOVED***
+			this.render = function(ctx) {
 				// NO RENDER
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.filter.prototype = new svg.Element.ElementBase;
 
-		svg.Element.feMorphology = function(node) ***REMOVED***
+		svg.Element.feMorphology = function(node) {
 			this.base = svg.Element.ElementBase;
 			this.base(node);
 
-			this.apply = function(ctx, x, y, width, height) ***REMOVED***
+			this.apply = function(ctx, x, y, width, height) {
 				// TODO: implement
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.feMorphology.prototype = new svg.Element.ElementBase;
 
-		svg.Element.feColorMatrix = function(node) ***REMOVED***
+		svg.Element.feColorMatrix = function(node) {
 			this.base = svg.Element.ElementBase;
 			this.base(node);
 
-			function imGet(img, x, y, width, height, rgba) ***REMOVED***
+			function imGet(img, x, y, width, height, rgba) {
 				return img[y*width*4 + x*4 + rgba];
-			***REMOVED***
+			}
 
-			function imSet(img, x, y, width, height, rgba, val) ***REMOVED***
+			function imSet(img, x, y, width, height, rgba, val) {
 				img[y*width*4 + x*4 + rgba] = val;
-			***REMOVED***
+			}
 
-			this.apply = function(ctx, x, y, width, height) ***REMOVED***
+			this.apply = function(ctx, x, y, width, height) {
 				// only supporting grayscale for now per Issue 195, need to extend to all matrix
 				// assuming x==0 && y==0 for now
 				var srcData = ctx.getImageData(0, 0, width, height);
-				for (var y = 0; y < height; y++) ***REMOVED***
-					for (var x = 0; x < width; x++) ***REMOVED***
+				for (var y = 0; y < height; y++) {
+					for (var x = 0; x < width; x++) {
 						var r = imGet(srcData.data, x, y, width, height, 0);
 						var g = imGet(srcData.data, x, y, width, height, 1);
 						var b = imGet(srcData.data, x, y, width, height, 2);
@@ -3482,26 +3482,26 @@ function BlurStack()
 						imSet(srcData.data, x, y, width, height, 0, gray);
 						imSet(srcData.data, x, y, width, height, 1, gray);
 						imSet(srcData.data, x, y, width, height, 2, gray);
-					***REMOVED***
-				***REMOVED***
+					}
+				}
 				ctx.clearRect(0, 0, width, height);
 				ctx.putImageData(srcData, 0, 0);
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.feColorMatrix.prototype = new svg.Element.ElementBase;
 
-		svg.Element.feGaussianBlur = function(node) ***REMOVED***
+		svg.Element.feGaussianBlur = function(node) {
 			this.base = svg.Element.ElementBase;
 			this.base(node);
 
 			this.blurRadius = Math.floor(this.attribute('stdDeviation').numValue());
 			this.extraFilterDistance = this.blurRadius;
 
-			this.apply = function(ctx, x, y, width, height) ***REMOVED***
-				if (typeof(stackBlurCanvasRGBA) == 'undefined') ***REMOVED***
-					if (typeof(console) != 'undefined') ***REMOVED*** console.log('ERROR: StackBlur.js must be included for blur to work'); ***REMOVED***
+			this.apply = function(ctx, x, y, width, height) {
+				if (typeof(stackBlurCanvasRGBA) == 'undefined') {
+					if (typeof(console) != 'undefined') { console.log('ERROR: StackBlur.js must be included for blur to work'); }
 					return;
-				***REMOVED***
+				}
 
 				// StackBlur requires canvas be on document
 				ctx.canvas.id = svg.UniqueId();
@@ -3509,109 +3509,109 @@ function BlurStack()
 				document.body.appendChild(ctx.canvas);
 				stackBlurCanvasRGBA(ctx.canvas.id, x, y, width, height, this.blurRadius);
 				document.body.removeChild(ctx.canvas);
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 		svg.Element.feGaussianBlur.prototype = new svg.Element.ElementBase;
 
 		// title element, do nothing
-		svg.Element.title = function(node) ***REMOVED***
-		***REMOVED***
+		svg.Element.title = function(node) {
+		}
 		svg.Element.title.prototype = new svg.Element.ElementBase;
 
 		// desc element, do nothing
-		svg.Element.desc = function(node) ***REMOVED***
-		***REMOVED***
+		svg.Element.desc = function(node) {
+		}
 		svg.Element.desc.prototype = new svg.Element.ElementBase;
 
-		svg.Element.MISSING = function(node) ***REMOVED***
-			if (typeof(console) != 'undefined') ***REMOVED*** console.log('ERROR: Element \'' + node.nodeName + '\' not yet implemented.'); ***REMOVED***
-		***REMOVED***
+		svg.Element.MISSING = function(node) {
+			if (typeof(console) != 'undefined') { console.log('ERROR: Element \'' + node.nodeName + '\' not yet implemented.'); }
+		}
 		svg.Element.MISSING.prototype = new svg.Element.ElementBase;
 
 		// element factory
-		svg.CreateElement = function(node) ***REMOVED***
+		svg.CreateElement = function(node) {
 			var className = node.nodeName.replace(/^[^:]+:/,''); // remove namespace
 			className = className.replace(/\-/g,''); // remove dashes
 			var e = null;
-			if (typeof(svg.Element[className]) != 'undefined') ***REMOVED***
+			if (typeof(svg.Element[className]) != 'undefined') {
 				e = new svg.Element[className](node);
-			***REMOVED***
-			else ***REMOVED***
+			}
+			else {
 				e = new svg.Element.MISSING(node);
-			***REMOVED***
+			}
 
 			e.type = node.nodeName;
 			return e;
-		***REMOVED***
+		}
 
 		// load from url
-		svg.load = function(ctx, url) ***REMOVED***
+		svg.load = function(ctx, url) {
 			svg.loadXml(ctx, svg.ajax(url));
-		***REMOVED***
+		}
 
 		// load from xml
-		svg.loadXml = function(ctx, xml) ***REMOVED***
+		svg.loadXml = function(ctx, xml) {
 			svg.loadXmlDoc(ctx, svg.parseXml(xml));
-		***REMOVED***
+		}
 
-		svg.loadXmlDoc = function(ctx, dom) ***REMOVED***
+		svg.loadXmlDoc = function(ctx, dom) {
 			svg.init(ctx);
 
-			var mapXY = function(p) ***REMOVED***
+			var mapXY = function(p) {
 				var e = ctx.canvas;
-				while (e) ***REMOVED***
+				while (e) {
 					p.x -= e.offsetLeft;
 					p.y -= e.offsetTop;
 					e = e.offsetParent;
-				***REMOVED***
+				}
 				if (window.scrollX) p.x += window.scrollX;
 				if (window.scrollY) p.y += window.scrollY;
 				return p;
-			***REMOVED***
+			}
 
 			// bind mouse
-			if (svg.opts['ignoreMouse'] != true) ***REMOVED***
-				ctx.canvas.onclick = function(e) ***REMOVED***
+			if (svg.opts['ignoreMouse'] != true) {
+				ctx.canvas.onclick = function(e) {
 					var p = mapXY(new svg.Point(e != null ? e.clientX : event.clientX, e != null ? e.clientY : event.clientY));
 					svg.Mouse.onclick(p.x, p.y);
-				***REMOVED***;
-				ctx.canvas.onmousemove = function(e) ***REMOVED***
+				};
+				ctx.canvas.onmousemove = function(e) {
 					var p = mapXY(new svg.Point(e != null ? e.clientX : event.clientX, e != null ? e.clientY : event.clientY));
 					svg.Mouse.onmousemove(p.x, p.y);
-				***REMOVED***;
-			***REMOVED***
+				};
+			}
 
 			var e = svg.CreateElement(dom.documentElement);
 			e.root = true;
 
 			// render loop
 			var isFirstRender = true;
-			var draw = function() ***REMOVED***
+			var draw = function() {
 				svg.ViewPort.Clear();
 				if (ctx.canvas.parentNode) svg.ViewPort.SetCurrent(ctx.canvas.parentNode.clientWidth, ctx.canvas.parentNode.clientHeight);
 
-				// if (svg.opts['ignoreDimensions'] != true) ***REMOVED***
+				// if (svg.opts['ignoreDimensions'] != true) {
 				// 	// set canvas size
-				// 	if (e.style('width').hasValue()) ***REMOVED***
+				// 	if (e.style('width').hasValue()) {
 				// 		ctx.canvas.width = e.style('width').toPixels('x');
 				// 		ctx.canvas.style.width = ctx.canvas.width + 'px';
-				// 	***REMOVED***
-				// 	if (e.style('height').hasValue()) ***REMOVED***
+				// 	}
+				// 	if (e.style('height').hasValue()) {
 				// 		ctx.canvas.height = e.style('height').toPixels('y');
 				// 		ctx.canvas.style.height = ctx.canvas.height + 'px';
-				// 	***REMOVED***
-				// ***REMOVED***
+				// 	}
+				// }
 				var cWidth = ctx.canvas.clientWidth || ctx.canvas.width;
 				var cHeight = ctx.canvas.clientHeight || ctx.canvas.height;
-				if (svg.opts['ignoreDimensions'] == true && e.style('width').hasValue() && e.style('height').hasValue()) ***REMOVED***
+				if (svg.opts['ignoreDimensions'] == true && e.style('width').hasValue() && e.style('height').hasValue()) {
 					cWidth = e.style('width').toPixels('x');
 					cHeight = e.style('height').toPixels('y');
-				***REMOVED***
+				}
 				svg.ViewPort.SetCurrent(cWidth, cHeight);
 
 				if (svg.opts['offsetX'] != null) e.attribute('x', true).value = svg.opts['offsetX'];
 				if (svg.opts['offsetY'] != null) e.attribute('y', true).value = svg.opts['offsetY'];
-				if (svg.opts['scaleWidth'] != null && svg.opts['scaleHeight'] != null) ***REMOVED***
+				if (svg.opts['scaleWidth'] != null && svg.opts['scaleHeight'] != null) {
 					var xRatio = 1, yRatio = 1, viewBox = svg.ToNumberArray(e.attribute('viewBox').value);
 					if (e.attribute('width').hasValue()) xRatio = e.attribute('width').toPixels('x') / svg.opts['scaleWidth'];
 					else if (!isNaN(viewBox[2])) xRatio = viewBox[2] / svg.opts['scaleWidth'];
@@ -3622,120 +3622,120 @@ function BlurStack()
 					e.attribute('height', true).value = svg.opts['scaleHeight'];
 					e.attribute('viewBox', true).value = '0 0 ' + (cWidth * xRatio) + ' ' + (cHeight * yRatio);
 					e.attribute('preserveAspectRatio', true).value = 'none';
-				***REMOVED***
+				}
 
 				// clear and render
-				if (svg.opts['ignoreClear'] != true) ***REMOVED***
+				if (svg.opts['ignoreClear'] != true) {
 					ctx.clearRect(0, 0, cWidth, cHeight);
-				***REMOVED***
+				}
 				e.render(ctx);
-				if (isFirstRender) ***REMOVED***
+				if (isFirstRender) {
 					isFirstRender = false;
 					if (typeof(svg.opts['renderCallback']) == 'function') svg.opts['renderCallback'](dom);
-				***REMOVED***
-			***REMOVED***
+				}
+			}
 
 			var waitingForImages = true;
-			if (svg.ImagesLoaded()) ***REMOVED***
+			if (svg.ImagesLoaded()) {
 				waitingForImages = false;
 				draw();
-			***REMOVED***
-			svg.intervalID = setInterval(function() ***REMOVED***
+			}
+			svg.intervalID = setInterval(function() {
 				var needUpdate = false;
 
-				if (waitingForImages && svg.ImagesLoaded()) ***REMOVED***
+				if (waitingForImages && svg.ImagesLoaded()) {
 					waitingForImages = false;
 					needUpdate = true;
-				***REMOVED***
+				}
 
 				// need update from mouse events?
-				if (svg.opts['ignoreMouse'] != true) ***REMOVED***
+				if (svg.opts['ignoreMouse'] != true) {
 					needUpdate = needUpdate | svg.Mouse.hasEvents();
-				***REMOVED***
+				}
 
 				// need update from animations?
-				if (svg.opts['ignoreAnimation'] != true) ***REMOVED***
-					for (var i=0; i<svg.Animations.length; i++) ***REMOVED***
+				if (svg.opts['ignoreAnimation'] != true) {
+					for (var i=0; i<svg.Animations.length; i++) {
 						needUpdate = needUpdate | svg.Animations[i].update(1000 / svg.FRAMERATE);
-					***REMOVED***
-				***REMOVED***
+					}
+				}
 
 				// need update from redraw?
-				if (typeof(svg.opts['forceRedraw']) == 'function') ***REMOVED***
+				if (typeof(svg.opts['forceRedraw']) == 'function') {
 					if (svg.opts['forceRedraw']() == true) needUpdate = true;
-				***REMOVED***
+				}
 
 				// render if needed
-				if (needUpdate) ***REMOVED***
+				if (needUpdate) {
 					draw();
 					svg.Mouse.runEvents(); // run and clear our events
-				***REMOVED***
-			***REMOVED***, 1000 / svg.FRAMERATE);
-		***REMOVED***
+				}
+			}, 1000 / svg.FRAMERATE);
+		}
 
-		svg.stop = function() ***REMOVED***
-			if (svg.intervalID) ***REMOVED***
+		svg.stop = function() {
+			if (svg.intervalID) {
 				clearInterval(svg.intervalID);
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 
-		svg.Mouse = new (function() ***REMOVED***
+		svg.Mouse = new (function() {
 			this.events = [];
-			this.hasEvents = function() ***REMOVED*** return this.events.length != 0; ***REMOVED***
+			this.hasEvents = function() { return this.events.length != 0; }
 
-			this.onclick = function(x, y) ***REMOVED***
-				this.events.push(***REMOVED*** type: 'onclick', x: x, y: y,
-					run: function(e) ***REMOVED*** if (e.onclick) e.onclick(); ***REMOVED***
-				***REMOVED***);
-			***REMOVED***
+			this.onclick = function(x, y) {
+				this.events.push({ type: 'onclick', x: x, y: y,
+					run: function(e) { if (e.onclick) e.onclick(); }
+				});
+			}
 
-			this.onmousemove = function(x, y) ***REMOVED***
-				this.events.push(***REMOVED*** type: 'onmousemove', x: x, y: y,
-					run: function(e) ***REMOVED*** if (e.onmousemove) e.onmousemove(); ***REMOVED***
-				***REMOVED***);
-			***REMOVED***
+			this.onmousemove = function(x, y) {
+				this.events.push({ type: 'onmousemove', x: x, y: y,
+					run: function(e) { if (e.onmousemove) e.onmousemove(); }
+				});
+			}
 
 			this.eventElements = [];
 
-			this.checkPath = function(element, ctx) ***REMOVED***
-				for (var i=0; i<this.events.length; i++) ***REMOVED***
+			this.checkPath = function(element, ctx) {
+				for (var i=0; i<this.events.length; i++) {
 					var e = this.events[i];
 					if (ctx.isPointInPath && ctx.isPointInPath(e.x, e.y)) this.eventElements[i] = element;
-				***REMOVED***
-			***REMOVED***
+				}
+			}
 
-			this.checkBoundingBox = function(element, bb) ***REMOVED***
-				for (var i=0; i<this.events.length; i++) ***REMOVED***
+			this.checkBoundingBox = function(element, bb) {
+				for (var i=0; i<this.events.length; i++) {
 					var e = this.events[i];
 					if (bb.isPointInBox(e.x, e.y)) this.eventElements[i] = element;
-				***REMOVED***
-			***REMOVED***
+				}
+			}
 
-			this.runEvents = function() ***REMOVED***
+			this.runEvents = function() {
 				svg.ctx.canvas.style.cursor = '';
 
-				for (var i=0; i<this.events.length; i++) ***REMOVED***
+				for (var i=0; i<this.events.length; i++) {
 					var e = this.events[i];
 					var element = this.eventElements[i];
-					while (element) ***REMOVED***
+					while (element) {
 						e.run(element);
 						element = element.parent;
-					***REMOVED***
-				***REMOVED***
+					}
+				}
 
 				// done running, clear
 				this.events = [];
 				this.eventElements = [];
-			***REMOVED***
-		***REMOVED***);
+			}
+		});
 
 		return svg;
-	***REMOVED***
-***REMOVED***)();
+	}
+})();
 
-if (typeof(CanvasRenderingContext2D) != 'undefined') ***REMOVED***
-	CanvasRenderingContext2D.prototype.drawSvg = function(s, dx, dy, dw, dh) ***REMOVED***
-		canvg(this.canvas, s, ***REMOVED***
+if (typeof(CanvasRenderingContext2D) != 'undefined') {
+	CanvasRenderingContext2D.prototype.drawSvg = function(s, dx, dy, dw, dh) {
+		canvg(this.canvas, s, {
 			ignoreMouse: true,
 			ignoreAnimation: true,
 			ignoreDimensions: true,
@@ -3744,9 +3744,9 @@ if (typeof(CanvasRenderingContext2D) != 'undefined') ***REMOVED***
 			offsetY: dy,
 			scaleWidth: dw,
 			scaleHeight: dh
-		***REMOVED***);
-	***REMOVED***
-***REMOVED***/*
+		});
+	}
+}/*
 *
 * By Noah Veltman (@veltman)
 * https://github.com/veltman/pancakejs/
@@ -3784,51 +3784,51 @@ if (typeof(CanvasRenderingContext2D) != 'undefined') ***REMOVED***
 	el is the SVG/Canvas basis for the image.  It can be an element, or an element ID
 	format is an optional image format, like "jpg" or "png"
 	attributes is an object with attributes to set on the image.
-		***REMOVED***class: "map", alt: "This is a map!"***REMOVED*** will produce <img class="map" alt="This is a map!"...>
+		{class: "map", alt: "This is a map!"} will produce <img class="map" alt="This is a map!"...>
 */
 
-function Pancake(el,format,attributes) ***REMOVED***
+function Pancake(el,format,attributes) {
 
-	if (el) ***REMOVED***
+	if (el) {
 
 		// Keep the scope the way we want it
-		if (window === this) ***REMOVED***
+		if (window === this) {
 			return new Pancake(el,format,attributes);
-		***REMOVED***
+		}
 
 		//They didn't pass a format, but they did pass attributes
-		if (typeof format === "object") ***REMOVED***
+		if (typeof format === "object") {
 			attributes = format;
 			format = "";
-		***REMOVED***
+		}
 
 		//They didn't pass attributes
-		if (typeof attributes !== "object") ***REMOVED***
-			attributes = ***REMOVED******REMOVED***;
-		***REMOVED***
+		if (typeof attributes !== "object") {
+			attributes = {};
+		}
 
 		//If they passed format as an option rather than a separate arg, fix that
-		if (attributes.format) ***REMOVED***
+		if (attributes.format) {
 			format = attributes.format;
 			delete attributes.format;
-		***REMOVED***
+		}
 
 		//Try to get the element by ID
-		if (typeof el === "string") ***REMOVED***
+		if (typeof el === "string") {
 
 			//Set the ID
 			this.id = el;
 
 			//Get the element
 			el = document.getElementById(el);
-		***REMOVED***
+		}
 
-		if (el) ***REMOVED***
+		if (el) {
 
 			//Try to set the ID based on the element ID
 			if (!this.id && typeof el.id === "string" && el.id.length) this.id = el.id;
 
-			if (el.tagName.toLowerCase() === "svg") ***REMOVED***
+			if (el.tagName.toLowerCase() === "svg") {
 
 				//Create a blank canvas, use canvg to populate it with SVG contents
 				// this.canvas = document.createElement("canvas");
@@ -3851,18 +3851,18 @@ function Pancake(el,format,attributes) ***REMOVED***
 				var tmp = document.createElement("div");
 				tmp.appendChild(el.cloneNode(true));
 
-				canvg(this.canvas, tmp.innerHTML,***REMOVED*** ignoreMouse: true, ignoreAnimation: true ***REMOVED***);
-			***REMOVED***
+				canvg(this.canvas, tmp.innerHTML,{ ignoreMouse: true, ignoreAnimation: true });
+			}
 
-			if (el.tagName.toLowerCase() === "canvas") ***REMOVED***
+			if (el.tagName.toLowerCase() === "canvas") {
 
 				//Clone the canvas that was passed
 				this.canvas = el.cloneNode(true);
 				this.width = this.canvas.width;
 				this.height = this.canvas.height;
-			***REMOVED***
+			}
 
-			if (this.canvas) ***REMOVED***
+			if (this.canvas) {
 				//If we have a result, create an image object;
 				this.format = (typeof format === "string" && format.match(/^(image\/)?(png|webp|jpe?g)$/i)) ? format.toLowerCase().replace(/^image\//,"").replace("jpeg","jpg") : "png";
 				this.src = this.canvas.toDataURL("image/"+this.format.replace("jpg","jpeg"));
@@ -3873,29 +3873,29 @@ function Pancake(el,format,attributes) ***REMOVED***
 				if (this.height) this.element.height = this.height;
 				if (this.width) this.element.width = this.width;
 
-				for (var attr in attributes) ***REMOVED***
+				for (var attr in attributes) {
 					if (attr.toLowerCase() != "src") this.element.setAttribute(attr,String(attributes[attr]));
-				***REMOVED***
+				}
 
 				//Can probably delete the temporary canvas now
 				delete this.canvas;
-			***REMOVED*** else ***REMOVED***
+			} else {
 				//Not a valid element
 				throw "Supplied element must be a <canvas> or <svg> element.";
 				return false;
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 
 		return this;
 
-	***REMOVED*** else ***REMOVED***
+	} else {
 		//Didn't find anything
 		throw "No valid element or element ID supplied.";
 		return false;
-	***REMOVED***
-***REMOVED***
+	}
+}
 
-Pancake.prototype = ***REMOVED***
+Pancake.prototype = {
 
 /*
 *
@@ -3907,21 +3907,21 @@ Pancake.prototype = ***REMOVED***
 * not match what it's replacing.
 *
 */
-	replace: function(el) ***REMOVED***
-		if (typeof el === "string") ***REMOVED***
+	replace: function(el) {
+		if (typeof el === "string") {
 			el = document.getElementById(el);
-		***REMOVED***
+		}
 
-		if (el && this.element) ***REMOVED***
+		if (el && this.element) {
 			el.parentNode.insertBefore(this.element, el.nextSibling);
 			el.parentNode.removeChild(el);
-		***REMOVED*** else ***REMOVED***
+		} else {
 			//Didn't find anything
 			throw "No valid element or element ID supplied.";
-		***REMOVED***
+		}
 
 		return this;
-	***REMOVED***,
+	},
 
 /*
 *
@@ -3935,14 +3935,14 @@ Pancake.prototype = ***REMOVED***
 * This isn't too cross-browser compatible, but seems to work on modernish ones.
 *
 */
-	download: function(fn) ***REMOVED***
-		if (typeof fn !== "string" || !fn.length) ***REMOVED***
-			if (this.id) ***REMOVED***
+	download: function(fn) {
+		if (typeof fn !== "string" || !fn.length) {
+			if (this.id) {
 				fn = this.id+"."+this.format;
-			***REMOVED*** else ***REMOVED***
+			} else {
 				fn = "image."+this.format;
-			***REMOVED***
-		***REMOVED***
+			}
+		}
 
 		var a = document.createElement("a");
 		a.href = this.src;
@@ -3950,16 +3950,16 @@ Pancake.prototype = ***REMOVED***
 
 		document.body.appendChild(a);
 
-		if (typeof a.click === 'function') ***REMOVED***
+		if (typeof a.click === 'function') {
 			a.click();
-		***REMOVED*** else ***REMOVED***
+		} else {
 			var e = document.createEvent("MouseEvents");
 			e.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 			a.dispatchEvent(e);
-		***REMOVED***
+		}
 
 		document.body.removeChild(a);
 
 		return this;
-	***REMOVED***
-***REMOVED***;
+	}
+};

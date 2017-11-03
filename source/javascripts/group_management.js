@@ -1,43 +1,43 @@
 //= require _data_adapter
 //= require _underscore_mixins
 
-(function() ***REMOVED***
+(function() {
   var wireEvents; // declaring upfront for linting happiness
 
-  var parameterize = function(input) ***REMOVED***
+  var parameterize = function(input) {
     return input.toLowerCase()
-      .replace(/\[|\]|\(|\)|\***REMOVED***|\***REMOVED***|\\|\/|\.|\,|\'|\"|\&/g, '')
+      .replace(/\[|\]|\(|\)|\{|\}|\\|\/|\.|\,|\'|\"|\&/g, '')
       .replace(/\s/g, '-');
-  ***REMOVED***;
+  };
 
-  var handleErrors = function(err) ***REMOVED***
+  var handleErrors = function(err) {
     window.commonNotificationHandler(err, 'alert');
     $('article').html("<p class='error row'><span>An error occurred. Try again later.</span></p>");
-  ***REMOVED***;
+  };
 
-  var disableSaveButton = function(state) ***REMOVED***
-    if (state) ***REMOVED***
+  var disableSaveButton = function(state) {
+    if (state) {
       $('a.submit').addClass('disabled', state);
-    ***REMOVED*** else ***REMOVED***
+    } else {
       $('a.submit').removeClass('disabled', state);
-    ***REMOVED***
-  ***REMOVED***;
+    }
+  };
 
-  var disablePreviewButton = function(state) ***REMOVED***
-    if (state) ***REMOVED***
+  var disablePreviewButton = function(state) {
+    if (state) {
       $('a.preview').addClass('disabled', state);
-    ***REMOVED*** else ***REMOVED***
+    } else {
       $('a.preview').removeClass('disabled', state);
-    ***REMOVED***
-  ***REMOVED***;
+    }
+  };
 
-  var disableButtons = function(state) ***REMOVED***
+  var disableButtons = function(state) {
     disablePreviewButton(state);
     disableSaveButton(state);
-  ***REMOVED***;
+  };
 
-  var showLoadingSplash = function(msg) ***REMOVED***
-    $('#provider-dash').stop().fadeOut(500, function() ***REMOVED***
+  var showLoadingSplash = function(msg) {
+    $('#provider-dash').stop().fadeOut(500, function() {
       $('#load-msg').html(msg);
       $('#loading-animation')
         .stop()
@@ -45,213 +45,213 @@
         .show();
 
       console.log('done showing');
-    ***REMOVED***);
-  ***REMOVED***;
+    });
+  };
 
-  var hideLoadingSplash = function(msg) ***REMOVED***
-    $('#loading-animation').stop().fadeOut(500, function() ***REMOVED***
+  var hideLoadingSplash = function(msg) {
+    $('#loading-animation').stop().fadeOut(500, function() {
       $('#provider-dash')
         .stop()
         .css('opacity', '1')
         .show();
       console.log('done hiding');
-    ***REMOVED***);
-  ***REMOVED***;
+    });
+  };
 
-  var afterSave = function() ***REMOVED***
+  var afterSave = function() {
     $('a.submit').text('Save & Publish');
     hideLoadingSplash();
     disableButtons(false);
-  ***REMOVED***;
+  };
 
-  var saveChanges = function(isPreview) ***REMOVED***
+  var saveChanges = function(isPreview) {
     var changedRecords = [];
-    var postSave = function() ***REMOVED***
+    var postSave = function() {
       afterSave();
       var previewMsg = 'Saved data temporarily. Publish the changes to update permanently.',
         pubMsg = 'Published data.',
         msg = isPreview ? previewMsg : pubMsg;
       window.commonNotificationHandler(msg, 'success');
-    ***REMOVED***;
-    var handleChanges = function(response) ***REMOVED***
-      _.each(response, function(record) ***REMOVED***
+    };
+    var handleChanges = function(response) {
+      _.each(response, function(record) {
         var id = '#' + record.id,
           is_active = record.is_active,
           is_checked = $(id).prop('checked');
 
-        if (is_active !== is_checked) ***REMOVED***
-          var newRecord = ***REMOVED***
+        if (is_active !== is_checked) {
+          var newRecord = {
             id: record.id,
             is_active: is_checked
-          ***REMOVED***;
+          };
           changedRecords.push(newRecord);
-        ***REMOVED***
-      ***REMOVED***);
+        }
+      });
 
-      if (changedRecords.length === 0) ***REMOVED***
+      if (changedRecords.length === 0) {
         afterSave();
         var word = isPreview ? 'save' : 'publish';
         window.commonNotificationHandler('There are no changes to ' + word, 'warning');
         return;
-      ***REMOVED***
+      }
 
-      if (isPreview) ***REMOVED***
+      if (isPreview) {
         window.dataAdapter.updatePreviewCoverage(changedRecords)
           .then(postSave)
           .catch(handleErrors);
-      ***REMOVED*** else ***REMOVED***
+      } else {
         window.dataAdapter.updateCoverage(changedRecords)
           .then(postSave)
           .catch(handleErrors);
-      ***REMOVED***
-    ***REMOVED***;
+      }
+    };
 
-    if (isPreview) ***REMOVED***
+    if (isPreview) {
       window.dataAdapter.getPreviewCoverage()
         .then(handleChanges)
         .catch(handleErrors);
-    ***REMOVED*** else ***REMOVED***
+    } else {
       window.dataAdapter.getCoverage(2017)
         .then(handleChanges)
         .catch(handleErrors);
-    ***REMOVED***
-  ***REMOVED***;
+    }
+  };
 
-  var beforeSave = function() ***REMOVED***
+  var beforeSave = function() {
     var preview = $(this).hasClass('preview');
     disableButtons(true);
-    if (!preview) ***REMOVED***
+    if (!preview) {
       showLoadingSplash('Publishing changes...');
       $('a.submit').text('publishing...');
-    ***REMOVED*** else ***REMOVED***
+    } else {
       showLoadingSplash('Saving changes locally...');
-    ***REMOVED***
+    }
     saveChanges(preview);
-  ***REMOVED***;
+  };
 
-  var handleDataFetch = function(response) ***REMOVED***
+  var handleDataFetch = function(response) {
     console.log('refreshing display...');
     hideLoadingSplash();
     var byProvider = _.chain(response)
-      .groupBy(function(resp) ***REMOVED***
+      .groupBy(function(resp) {
         return resp.provider_name;
-      ***REMOVED***)
-      .each(function(val, key, list) ***REMOVED***
+      })
+      .each(function(val, key, list) {
         list[key] = _.chain(val)
-          .groupBy(function(v) ***REMOVED***
+          .groupBy(function(v) {
             return v.state;
-          ***REMOVED***)
-          .each(function(cnty, pro, arr) ***REMOVED***
-            arr[pro] = _.sortBy(cnty, function(v) ***REMOVED***
+          })
+          .each(function(cnty, pro, arr) {
+            arr[pro] = _.sortBy(cnty, function(v) {
               return v.county_name;
-            ***REMOVED***);
-          ***REMOVED***).value();
-      ***REMOVED***)
+            });
+          }).value();
+      })
       .sortKeysBy()
       .value();
 
     var template = window.JST['_templates/provider_by_state'];
-    var html = template(***REMOVED***
+    var html = template({
       data: byProvider,
       parameterize: parameterize
-    ***REMOVED***);
+    });
     $('#provider-dash').html(html).show();
     $(document).foundation('accordion', 'reflow');
     wireEvents();
-  ***REMOVED***;
+  };
 
-  var handleStateToggle = function() ***REMOVED***
+  var handleStateToggle = function() {
     var id = $(this).attr('id'),
       targetClass = '.' + id + '-input',
       val = $(this).prop('checked');
     $(targetClass).prop('checked', val);
-  ***REMOVED***;
+  };
 
-  var handleCountyToggle = function() ***REMOVED***
+  var handleCountyToggle = function() {
     var siblingTogglesClass = '.' + $(this).attr('class').replace(' ', '.'),
       checkedState = _.some($(siblingTogglesClass),
-        function(el) ***REMOVED***
+        function(el) {
           return $(el).prop('checked');
-        ***REMOVED***),
+        }),
       stateToggle = '#' + $(this).data('stateToggleId');
 
     $(stateToggle).prop('checked', checkedState);
-  ***REMOVED***;
+  };
 
-  var discardChanges = function() ***REMOVED***
+  var discardChanges = function() {
     showLoadingSplash('Discarding local changes...');
     window.dataAdapter.discardPreviewChanges()
-      .then(function() ***REMOVED***
+      .then(function() {
         window.commonNotificationHandler('Unpublished changes have been deleted', 'success');
         window.dataAdapter.getPreviewCoverage()
           .then(handleDataFetch)
           .catch(handleErrors);
-      ***REMOVED***).catch(handleErrors);
-  ***REMOVED***;
+      }).catch(handleErrors);
+  };
 
-  var filterResults = function() ***REMOVED***
+  var filterResults = function() {
     $('#search-err-msg').hide();
     var q = $(this)[0].value,
         matched = false;
-    _.each($('ul.accordion'), function(el) ***REMOVED***
+    _.each($('ul.accordion'), function(el) {
       var substrRegex = new RegExp(q, 'i');
       var provider = $(el).find('a').text();
-      if (substrRegex.test(provider)) ***REMOVED***
+      if (substrRegex.test(provider)) {
         matched = true;
         $(el).children('li').removeClass('active');
         $(el).removeClass('provider-hide');
-      ***REMOVED*** else ***REMOVED***
+      } else {
         $(el).addClass('provider-hide');
-      ***REMOVED***
-    ***REMOVED***);
-    if(!matched)***REMOVED***
+      }
+    });
+    if(!matched){
       $('#search-err-msg').show();
-    ***REMOVED***
-  ***REMOVED***;
+    }
+  };
 
-  var filterState = function() ***REMOVED***
+  var filterState = function() {
     var selectedState = $(this).find(":selected").attr('value');
     $('.accordion-allstates').addClass('state-hide');
     $('.table-allstates').addClass('hide');
     $('.accordion-' + selectedState).removeClass('state-hide');
     $('.table-' + selectedState).removeClass('hide');
-  ***REMOVED***;
+  };
 
-  var scrollHandler = function() ***REMOVED***
-    if ($(window).scrollTop() > $('#provider-dash').offset().top) ***REMOVED***
+  var scrollHandler = function() {
+    if ($(window).scrollTop() > $('#provider-dash').offset().top) {
       var left = $('#intro h2').offset().left + 'px';
       $('#buttonBar').addClass('sticky').css('left', left);
-    ***REMOVED*** else ***REMOVED***
+    } else {
       $('#buttonBar').removeClass('sticky');
-    ***REMOVED***
-  ***REMOVED***;
+    }
+  };
 
-  var wireOneTimeEvents = function() ***REMOVED***
+  var wireOneTimeEvents = function() {
     $('a.submit').on('click', beforeSave);
     $('a.preview').on('click', beforeSave);
     $('a.discard').on('click', discardChanges);
     $('#stateSelector').on('change', filterState);
     $(window).scroll(_.throttle(scrollHandler, 200));
-  ***REMOVED***;
+  };
 
-  wireEvents = function() ***REMOVED***
+  wireEvents = function() {
     $('.state-toggle').on('change', handleStateToggle);
     $('.county-toggle').on('change', handleCountyToggle);
 
     $('.search').on('keyup', _.debounce(filterResults, 500));
-  ***REMOVED***;
+  };
 
-  $(document).ready(function() ***REMOVED***
+  $(document).ready(function() {
     window.dataAdapter = window.dataAdapter || DataAdapter.getInstance();
     window.dataAdapter.ready()
-      .then(function() ***REMOVED***
+      .then(function() {
         console.log('database is ready');
         window.dataAdapter.getPreviewCoverage()
           .then(handleDataFetch)
           .catch(handleErrors);
         $('#controls').show();
-      ***REMOVED***).catch(handleErrors);
+      }).catch(handleErrors);
     wireOneTimeEvents();
     scrollHandler();
-  ***REMOVED***);
-***REMOVED***)();
+  });
+})();

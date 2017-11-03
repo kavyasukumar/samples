@@ -1,61 +1,61 @@
-article .error***REMOVED***
+article .error{
   color: white;
   padding-top: 50px;
   font-size: 2rem;
   margin: auto;
   text-align: center;
-  span***REMOVED***
+  span{
     background-color: red;
-  ***REMOVED***
-***REMOVED***
-#intro ***REMOVED***
+  }
+}
+#intro {
   padding-top: 6rem;
-***REMOVED***
+}
 
-#search-err-msg ***REMOVED***
+#search-err-msg {
   color: red;
   font-size: 24px;
   text-align: center;
   margin-top: 100px;
   margin-bottom: 100px;
-***REMOVED***
+}
 
-#provider-dash, #subscriber-dash ***REMOVED***
-  table.columns ***REMOVED***
+#provider-dash, #subscriber-dash {
+  table.columns {
     padding: 0;
 
     td.switch,
-    th.switch ***REMOVED***
+    th.switch {
       width: 5rem;
       padding-left: 1rem;
-    ***REMOVED***
+    }
 
-    th ***REMOVED***
+    th {
       margin-bottom: 0;
 
-      h3 ***REMOVED***
+      h3 {
         font-size: 1.1rem;
         display: inline-block;
         margin-top: 0.5rem;
-      ***REMOVED***
-    ***REMOVED***
-  ***REMOVED***
+      }
+    }
+  }
   
 
-  ul.accordion.row ***REMOVED***
+  ul.accordion.row {
     margin: auto auto 20px;
 
     &.provider-hide,
-    &.state-hide ***REMOVED***
+    &.state-hide {
       display: none;
-    ***REMOVED***
+    }
 
-    li.accordion-navigation ***REMOVED***
-      a ***REMOVED***
+    li.accordion-navigation {
+      a {
         font-size: 1.5rem;
-      ***REMOVED***
+      }
 
-      a:before ***REMOVED***
+      a:before {
         content: '\e805';
         font-family: "fontello";
         font-style: normal;
@@ -71,52 +71,52 @@ article .error***REMOVED***
         text-transform: none;
         line-height: 1.1em;
         margin-left: 0.2em;
-      ***REMOVED***
+      }
       /* '' */
-      &.active a:before ***REMOVED***
+      &.active a:before {
         content: '\e804';
-      ***REMOVED***
+      }
       /* '' */
-    ***REMOVED***
-  ***REMOVED***
-***REMOVED***
+    }
+  }
+}
 
-#controls ***REMOVED***
-  #searchDiv ***REMOVED***
+#controls {
+  #searchDiv {
     padding-right: 0;
-  ***REMOVED***
+  }
 
-  a.button ***REMOVED***
+  a.button {
     margin-left: 24px;
-  ***REMOVED***
+  }
 
-  a.discard ***REMOVED***
+  a.discard {
     display: block;
     padding: 1rem 1.25rem 0 0;
     font-size: 1.2rem;
     text-decoration: underline;
-  ***REMOVED***
+  }
 
-  #buttonBar***REMOVED***
-    &.sticky***REMOVED***
+  #buttonBar{
+    &.sticky{
       position: fixed;
       background: white;
       top:0;
       z-index: 1000;
       border-bottom: 2px solid #444;
       padding-top: 20px;
-      .hide-on-sticky***REMOVED***
+      .hide-on-sticky{
         display: none;
-      ***REMOVED***
-    ***REMOVED***
-  ***REMOVED***
-***REMOVED***
+      }
+    }
+  }
+}
 
-.alertHolder***REMOVED***
+.alertHolder{
   position: absolute;
   width: 100%;
-  .alert-box***REMOVED***
+  .alert-box{
     padding: 0 14px;
     height:1.7rem;
-  ***REMOVED***
-***REMOVED***
+  }
+}

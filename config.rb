@@ -18,9 +18,9 @@ activate :directory_indexes
 #          :load_sheets => 'my_key'
 #
 # Load multiple google spreadsheets
-# activate :google_drive, load_sheets: ***REMOVED***
+# activate :google_drive, load_sheets: {
 #     :spreadsheet => 'my_key'
-# ***REMOVED***
+# }
 
 # Chorus integration
 #
@@ -32,9 +32,9 @@ activate :chorus
 # activate :chorus
 #
 # Load content from chorus with an entry slug or id
-# activate :chorus, load_entries: ***REMOVED***
+# activate :chorus, load_entries: {
 #     :story => 'my-story-slug'
-# ***REMOVED***
+# }
 
 ###
 # Page options, layouts, settings
@@ -114,8 +114,8 @@ set :kinto_token, 'aca-user:pr1ngl3'
 # build_sitemap_with data.pages
 
 # Proxy pages (http://middlemanapp.com/basics/dynamic-pages/)
-# proxy "/this-page-has-no-template.html", "/template-file.html", :locals => ***REMOVED***
-#  :which_fake_page => "Rendering a fake page with a local variable" ***REMOVED***
+# proxy "/this-page-has-no-template.html", "/template-file.html", :locals => {
+#  :which_fake_page => "Rendering a fake page with a local variable" }
 
 ###
 # Helpers

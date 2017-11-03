@@ -4,9 +4,9 @@
   </div>
   <select class="newStateSelector large-3 columns">
     <option default value="allstates">Select a state</option>
-    <% _.each(STATE_LOOKUP, function(name, state) ***REMOVED*** %>
+    <% _.each(STATE_LOOKUP, function(name, state) { %>
     <option value="<%= state %>"><%= name %></option>
-    <% ***REMOVED***) %>
+    <% }) %>
   </select>
   <select class="countySelector large-3 columns">
       <option default value="none">Select a state first</option>

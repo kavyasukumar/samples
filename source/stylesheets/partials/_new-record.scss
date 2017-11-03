@@ -1,46 +1,46 @@
-#plusdiv ***REMOVED***
+#plusdiv {
   position: absolute;
   bottom: 24px;
   left: 0;
 
-  .add ***REMOVED***
+  .add {
     font-size: 40px;
-  ***REMOVED***
-***REMOVED***
+  }
+}
 
-#createForm ***REMOVED***
+#createForm {
   position: relative;
 
   margin-top: 60px;
   padding-bottom: 60px;
 
-  .providerDiv ***REMOVED***
+  .providerDiv {
     padding: 0;
     margin-bottom: 0;
-  ***REMOVED***
+  }
 
   .providerDiv,
-  select ***REMOVED***
+  select {
     margin-right: 16px;
-  ***REMOVED***
+  }
 
-  .remove ***REMOVED***
+  .remove {
     color: red;
 
     font-size: 30px;
     font-weight: 100;
     line-height: 40px;
-  ***REMOVED***
-***REMOVED***
-.datarow***REMOVED***
+  }
+}
+.datarow{
     padding-top: 12px;
     padding-left: 12px;
-    &.errored***REMOVED***
+    &.errored{
       background-color: rgba(red,0.3);
-    ***REMOVED***
-***REMOVED***
+    }
+}
 
-#back ***REMOVED***
+#back {
   display: block;
 
   margin-bottom: 26px;
@@ -48,4 +48,4 @@
   text-decoration: underline;
 
   font-size: 20px;
-***REMOVED***
+}

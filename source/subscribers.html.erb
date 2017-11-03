@@ -1,8 +1,8 @@
 <%=partial 'partials/variables' %>
 <%=partial 'partials/nav' %>
 <% subscribers_by_state = data.subscribers
-                              .group_by ***REMOVED***|k,v| v['state']***REMOVED***
-                              .map ***REMOVED***|k,v| [k,v.to_h]***REMOVED***.to_h
+                              .group_by {|k,v| v['state']}
+                              .map {|k,v| [k,v.to_h]}.to_h
  %>
  <% first = true %>
 
@@ -19,12 +19,12 @@
 <% subscribers_by_state.each do |state, subs| %>
   <ul class="accordion row" data-accordion>
     <li class="accordion-navigation <% if first %>active<% end %>">
-      <a href='<%= "##***REMOVED***state***REMOVED***"%>' class="icon-something">
+      <a href='<%= "##{state}"%>' class="icon-something">
         <%= data.state_lookup[state] %>
       </a>
       <div id='<%=state%>' class="content row <% if first
       first = false%>active<% end %>">
-        <div class='right'>Total subscribers: <%= subs.values.inject(0) ***REMOVED*** |sum, tuple| sum += tuple['subscribers'] ***REMOVED*** %></div>
+        <div class='right'>Total subscribers: <%= subs.values.inject(0) { |sum, tuple| sum += tuple['subscribers'] } %></div>
         <table class="large-12 columns">
           <thead>
             <tr>
