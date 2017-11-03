@@ -94,7 +94,6 @@ def county_fips
   ct_fips
 end
 
-
 def states
   state_fips.keys
 end
@@ -264,4 +263,39 @@ task :add_county_lookup do
     file.write result.to_json
   end
   puts 'Done!'
+end
+
+desc 'Backup data'
+task :backup_data do
+  bucket = kinto_bucket(datastore_config['bucket'])
+  coverage_2017 = bucket.collection('coverage-2017')
+  require 'fileutils'
+  get_filename = true
+  now = DateTime.now.strftime('%Y_%m_%d_%H%M')
+  i = 1
+  while get_filename do
+    file_path = "./backup_data/coverage_2017_#***REMOVED***now***REMOVED***.json"
+    if File.exist?(file_path)
+      cont = yes?("Replace file #***REMOVED***file_path***REMOVED***?")
+      if cont
+        File.delete(file_path)
+        get_filename = false
+      else
+        now = "#***REMOVED***now***REMOVED***_#***REMOVED***i***REMOVED***"
+        i = i + 1
+      end
+    else
+      get_filename = false
+    end
+  end
+
+  states.each do |s|
+    puts s
+    resp = coverage_2017.list_records("state=#***REMOVED***s***REMOVED***")
+    puts resp['data'].count
+
+    File.open(file_path, 'a+') do |file|
+      file.write resp['data'].to_json
+    end
+  end
 end
